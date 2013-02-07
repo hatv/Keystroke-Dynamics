@@ -16,7 +16,7 @@
     <!--                                           -->
     <!-- Any title is fine                         -->
     <!--                                           -->
-    <title>Web Application Starter Project</title>
+    <title>Keystroke Dynamics Analysis</title>
     
     <!--                                           -->
     <!-- This script loads your compiled module.   -->
@@ -24,6 +24,20 @@
     <!-- be added before this line.                -->
     <!--                                           -->
     <script type="text/javascript" language="javascript" src="keystroke_dynamics/keystroke_dynamics.nocache.js"></script>
+  	<script type="text/javascript">
+		function startFocus(id) {
+			window.onfocus = function() {
+				document.getElementById(id).requestFocus();
+			};
+			window.onclick = function() {
+				document.getElementById(id).requestFocus();
+			};
+		} 
+		function appletCallback2(pParam) { 
+		   	alert(pParam);
+			//this@com.app.MyClass::appletCallback( Ljava/lang/String;){pParam); 
+		}
+	</script>
   </head>
 
   <!--                                           -->
@@ -44,11 +58,11 @@
       </div>
     </noscript>
 
-    <h1>Web Application Starter New Project</h1>
-
-    <table align="center">
+    <h1>Keystroke Dynamics Analysis</h1>
+	<div id="content"></div>
+    <!--<table align="center">
       <tr>
-        <td colspan="2" style="font-weight:bold;">Please enter your name:</td>        
+        <td colspan="2" style="font-weight:bold;">Subscription:</td>        
       </tr>
       <tr>
         <td id="nameFieldContainer"></td>
@@ -57,6 +71,22 @@
       <tr>
         <td colspan="2" style="color:red;" id="errorLabelContainer"></td>
       </tr>
-    </table>
-  </body>
+    </table>-->
+    
+    
+    <!--  	  <hr/>
+	  <script language="javascript" src="JSIO.js"></script>
+<applet name="JSIOApp" archive="JSIO.jar" code="JSIO" width="0" height="0"></applet>
+
+<center>
+<H1>JS File IO Using Java </H1>
+<form>
+<textarea name=JSIOTxt rows=20 cols=50>
+</textarea>
+<br>
+<input name=JSIOFile type=file>
+<input type=submit onClick="getFile(); return false;" value="getIt">
+</form>
+</center>-->
+	</body>
 </html>
