@@ -6,13 +6,13 @@
 
   <!-- Servlets -->
   <servlet>
-    <servlet-name>greetServlet</servlet-name>
-    <servlet-class>fr.vhat.keydyn.server.GreetingServiceImpl</servlet-class>
+    <servlet-name>registrationServlet</servlet-name>
+    <servlet-class>fr.vhat.keydyn.server.RegistrationServiceImpl</servlet-class>
   </servlet>
   
   <servlet-mapping>
-    <servlet-name>greetServlet</servlet-name>
-    <url-pattern>/key-dyn/greet</url-pattern>
+    <servlet-name>registrationServlet</servlet-name>
+    <url-pattern>/keydyn/registration</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->
@@ -34,4 +34,13 @@
     <url-pattern>/_ah/spi/*</url-pattern>
   </servlet-mapping>
 
+  <!-- Objectify -->
+  <filter>
+        <filter-name>ObjectifyFilter</filter-name>
+        <filter-class>com.googlecode.objectify.ObjectifyFilter</filter-class>
+  </filter>
+  <filter-mapping>
+        <filter-name>ObjectifyFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+  </filter-mapping>
 </web-app>

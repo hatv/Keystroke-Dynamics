@@ -19,9 +19,16 @@ h1 {
 	margin-left: auto;
 	margin-right: auto;
 }
+.errorText {
+	color: red;
+}
 /** Most GWT widgets already have a style name defined */
 .gwt-DialogBox {
   width: 400px;
+}
+
+.gwt-Grid {
+    min-width: 500px;	
 }
 
 .dialogVPanel {
