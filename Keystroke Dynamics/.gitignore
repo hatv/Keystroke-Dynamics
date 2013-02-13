@@ -1,6 +1,5 @@
 /gwt-unitCache
-/war/WEB-INF
-/war/keystroke_dynamics
+/war/keydyn
 
 #################
 ## Eclipse
