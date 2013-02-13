@@ -1,5 +1,10 @@
 /gwt-unitCache
 /war/keydyn
+/war/WEB-INF/appengine-generated
+/war/WEB-INF/lib
+/war/WEB-INF/classes
+/war/WEB-INF/deploy
+/.gwt
 
 #################
 ## Eclipse
