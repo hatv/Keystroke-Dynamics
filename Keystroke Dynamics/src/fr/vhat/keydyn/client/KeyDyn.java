@@ -38,6 +38,8 @@ public class KeyDyn implements EntryPoint {
 	private Button signUpButton;
 	private RadioButton genderUserFemale;
 	private RadioButton genderUserMale;
+	private ListBox experienceList;
+	private ListBox usageList;
 	
 	private RegistrationServiceAsync registrationService =
 			GWT.create(RegistrationService.class);
@@ -62,32 +64,35 @@ public class KeyDyn implements EntryPoint {
 		registeringExplanation.setText(explanationText);
 		container.add(registeringExplanation);
 
-		Grid userDataGrid = new Grid(11, 2);
-		// TODO : utiliser setSpacing
+		Grid userDataGrid = new Grid(7, 2);
+		userDataGrid.setCellPadding(7);
 
-		HorizontalPanel loginPanel = new HorizontalPanel();
 		Label loginLabel = new Label("Login");
-		loginPanel.add(loginLabel);
-		Image loginInfo = new Image("resources/info.png");
+		loginLabel.addStyleName("registrationLabel");
+		HorizontalPanel loginPanel = new HorizontalPanel();
+		loginUser = new TextBox();
+		loginUser.setMaxLength(16);
+		loginUser.setVisibleLength(23);
+		loginPanel.add(loginUser);
+		Image loginInfo = new Image("resources/img/information.png");
 		loginInfo.setTitle("TODO : onMouseOverHandler");
 		loginPanel.add(loginInfo);
-		loginUser = new TextBox();
-		loginUser.setMaxLength(13);
-		loginUser.setVisibleLength(30);
-		userDataGrid.setWidget(0, 0, loginPanel);
-		userDataGrid.setWidget(0, 1, loginUser);
+		userDataGrid.setWidget(0, 0, loginLabel);
+		userDataGrid.setWidget(0, 1, loginPanel);
 		
-		HorizontalPanel emailPanel = new HorizontalPanel();
 		Label emailLabel = new Label("E-mail");
-		emailPanel.add(emailLabel);
-		Image emailInfo = new Image("resources/info.png");
-		emailPanel.add(emailInfo);
+		emailLabel.addStyleName("registrationLabel");
+		HorizontalPanel emailPanel = new HorizontalPanel();
 		emailUser = new TextBox();
-		emailUser.setVisibleLength(30);
-		userDataGrid.setWidget(1, 0, emailPanel);
-		userDataGrid.setWidget(1, 1, emailUser);
+		emailUser.setVisibleLength(23);
+		emailPanel.add(emailUser);
+		Image emailInfo = new Image("resources/img/information.png");
+		emailPanel.add(emailInfo);
+		userDataGrid.setWidget(1, 0, emailLabel);
+		userDataGrid.setWidget(1, 1, emailPanel);
 		
 		Label ageLabel = new Label("Age");
+		ageLabel.addStyleName("registrationLabel");
 		ageUser = new TextBox();
 		ageUser.setMaxLength(2);
 		ageUser.setVisibleLength(2);
@@ -95,6 +100,7 @@ public class KeyDyn implements EntryPoint {
 		userDataGrid.setWidget(2, 1, ageUser);
 		
 		Label genderLabel = new Label("Gender");
+		genderLabel.addStyleName("registrationLabel");
 		userDataGrid.setWidget(3, 0, genderLabel);
 		HorizontalPanel genderPanel = new HorizontalPanel();
 		genderUserFemale = new RadioButton("gender", "Female");
@@ -104,8 +110,10 @@ public class KeyDyn implements EntryPoint {
 		userDataGrid.setWidget(3, 1, genderPanel);
 		
 		Label countryLabel = new Label("Country");
+		countryLabel.addStyleName("registrationLabel");
 		userDataGrid.setWidget(4, 0, countryLabel);
 		countryList = new ListBox();
+		countryList.addStyleName("registrationLabel");
 		countryList.addItem("");
 		countryList.addItem("Canada");
 		countryList.addItem("France");
@@ -117,22 +125,30 @@ public class KeyDyn implements EntryPoint {
 		userDataGrid.setWidget(4, 1, countryList);
 		
 		Label experienceLabel = new Label("Computer experience");
+		experienceLabel.addStyleName("registrationLabel");
 		userDataGrid.setWidget(5, 0, experienceLabel);
-		RadioButton experienceUser = new RadioButton("experience", "< 3 years");
-		userDataGrid.setWidget(5, 1, experienceUser);
-		experienceUser = new RadioButton("experience", "~ 4 years");
-		userDataGrid.setWidget(6, 1, experienceUser);
-		experienceUser = new RadioButton("experience", "> 7 years");
-		userDataGrid.setWidget(7, 1, experienceUser);
+		experienceList = new ListBox();
+		experienceList.addStyleName("registrationLabel");
+		experienceList.addItem("");
+		experienceList.addItem("< 2 years");
+		experienceList.addItem("~ 4 years");
+		experienceList.addItem("~ 7 years");
+		experienceList.addItem("~ 10 years");
+		experienceList.addItem("> 13 years");
+		userDataGrid.setWidget(5, 1, experienceList);
 		
 		Label usageLabel = new Label("Typing per week");
-		userDataGrid.setWidget(8, 0, usageLabel);
-		RadioButton usageUser = new RadioButton("usage", "< 4 hours a week");
-		userDataGrid.setWidget(8, 1, usageUser);
-		usageUser = new RadioButton("usage", "~ 8 hours a week");
-		userDataGrid.setWidget(9, 1, usageUser);
-		usageUser = new RadioButton("usage", "> 12 hours a week");
-		userDataGrid.setWidget(10, 1, usageUser);
+		usageLabel.addStyleName("registrationLabel");
+		userDataGrid.setWidget(6, 0, usageLabel);
+		usageList = new ListBox();
+		usageList.addStyleName("registrationLabel");
+		usageList.addItem("");
+		usageList.addItem("< 30 minutes a day");
+		usageList.addItem("~ 1 hour a day");
+		usageList.addItem("~ 2 hours a day");
+		usageList.addItem("~ 4 hours a day");
+		usageList.addItem("> 5 hours a day");
+		userDataGrid.setWidget(6, 1, usageList);
 		
 		container.add(userDataGrid);
 

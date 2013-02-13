@@ -11,6 +11,7 @@ public class User implements Serializable {
 	@Id
 	Long id;
 	String login;
+	String password;
 	String email;
 	int age;
 	String gender;
@@ -19,6 +20,23 @@ public class User implements Serializable {
 	int computerUsage;
 	Date registrationDate;
 
+	@SuppressWarnings("unused")
+	private User() {}
+	
+	public User(String login, String password, String email, int age, String gender, 
+			String country, int computerExperience, int computerUsage, 
+			Date registrationDate) {
+		this.setLogin(login);
+		this.setPassword(password);
+		this.setEmail(email);
+		this.setAge(age);
+		this.setGender(gender);
+		this.setCountry(country);
+		this.setComputerExperience(computerExperience);
+		this.setComputerUsage(computerUsage);
+		this.setRegistrationDate(registrationDate);
+	}
+	
 	public String getLogin() {
 		return login;
 	}
@@ -61,10 +79,22 @@ public class User implements Serializable {
 	public void setComputerUsage(int computerUsage) {
 		this.computerUsage = computerUsage;
 	}
-	public Date getDate() {
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public Date getRegistrationDate() {
 		return registrationDate;
 	}
-	public void setDate(Date registrationDate) {
+	public void setRegistrationDate(Date registrationDate) {
 		this.registrationDate = registrationDate;
 	}
 }

@@ -9,6 +9,9 @@ h1 {
 	margin: 40px 0px 70px;
 	text-align: center;
 }
+.registrationLabel {
+	text-align: right;
+}
 .gwt-Button {
 	display: block;
 	font-size: 60pt;
