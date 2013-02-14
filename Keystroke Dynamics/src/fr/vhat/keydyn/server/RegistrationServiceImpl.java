@@ -24,9 +24,10 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements
 			int computerUsage) {
 		if (FieldVerifier.isValidLogin(login) /*TODO : others*/) {
 			String password = Password.generatePassword();
+			String hashedPassword = Password.hash(password);
 			Date date = new Date();
-	        User user = new User(login, password, email, age, gender, country,
-	        		computerExperience, computerUsage, date);
+	        User user = new User(login, password, hashedPassword, email, age,
+	        		gender, country, computerExperience, computerUsage, date);
 	        ObjectifyService.ofy().save().entity(user).now();
 			log.info("User <" + login + "> created with password <" + password
 					+ ">.");

@@ -1,17 +1,25 @@
 package fr.vhat.keydyn.client.entities;
 
+import com.googlecode.objectify.Key;
+import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("serial")
 @Entity
 public class User implements Serializable {
 	@Id
 	Long id;
+	@Index
 	String login;
 	String password;
+	String hashedPassword;
 	String email;
 	int age;
 	String gender;
@@ -19,15 +27,17 @@ public class User implements Serializable {
 	int computerExperience;
 	int computerUsage;
 	Date registrationDate;
+	List<Key<KDData>> KDDataKeys = new ArrayList<Key<KDData>>();
 
 	@SuppressWarnings("unused")
 	private User() {}
 	
-	public User(String login, String password, String email, int age, String gender, 
-			String country, int computerExperience, int computerUsage, 
-			Date registrationDate) {
+	public User(String login, String password, String hashedPassword,
+			String email, int age, String gender, String country,
+			int computerExperience, int computerUsage, Date registrationDate) {
 		this.setLogin(login);
 		this.setPassword(password);
+		this.setHashedPassword(hashedPassword);
 		this.setEmail(email);
 		this.setAge(age);
 		this.setGender(gender);
@@ -91,10 +101,35 @@ public class User implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	public String getHashedPassword() {
+		return hashedPassword;
+	}
+	public void setHashedPassword(String hashedPassword) {
+		this.hashedPassword = hashedPassword;
+	}
 	public Date getRegistrationDate() {
 		return registrationDate;
 	}
 	public void setRegistrationDate(Date registrationDate) {
 		this.registrationDate = registrationDate;
+	}
+	public Key<KDData> getKDDataKey(int index) {
+		return KDDataKeys.get(index);
+	}
+	public KDData getKDData(int index) {
+		return ObjectifyService.ofy().load().key(getKDDataKey(index)).get();
+	}
+	public List<KDData> getKDDataList() {
+		List<KDData> l = new ArrayList<KDData>();
+		for (int i = 0 ; i < getKDDataSize() ; ++i) {
+			l.add(getKDData(i));
+		}
+		return l;
+	}
+	public int getKDDataSize() {
+		return KDDataKeys.size();
+	}
+	public void addKDDataKey(Key<KDData> kdDataKey) {
+		KDDataKeys.add(kdDataKey);
 	}
 }

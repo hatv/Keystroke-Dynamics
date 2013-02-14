@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -30,25 +31,120 @@ public class KeyDyn implements EntryPoint {
 			+ "attempting to contact the server. Please check your network "
 			+ "connection and try again.";
 	
-	static VerticalPanel container = new VerticalPanel();
-	private TextBox loginUser;
-	private TextBox emailUser;
-	private TextBox ageUser;
-	private ListBox countryList;
-	private Button signUpButton;
-	private RadioButton genderUserFemale;
-	private RadioButton genderUserMale;
-	private ListBox experienceList;
-	private ListBox usageList;
 	
-	private RegistrationServiceAsync registrationService =
+	// TODO : se place forcément ici ?
+	private static RegistrationServiceAsync registrationService =
 			GWT.create(RegistrationService.class);
+	private static AuthenticationServiceAsync authenticationService =
+			GWT.create(AuthenticationService.class);
+	private static DataTransmissionServiceAsync transmissionService =
+			GWT.create(DataTransmissionService.class);
 
-
+	// TODO : meilleur placement possible ?
+	static VerticalPanel kdDataPanel;
+	
 	public void onModuleLoad() {
-
 		this.JSNI();
-
+		
+		authenticationService.validateSession(new AsyncCallback<String>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				System.out.println("FAILURE");
+			}
+			@Override
+			public void onSuccess(String login) {
+				System.out.println("SUCCESS");
+				// TODO : Gérer le retour
+				if (login != null)
+					loadUserPage(login);
+				else
+					loadHomePage();
+			}
+		});
+	};
+	
+	private void loadHomePage () {
+		RootPanel.get("registerContent").clear();
+		
+		VerticalPanel container = new VerticalPanel();
+		HorizontalPanel header = new HorizontalPanel();
+		Button registrationButton = new Button("Registration");
+		Button aboutButton = new Button("About");
+		header.setSpacing(5);
+		header.add(registrationButton);
+		header.add(aboutButton);
+		container.add(header);
+		Grid loginGrid = new Grid(2, 2);
+		Label login = new Label("Login");
+		Label password = new Label("Password");
+		final TextBox loginUser = new TextBox();
+		final PasswordTextBox passwordUser = new PasswordTextBox();
+		loginGrid.setWidget(0, 0, login);
+		loginGrid.setWidget(1, 0, password);
+		loginGrid.setWidget(0, 1, loginUser);
+		loginGrid.setWidget(1, 1, passwordUser);
+		loginGrid.setCellPadding(7);
+		container.add(loginGrid);
+		Button loginButton = new Button("Login");
+		container.add(loginButton);
+		Button forgottenPasswordButton = new Button("I forgot my password");
+		container.add(forgottenPasswordButton);
+		
+		container.addStyleName("container");
+		RootPanel.get("registerContent").add(container);
+		
+		registrationButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				loadRegistrationPage();
+			}
+		});
+		
+		loginButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				authenticationService.authenticateUser(loginUser.getText(),
+						passwordUser.getText(), new AsyncCallback<Boolean>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						System.out.println("FAILURE");
+					}
+					@Override
+					public void onSuccess(Boolean result) {
+						System.out.println("SUCCESS");
+						// TODO : Gérer le retour
+						if (result)
+							loginUser.setText("CONNECTEEEE");
+						else
+							loginUser.setText("WRONG");
+					}
+				});
+			}
+		});
+	}
+	
+	private void loadRegistrationPage () {
+		RootPanel.get("registerContent").clear();
+		
+		VerticalPanel container = new VerticalPanel();
+		final TextBox loginUser;
+		final TextBox emailUser;
+		final TextBox ageUser;
+		final ListBox countryList;
+		Button signUpButton;
+		final RadioButton genderUserFemale;
+		final RadioButton genderUserMale;
+		ListBox experienceList;
+		ListBox usageList;
+		
+		HorizontalPanel header = new HorizontalPanel();
+		Button homeButton = new Button("Home");
+		Button aboutButton = new Button("About");
+		header.setSpacing(5);
+		header.add(homeButton);
+		header.add(aboutButton);
+		container.add(header);
+		
 		HTML introduction = new HTML();
 		String introductionText = "Work in progress : to learn more about " +
 			"this project, visit " +
@@ -156,27 +252,7 @@ public class KeyDyn implements EntryPoint {
 		container.add(signUpButton);
 		// TODO : when button pressed, check if the textboxes do not contain
 		// some error texts
-/*
-		HTML applet = new HTML();
-		// TODO hide applet ?
-		String HTML5Applet = new String("<object id=\"KeyboardApplet\" " +
-			"type=\"application/x-java-applet\" height=\"387\" width=\"482\">" +
-			"<param name=\"mayscript\" value=\"yes\">" +
-			"<param name=\"scriptable\" value=\"true\">" +
-	        "<param name=\"codebase\" value=\"resources/\">" +
-	        "<param name=\"code\" value=\"KeyboardApplet.class\">" +
-	        "<!--  <param name=\"archive\" value=\"KeyboardApplet.jar\"> -->" +
-	        "Please accept the Java Applet or install JRE 6 at least." +
-	        "</object>");
-	    applet.setHTML(HTML5Applet);
-	    container.add(applet);
 
-	    HTML focusButton = new HTML();
-		focusButton.setHTML("<button " +
-				"onClick=\"startFocus('KeyboardApplet')\">" +
-				"Permanent focus</button>");
-	    container.add(focusButton);
-*/
 		container.addStyleName("container");
 
 		RootPanel.get("registerContent").add(container);
@@ -264,41 +340,207 @@ public class KeyDyn implements EntryPoint {
 					registrationService.registerUser(loginUser.getText(), 
 							emailUser.getText(), age, gender, 
 							countryList.getValue(
-									countryList.getSelectedIndex()), 
+									countryList.getSelectedIndex()),
+							// TODO : computerExperience, computerUsage
 							/*computerExperience, computerUsage*/1, 1,
 							new AsyncCallback<Boolean>() {
-								@Override
-		                        public void onFailure(Throwable caught) {
-									System.out.println("FAILURE");
-		                        }
-		                        @Override
-		                        public void onSuccess(Boolean registered) {
-		                        	System.out.println("SUCCESS");
-		                        	// TODO : Gérer le retour
-		                        	if (registered)
-		                        		// TODO : bien inscrit
-		                        		loginUser.setText("OKKKKK.serverOk");
-		                        	else
-		                        		// TODO : highlight les problèmes
-		                        		loginUser.setText("FAIL.serverFAIL");
-		                        }
-							});
+						@Override
+                        public void onFailure(Throwable caught) {
+							System.out.println("FAILURE");
+                        }
+                        @Override
+                        public void onSuccess(Boolean registered) {
+                        	System.out.println("SUCCESS");
+                        	// TODO : Gérer le retour
+                        	if (registered)
+                        		// TODO : bien inscrit
+                        		loginUser.setText("OKKKKK.serverOk");
+                        	else
+                        		// TODO : highlight les problèmes
+                        		loginUser.setText("FAIL.serverFAIL");
+                        }
+					});
 				
 				} catch (NumberFormatException e) {
 					// TODO : l'âge n'est pas un entier
 				}
 			}
 		});
-	};
+		
+		homeButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				loadHomePage();
+			}
+		});
+	}
 
-	public static void appletCallback(String msg) {
-	    Label test = new Label(msg);
-		container.add(test);
-	};
+	static boolean firstAdd = true;
+	static int[] pressedSum;
+	static int[] releasedSum;
+	static int[] pressedMeans;
+	static int[] releasedMeans;
+	static Label pressedMeansLabel = new Label("pressedMeans");
+	static Label releasedMeansLabel = new Label("releasedMeans");
+	static int nb = 0;
+	private void loadUserPage (String login) {
+		firstAdd = true;
+		RootPanel.get("registerContent").clear();
+		
+		VerticalPanel container = new VerticalPanel();
+		container.addStyleName("container");
+		
+		HorizontalPanel header = new HorizontalPanel();
+		Button logoutButton = new Button("Logout");
+		// TODO : delete session
+		Button aboutButton = new Button("About");
+		header.setSpacing(5);
+		header.add(logoutButton);
+		header.add(aboutButton);
+		container.add(header);
+		
+		Label l = new Label("Welcome to your member area " + login + "!");
+		container.add(l);
+		
+		HTML applet = new HTML();
+		// TODO hide applet ?
+		String HTML5Applet = new String("<object id=\"KeyboardApplet\" " +
+			"type=\"application/x-java-applet\" height=\"387\" width=\"482\">" +
+			"<param name=\"mayscript\" value=\"yes\">" +
+			"<param name=\"scriptable\" value=\"true\">" +
+	        "<param name=\"codebase\" value=\"resources/\">" +
+	        "<param name=\"code\" value=\"KeyboardApplet.class\">" +
+	        "<!--  <param name=\"archive\" value=\"KeyboardApplet.jar\"> -->" +
+	        "Please accept the Java Applet or install JRE 6 at least." +
+	        // TODO : Message donnant les liens pour télécharger Java (JVM)
+	        "</object>");
+	    applet.setHTML(HTML5Applet);
+	    container.add(applet);
 
+	    // TODO : l'applet doit libérer le focus une fois terminé
+	    HTML focusButton = new HTML();
+		focusButton.setHTML("<button " +
+				"onClick=\"startFocus('KeyboardApplet')\">" +
+				"Permanent focus</button>");
+	    container.add(focusButton);
+	    
+	    kdDataPanel = new VerticalPanel();
+	    container.add(kdDataPanel);
+
+	    transmissionService.getKDData(new AsyncCallback<String[][]>() {
+			@Override
+            public void onFailure(Throwable caught) {
+				System.out.println("FAILURE");
+            }
+            @Override
+            public void onSuccess(String[][] kdData) {
+            	System.out.println("SUCCESS");
+            	// TODO : noter les anciennes data et tracer le graphique (kdData)
+            }
+		});
+	    
+		RootPanel.get("registerContent").add(container);
+		
+		logoutButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				authenticationService.logout(new AsyncCallback<Void>() {
+					@Override
+                    public void onFailure(Throwable caught) {
+						System.out.println("FAILURE");
+                    }
+                    @Override
+                    public void onSuccess(Void result) {
+                    	System.out.println("SUCCESS");
+                    	loadHomePage();
+                    }
+				});
+			}
+		});
+	}
+	
 	public native void JSNI() /*-{
-    $wnd.appletCallback = function(x) {
-        @fr.vhat.keydyn.client.KeyDyn::appletCallback(Ljava/lang/String;)(x);
+    	$wnd.appletCallback = function(x) {
+           @fr.vhat.keydyn.client.KeyDyn::appletCallback(Ljava/lang/String;)(x);
     	}
     }-*/;
+
+	public static void appletCallback(final String kdData) {
+		System.out.println("appletCallback");
+		System.out.println(kdData);
+		// TODO : send to the data store
+		String[] data = kdData.split(";");
+		transmissionService.saveKDData(data[0], data[1], data[2],
+				new AsyncCallback<Boolean>() {
+			@Override
+            public void onFailure(Throwable caught) {
+				System.out.println("FAILURE");
+            }
+            @Override
+            public void onSuccess(Boolean KDDataSaved) {
+            	System.out.println("SUCCESS");
+            	if (KDDataSaved) {
+            		addKDData(kdData);
+            		// TODO : show user that 1 KDData saved, 1 less to train
+            	}
+            	else {
+            		// TODO : show user that a problem did happen
+            	}
+            }
+		});
+	};
+
+	/**
+	 * Display information about KDData saved in the data store : data,
+	 * statistics and chart
+	 * @param kdData : a string retrieved from the Java applet
+	 */
+	private static void addKDData (String kdData) {
+		String[] splitString = kdData.split(";");
+		nb++;
+		if (firstAdd) {
+			System.out.println("firstAdd");
+			kdDataPanel.add(pressedMeansLabel);
+			kdDataPanel.add(releasedMeansLabel);
+			pressedSum = new int[splitString[0].length()];
+			releasedSum = new int[splitString[0].length()];
+			pressedMeans = new int[splitString[0].length()];
+			releasedMeans = new int[splitString[0].length()];
+			Label dataLabelPassword = new Label(splitString[0]);
+			kdDataPanel.add(dataLabelPassword);
+			firstAdd = false;
+		}
+		Label dataLabelPress = new Label(splitString[1]);
+		Label dataLabelRelease = new Label(splitString[2]);
+		kdDataPanel.add(dataLabelPress);
+		kdDataPanel.add(dataLabelRelease);
+		String[] pressedTimes = splitString[1].substring(1, splitString[1].length()-2).split(",");
+		int t = 0;
+		String tempStr = "[";
+		for (int i = 0 ; i < pressedTimes.length ; ++i) {
+			t = Integer.parseInt(pressedTimes[i].trim());
+			pressedSum[i] += t;
+			pressedMeans[i] = pressedSum[i]/nb;
+			tempStr += pressedMeans[i];
+			if (i+1 != pressedTimes.length) {
+				tempStr += ", ";
+			}
+		}
+		tempStr += "]";
+		pressedMeansLabel.setText(tempStr);
+		tempStr = "[";
+		String[] releasedTimes = splitString[2].substring(1, splitString[2].length()-2).split(",");
+		for (int i = 0 ; i < pressedTimes.length ; ++i) {
+			t = Integer.parseInt(releasedTimes[i].trim());
+			releasedSum[i] += t;
+			releasedMeans[i] = releasedSum[i]/nb;
+			tempStr += releasedMeans[i];
+			if (i+1 != pressedTimes.length) {
+				tempStr += ", ";
+			}
+		}
+		tempStr += "]";
+		releasedMeansLabel.setText(tempStr);
+	}
+
 }

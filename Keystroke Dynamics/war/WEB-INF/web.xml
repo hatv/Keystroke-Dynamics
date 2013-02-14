@@ -15,6 +15,26 @@
     <url-pattern>/keydyn/registration</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <servlet-name>authenticationServlet</servlet-name>
+    <servlet-class>fr.vhat.keydyn.server.AuthenticationServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>authenticationServlet</servlet-name>
+    <url-pattern>/keydyn/authentication</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>transmissionServlet</servlet-name>
+    <servlet-class>fr.vhat.keydyn.server.DataTransmissionServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>transmissionServlet</servlet-name>
+    <url-pattern>/keydyn/transmission</url-pattern>
+  </servlet-mapping>
+  
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>

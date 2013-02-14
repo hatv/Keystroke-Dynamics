@@ -17,10 +17,11 @@ h1 {
 	font-size: 60pt;
 }
 .container {
-	border: solid 1px;
-	width: 300px;
+	background-color: silver;
+	border-radius: 20px;
 	margin-left: auto;
 	margin-right: auto;
+	padding: 10px 20px;
 }
 .errorText {
 	color: red;
