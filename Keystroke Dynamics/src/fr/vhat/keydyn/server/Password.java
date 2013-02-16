@@ -8,11 +8,12 @@ public class Password {
 		String[] animals = {"ecureuil", "renard", "elephant", "serpent", 
 				"albatros", "leopard", "caribou", "saumon", "guepard",
 				"mouton", "hamster", "kangourou", "macaque", "herisson",
-				"cloporte", "papillon", "etalon", "chevreuil", "pingouin"};
-		String[] features = {"sympathique", "bondissant", "joueur",
+				"cloporte", "papillon", "etalon", "chevreuil", "pingouin",
+				"saumon", "taureau", "pigeon"};
+		String[] features = {"sympathique", "bondissant", "arrogant",
 				"rugissant", "effrayant", "etrange", "sournois", "capricieux",
 				"sauvage", "docile", "habile", "malicieux", "diabolique",
-				"joyeux", "impatient", "insensible"};
+				"joyeux", "impatient", "insensible", "tenebreux"};
 		Random randomGenerator = new Random();
 		int randomIndexAnimals = randomGenerator.nextInt(animals.length);
 		int randomIndexFeatures = randomGenerator.nextInt(features.length);
