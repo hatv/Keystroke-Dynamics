@@ -35,10 +35,11 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 						"password is <" + u.getPassword() + ">.");
 				return false;
 			}
-		} else
+		} else {
 			log.info("User <" + login + "> tried to connect but doesn't exist" +
 					"in the data store.");
 			return false;
+		}
 	}
 
 	@Override
@@ -54,5 +55,14 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
         String login = (String)getThreadLocalRequest().getSession()
         		.getAttribute("login");
     	return login;
+    }
+
+    public boolean checkLoginAvailability(String login) {
+    	User u = ObjectifyService.ofy().load().type(User.class)
+				.filter("login", login).first().get();
+    	if (u != null)
+    		return false;
+    	else
+    		return true;
     }
 }

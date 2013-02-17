@@ -1,5 +1,5 @@
 package fr.vhat.keydyn.shared;
-
+// TODO:Implement
 /**
  * <p>
  * FieldVerifier validates that the name the user enters is valid.
@@ -23,10 +23,26 @@ package fr.vhat.keydyn.shared;
 public class FieldVerifier {
 
 	public static boolean isValidLogin(String login) {
-		if (!login.matches("^[a-z]{5,13}$")) {
-			return false;
+		if (login.matches("^[a-z]{5,13}$")) {
+			return true;
 		}
 		else
+			return false;
+	}
+
+	public static boolean isValidEmail(String email) {
+		if (email.matches("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*" +
+				"+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z" +
+				"0-9](?:[a-z0-9-]*[a-z0-9])?$")) {
 			return true;
+		} else
+			return false;
+	}
+
+	public static boolean isValidAge(String age) {
+		if (age.matches("^[0-9]{1,2}$"))
+			return true;
+		else
+			return false;
 	}
 }

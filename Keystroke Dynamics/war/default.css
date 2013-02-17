@@ -1,7 +1,15 @@
-/** Add css rules here for your application. */
-
-
-/** Example rules used by the template application (remove for your app) */
+.testAlign {
+    vertical-align: middle;	
+}
+#errors {
+	color: red;
+}
+.success {
+	color: green;
+}
+.failure {
+	color: red;
+}
 h1 {
 	font-size: 3em;
 	font-weight: bold;

@@ -2,7 +2,7 @@ package fr.vhat.keydyn.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import fr.vhat.keydyn.client.DataTransmissionService;
-import fr.vhat.keydyn.client.entities.KDData;
+import fr.vhat.keydyn.client.entities.KDPassword;
 import fr.vhat.keydyn.client.entities.User;
 import com.googlecode.objectify.ObjectifyService;
 
@@ -19,7 +19,7 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 	
 	static {
 		ObjectifyService.register(User.class);
-		ObjectifyService.register(KDData.class);
+		ObjectifyService.register(KDPassword.class);
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 				if (Password.check(password, hashedPassword)) {
 					// KDData can be saved in the data store
 					Date typingDate = new Date();
-			        KDData kdData = new KDData(password, pressTimes,
+			        KDPassword kdData = new KDPassword(password, pressTimes,
 			        		releaseTimes, typingDate);
 			        u.addKDDataKey(
 			        		ObjectifyService.ofy().save().entity(kdData).now());
@@ -52,12 +52,12 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 					return false;
 				}
 			} else {
-				log.info("User <" + sessionLogin + "> tried to save new data " +
-						"but this user doesn't exist.");
+				log.warning("User <" + sessionLogin + "> tried to save new " +
+						"data but this user doesn't exist.");
 				return false;
 			}
 		} else {
-			log.info("An user tried to save new data but was not logged.");
+			log.warning("An user tried to save new data but was not logged.");
 			return false;
 		}
 	}
@@ -76,7 +76,7 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 				kdDataSize = u.getKDDataSize();
 				String[][] kdData = new String[kdDataSize][3];
 				String[] tempStr = new String[3];
-				KDData tempKDData;
+				KDPassword tempKDData;
 				for (int i = 0 ; i < kdDataSize ; ++i) {
 					tempKDData = u.getKDData(i);
 					tempStr[0] = tempKDData.getWord();

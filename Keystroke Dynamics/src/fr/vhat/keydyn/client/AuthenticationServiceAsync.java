@@ -8,4 +8,5 @@ public interface AuthenticationServiceAsync {
 					throws IllegalArgumentException;
 	void logout(AsyncCallback<Void> callback);
 	void validateSession(AsyncCallback<String> callback);
+	void checkLoginAvailability(String login, AsyncCallback<Boolean> callback);
 }

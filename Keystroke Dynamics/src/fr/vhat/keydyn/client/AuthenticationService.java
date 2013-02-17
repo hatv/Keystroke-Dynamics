@@ -9,4 +9,5 @@ public interface AuthenticationService extends RemoteService {
 					throws IllegalArgumentException;
 	void logout();
 	String validateSession();
+	boolean checkLoginAvailability(String login);
 }

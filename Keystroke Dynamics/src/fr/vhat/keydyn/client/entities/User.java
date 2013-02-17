@@ -5,12 +5,14 @@ import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Describe the User entity in order to be used by Objectify.
+ */
 @SuppressWarnings("serial")
 @Entity
 public class User implements Serializable {
@@ -27,11 +29,24 @@ public class User implements Serializable {
 	int computerExperience;
 	int computerUsage;
 	Date registrationDate;
-	List<Key<KDData>> KDDataKeys = new ArrayList<Key<KDData>>();
+	List<Key<KDPassword>> KDDataKeys = new ArrayList<Key<KDPassword>>();
 
 	@SuppressWarnings("unused")
 	private User() {}
 	
+	/**
+	 * Constructor.
+	 * @param login Login.
+	 * @param password Password.
+	 * @param hashedPassword Hashed password to be stored in the data store.
+	 * @param email E-mail.
+	 * @param age Age.
+	 * @param gender Gender among "Male" and "Female".
+	 * @param country Country.
+	 * @param computerExperience Computer experience level.
+	 * @param computerUsage Typing usage level.
+	 * @param registrationDate Registration date.
+	 */
 	public User(String login, String password, String hashedPassword,
 			String email, int age, String gender, String country,
 			int computerExperience, int computerUsage, Date registrationDate) {
@@ -50,86 +65,112 @@ public class User implements Serializable {
 	public String getLogin() {
 		return login;
 	}
+
 	public void setLogin(String login) {
 		this.login = login;
 	}
+
 	public String getEmail() {
 		return email;
 	}
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
 	public int getAge() {
 		return age;
 	}
+
 	public void setAge(int age) {
 		this.age = age;
 	}
+
 	public String getGender() {
 		return gender;
 	}
+
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
+
 	public String getCountry() {
 		return country;
 	}
+
 	public void setCountry(String country) {
 		this.country = country;
 	}
+
 	public int getComputerExperience() {
 		return computerExperience;
 	}
+
 	public void setComputerExperience(int computerExperience2) {
 		this.computerExperience = computerExperience2;
 	}
+
 	public int getComputerUsage() {
 		return computerUsage;
 	}
+
 	public void setComputerUsage(int computerUsage) {
 		this.computerUsage = computerUsage;
 	}
+
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
+
 	public String getPassword() {
 		return password;
 	}
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
 	public String getHashedPassword() {
 		return hashedPassword;
 	}
+
 	public void setHashedPassword(String hashedPassword) {
 		this.hashedPassword = hashedPassword;
 	}
+
 	public Date getRegistrationDate() {
 		return registrationDate;
 	}
+
 	public void setRegistrationDate(Date registrationDate) {
 		this.registrationDate = registrationDate;
 	}
-	public Key<KDData> getKDDataKey(int index) {
+
+	public Key<KDPassword> getKDDataKey(int index) {
 		return KDDataKeys.get(index);
 	}
-	public KDData getKDData(int index) {
+
+	public KDPassword getKDData(int index) {
 		return ObjectifyService.ofy().load().key(getKDDataKey(index)).get();
 	}
-	public List<KDData> getKDDataList() {
-		List<KDData> l = new ArrayList<KDData>();
+
+	public List<KDPassword> getKDDataList() {
+		List<KDPassword> l = new ArrayList<KDPassword>();
 		for (int i = 0 ; i < getKDDataSize() ; ++i) {
 			l.add(getKDData(i));
 		}
 		return l;
 	}
+
 	public int getKDDataSize() {
 		return KDDataKeys.size();
 	}
-	public void addKDDataKey(Key<KDData> kdDataKey) {
+
+	public void addKDDataKey(Key<KDPassword> kdDataKey) {
 		KDDataKeys.add(kdDataKey);
 	}
 }
