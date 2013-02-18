@@ -8,7 +8,6 @@ import com.googlecode.objectify.ObjectifyService;
 import java.util.Date;
 import java.util.logging.Logger;
 
-
 @SuppressWarnings("serial")
 public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 		DataTransmissionService {
@@ -35,6 +34,7 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 			if (u != null) {
 				String hashedPassword = u.getHashedPassword();
 				if (Password.check(password, hashedPassword)) {
+/*
 					// KDData can be saved in the data store
 					Date typingDate = new Date();
 			        KDPassword kdData = new KDPassword(password, pressTimes,
@@ -43,8 +43,9 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 			        		ObjectifyService.ofy().save().entity(kdData).now());
 			        ObjectifyService.ofy().save().entity(u).now();
 			        log.info("User <" + sessionLogin + "> : new data saved.");
+*/
 					// Following lines for test 
-					/*
+					//*
 					for (int i=0 ; i < 1000 ; ++i) {
 						u = ObjectifyService.ofy().load().type(User.class)
 								.filter("login", "alexou"+i).first().get();//sessionLogin
@@ -57,7 +58,7 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 					        ObjectifyService.ofy().save().entity(u).now();
 					        log.info("User <" + sessionLogin + "> : new data saved.");
 						}
-					}*/
+					}//*/
 					/*
 					u = ObjectifyService.ofy().load().type(User.class)
 								.filter("login", "alexou37").first().get();
@@ -83,9 +84,8 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 		}
 	}
 
-
 	@Override
-	public String[][] getKDData() {
+	public String[][] getKDData() {/*
 		// Check whether an user is logged or not
 		int kdDataSize;
 		String sessionLogin = (String)getThreadLocalRequest().getSession()
@@ -114,6 +114,6 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 		} else {
 			log.info("An user tried to get KD data but was not logged.");
 			return null;
-		}
+		}*/return null;
 	}
 }

@@ -16,24 +16,29 @@ import java.util.List;
 @Entity
 public class User implements Serializable {
 	@Id
-	Long id;
+	private Long id;
 	@Index
-	String login;
-	String password;
-	String hashedPassword;
-	String email;
+	private String login;
+	private String password;
+	private String hashedPassword;
+	private String email;
 	@Index
-	int age;
+	private int age;
 	@Index
-	String gender;
+	private String gender;
 	@Index
-	String country;
+	private String country;
 	@Index
-	int computerExperience;
+	private int computerExperience;
 	@Index
-	int typingUsage;
-	Date registrationDate;
-	List<Key<KDPassword>> KDDataKeys = new ArrayList<Key<KDPassword>>();
+	private int typingUsage;
+	private Date registrationDate;
+	private List<Key<KDPassword>> KDDataKeys = new ArrayList<Key<KDPassword>>();
+	// Enrollment
+	@Index
+	private int enrollmentStep; // from 0 (no data saved) to 5 (more than 50 data saved)
+	private Date lastStepDate;
+	private Date lastMailSentDate;
 
 	@SuppressWarnings("unused")
 	private User() {}
@@ -172,5 +177,29 @@ public class User implements Serializable {
 
 	public void setKDDataKeys(List<Key<KDPassword>> kDDataKeys) {
 		KDDataKeys = kDDataKeys;
+	}
+
+	public int getEnrollmentStep() {
+		return enrollmentStep;
+	}
+
+	public void setEnrollmentStep(int enrollmentStep) {
+		this.enrollmentStep = enrollmentStep;
+	}
+
+	public Date getLastStepDate() {
+		return lastStepDate;
+	}
+
+	public void setLastStepDate(Date lastStepDate) {
+		this.lastStepDate = lastStepDate;
+	}
+
+	public Date getLastMailSentDate() {
+		return lastMailSentDate;
+	}
+
+	public void setLastMailSentDate(Date lastMailSentDate) {
+		this.lastMailSentDate = lastMailSentDate;
 	}
 }

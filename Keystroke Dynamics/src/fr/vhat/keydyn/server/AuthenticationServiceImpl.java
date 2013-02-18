@@ -27,6 +27,7 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 			if (Password.check(password, hashedPassword)) {
 				createSession(login);
 				log.info("User <" + login + "> succeed to connect.");
+				Mail.sendMail("victor.hatinguais@gmail.com", "vh7utc@gmail.com", "Mr. User", "victor.hatinguais@gmail.com", "Test", "Application Keystroke Dynamics");
 				return true;
 			} else {
 				// TODO : remove the plain text passwords from the log  
@@ -52,10 +53,11 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
     }
 
     public String validateSession() {
-    	log.info("Validate session");
         String login = (String)getThreadLocalRequest().getSession()
         		.getAttribute("login");
-        log.info("Session validated for login: <" + login + ">");
+        // TODO: Check if login exists in DB and ?control a hash sequence?
+        if (login != null)
+        	log.fine("Session validated for login: <" + login + ">");
     	return login;
     }
 
