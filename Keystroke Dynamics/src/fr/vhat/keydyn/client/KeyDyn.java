@@ -18,6 +18,7 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -97,6 +98,7 @@ public class KeyDyn implements EntryPoint {
 					loadHomePage();
 			}
 		});
+		loadHomePage();
 	};
 
 	/**
@@ -108,6 +110,7 @@ public class KeyDyn implements EntryPoint {
 		RootPanel.get("content").clear();
 
 		VerticalPanel container = new VerticalPanel();
+		container.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		HorizontalPanel header = new HorizontalPanel();
 		Button registrationButton = new Button("Registration");
 		Button aboutButton = new Button("About");
@@ -223,6 +226,7 @@ public class KeyDyn implements EntryPoint {
 	private void loadAboutPage () {
 		RootPanel.get("content").clear();
 		VerticalPanel container = new VerticalPanel();
+		container.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		container.addStyleName("container");
 
 		HorizontalPanel buttonsPanel = new HorizontalPanel();
@@ -268,6 +272,7 @@ public class KeyDyn implements EntryPoint {
 		RootPanel.get("content").clear();
 		
 		VerticalPanel container = new VerticalPanel();
+		container.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		final TextBox loginUser;
 		final TextBox emailUser;
 		final TextBox ageUser;
@@ -416,8 +421,6 @@ public class KeyDyn implements EntryPoint {
 
 		signUpButton = new Button("Sign up");
 		container.add(signUpButton);
-		// TODO : when button pressed, check if the textboxes do not contain
-		// some error texts, if they do, highlight them
 
 		container.addStyleName("container");
 
@@ -679,28 +682,36 @@ public class KeyDyn implements EntryPoint {
 		signUpButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO : utiliser FieldVerifier avant d'envoyer la sauce
-				try {
-					int age = Integer.parseInt(ageUser.getText());
-					String gender = "Undefined";
-					if (genderUserMale.getValue() &&
-							!genderUserFemale.getValue()) {
-						gender = "Male";
-					} else if (!genderUserMale.getValue() &&
-							genderUserFemale.getValue()) {
-						gender = "Female";
-					} else
-						gender = "Undefined";
-					registrationService.registerUser(loginUser.getText(), 
-							emailUser.getText(), age, gender, 
-							countryList.getValue(
-									countryList.getSelectedIndex()),
-							// TODO : computerExperience, computerUsage
-							/*computerExperience, computerUsage*/1, 1,
+				String login = loginUser.getText();
+				String email = emailUser.getText();
+				String age = ageUser.getText();
+				String gender = "Undefined";
+				if (genderUserMale.getValue() && !genderUserFemale.getValue()) {
+					gender = "Male";
+				} else if (!genderUserMale.getValue() &&
+						genderUserFemale.getValue()) {
+					gender = "Female";
+				}
+				String country =
+						countryList.getValue(countryList.getSelectedIndex());
+				int experienceIndex = experienceList.getSelectedIndex();
+				int usageIndex = usageList.getSelectedIndex();
+				if (FieldVerifier.isValidLogin(login)
+						&& FieldVerifier.isValidEmail(email)
+						&& FieldVerifier.isValidAge(age)
+						&& FieldVerifier.isValidGender(gender)
+						&& FieldVerifier.isValidCountry(country)
+						&& FieldVerifier.isValidExperience(
+								experienceList.getValue(experienceIndex))
+						&& FieldVerifier.isValidUsage(
+								usageList.getValue(usageIndex))) {
+					int ageValue = Integer.parseInt(age);
+					registrationService.registerUser(login, email, ageValue,
+							gender, country, experienceIndex, usageIndex,
 							new AsyncCallback<Boolean>() {
 						@Override
                         public void onFailure(Throwable caught) {
-							System.out.println("FAILURE");
+							displayErrorMessage("SignUp", caught.getMessage());
                         }
                         @Override
                         public void onSuccess(Boolean registered) {
@@ -714,9 +725,9 @@ public class KeyDyn implements EntryPoint {
                         		loginUser.setText("FAIL.serverFAIL");
                         }
 					});
-				
-				} catch (NumberFormatException e) {
-					// TODO : l'âge n'est pas un entier
+				} else {
+					System.out.println("PROBLEME");
+					// TODO: highlight les champs problématiques
 				}
 			}
 		});

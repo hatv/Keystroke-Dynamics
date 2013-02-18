@@ -29,7 +29,7 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 				log.info("User <" + login + "> succeed to connect.");
 				return true;
 			} else {
-				// TODO : remove the plaintext passwords from the log  
+				// TODO : remove the plain text passwords from the log  
 				log.info("User <" + login + "> tried to connect with the " +
 						"password <" + password + "> which is wrong. His real" +
 						"password is <" + u.getPassword() + ">.");
@@ -52,8 +52,10 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
     }
 
     public String validateSession() {
+    	log.info("Validate session");
         String login = (String)getThreadLocalRequest().getSession()
         		.getAttribute("login");
+        log.info("Session validated for login: <" + login + ">");
     	return login;
     }
 

@@ -5,7 +5,6 @@ import fr.vhat.keydyn.client.DataTransmissionService;
 import fr.vhat.keydyn.client.entities.KDPassword;
 import fr.vhat.keydyn.client.entities.User;
 import com.googlecode.objectify.ObjectifyService;
-
 import java.util.Date;
 import java.util.logging.Logger;
 
@@ -44,6 +43,28 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 			        		ObjectifyService.ofy().save().entity(kdData).now());
 			        ObjectifyService.ofy().save().entity(u).now();
 			        log.info("User <" + sessionLogin + "> : new data saved.");
+					// Following lines for test 
+					/*
+					for (int i=0 ; i < 1000 ; ++i) {
+						u = ObjectifyService.ofy().load().type(User.class)
+								.filter("login", "alexou"+i).first().get();//sessionLogin
+						for (int j=0 ; j < 500 ; ++j) {
+							Date typingDate = new Date();
+					        KDPassword kdData = new KDPassword(password, pressTimes,
+					        		releaseTimes, typingDate);
+					        u.addKDDataKey(
+					        		ObjectifyService.ofy().save().entity(kdData).now());
+					        ObjectifyService.ofy().save().entity(u).now();
+					        log.info("User <" + sessionLogin + "> : new data saved.");
+						}
+					}*/
+					/*
+					u = ObjectifyService.ofy().load().type(User.class)
+								.filter("login", "alexou37").first().get();
+					List<KDPassword> l = u.getKDDataList();
+					for (KDPassword k : l) {
+						log.info(k.getPressTimes());
+					}*/
 					return true;
 				}
 				else {

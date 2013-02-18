@@ -1,7 +1,6 @@
 package fr.vhat.keydyn.client.entities;
 
 import com.googlecode.objectify.Key;
-import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
@@ -23,11 +22,16 @@ public class User implements Serializable {
 	String password;
 	String hashedPassword;
 	String email;
+	@Index
 	int age;
+	@Index
 	String gender;
+	@Index
 	String country;
+	@Index
 	int computerExperience;
-	int computerUsage;
+	@Index
+	int typingUsage;
 	Date registrationDate;
 	List<Key<KDPassword>> KDDataKeys = new ArrayList<Key<KDPassword>>();
 
@@ -58,7 +62,7 @@ public class User implements Serializable {
 		this.setGender(gender);
 		this.setCountry(country);
 		this.setComputerExperience(computerExperience);
-		this.setComputerUsage(computerUsage);
+		this.setTypingUsage(computerUsage);
 		this.setRegistrationDate(registrationDate);
 	}
 	
@@ -110,12 +114,12 @@ public class User implements Serializable {
 		this.computerExperience = computerExperience2;
 	}
 
-	public int getComputerUsage() {
-		return computerUsage;
+	public int getTypingUsage() {
+		return typingUsage;
 	}
 
-	public void setComputerUsage(int computerUsage) {
-		this.computerUsage = computerUsage;
+	public void setTypingUsage(int computerUsage) {
+		this.typingUsage = computerUsage;
 	}
 
 	public Long getId() {
@@ -154,23 +158,19 @@ public class User implements Serializable {
 		return KDDataKeys.get(index);
 	}
 
-	public KDPassword getKDData(int index) {
-		return ObjectifyService.ofy().load().key(getKDDataKey(index)).get();
-	}
-
-	public List<KDPassword> getKDDataList() {
-		List<KDPassword> l = new ArrayList<KDPassword>();
-		for (int i = 0 ; i < getKDDataSize() ; ++i) {
-			l.add(getKDData(i));
-		}
-		return l;
-	}
-
 	public int getKDDataSize() {
 		return KDDataKeys.size();
 	}
 
 	public void addKDDataKey(Key<KDPassword> kdDataKey) {
 		KDDataKeys.add(kdDataKey);
+	}
+
+	public List<Key<KDPassword>> getKDDataKeys() {
+		return KDDataKeys;
+	}
+
+	public void setKDDataKeys(List<Key<KDPassword>> kDDataKeys) {
+		KDDataKeys = kDDataKeys;
 	}
 }
