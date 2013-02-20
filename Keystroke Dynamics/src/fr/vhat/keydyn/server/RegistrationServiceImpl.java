@@ -22,6 +22,7 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements
 	public boolean registerUser(String login, String email, int age,
 			String gender, String country, int computerExperience,
 			int typingUsage) {
+
 		if (FieldVerifier.isValidLogin(login)
 				&& FieldVerifier.isValidEmail(email)
 				&& FieldVerifier.isValidAge(age)
@@ -29,7 +30,8 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements
 				&& FieldVerifier.isValidCountry(country)
 				&& FieldVerifier.isValidExperience(computerExperience)
 				&& FieldVerifier.isValidUsage(typingUsage)) {
-/*
+
+			// TODO : vérifier que le login est disponible
 			String password = Password.generatePassword();
 			String hashedPassword = Password.hash(password);
 			Date date = new Date();
@@ -38,24 +40,8 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements
 	        ObjectifyService.ofy().save().entity(user).now();
 			log.info("User <" + login + "> created with password <" + password
 					+ ">.");
-*/
+
 			// TODO : envoyer le mdp par mail
-			// Following line for test
-			//*
-			String tmpLogin = "";
-			for (int i = 0 ; i < 1000 ; ++i) {
-				tmpLogin = login + i;
-				String password = Password.generatePassword();
-				String hashedPassword = Password.hash(password);
-				Date date = new Date();
-		        User user = new User(tmpLogin, password, hashedPassword, email, age,
-		        		gender, country, computerExperience, typingUsage, date);
-		        ObjectifyService.ofy().save().entity(user).now();
-				log.info("User <" + login + "> created with password <" + password
-						+ ">.");
-				// TODO : envoyer le mdp par mail
-			}
-			//*/
 			return true;
 		} else
 			return false;

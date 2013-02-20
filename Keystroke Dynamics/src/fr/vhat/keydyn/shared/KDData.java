@@ -91,27 +91,27 @@ public class KDData {
 	}
 
 	/**
-	 * Get the password from a Keystroke Dynamics data string.
+	 * Get the typing times from a Keystroke Dynamics data string.
 	 * Field 0 contains pressed times, field 1 contains released times.
 	 * @param kdData Keystroke Dynamics data string.
 	 * @return Pressed times into two tables of integer.
 	 */
-	public static int[][] pressedTimes(String kdData) {
-		return pressedTimes(strings(kdData));
+	public static int[][] typingTimes(String kdData) {
+		return typingTimes(strings(kdData));
 	}
 
 	/**
-	 * Get the password from Keystroke Dynamics data strings.
+	 * Get the typing times from Keystroke Dynamics data strings.
 	 * Field 0 contains pressed times, field 1 contains released times.
 	 * @param kdData Keystroke Dynamics data strings.
 	 * @return Pressed times into two tables of integer.
 	 */
-	public static int[][] pressedTimes(String[] kdData) {
+	public static int[][] typingTimes(String[] kdData) {
 		int tmpTime;
 
 		String pressedTimesString = kdData[1];
 		String[] pressedTimesStrings =
-				pressedTimesString.substring(1, pressedTimesString.length() - 2)
+				pressedTimesString.substring(1, pressedTimesString.length() - 1)
 				.split(",");
 		int[] pressedTimes = new int[pressedTimesStrings.length];
 		for (int i = 0 ; i < pressedTimesStrings.length ; ++i) {
@@ -133,5 +133,21 @@ public class KDData {
 		result[1] = releasedTimes;
 
 		return result;
+	}
+
+	/**
+	 * Get a kind of typing times (pressed or released) from a string.
+	 * @param typingTime String of pressed or released times.
+	 * @return Pressed or released times table.
+	 */
+	public static int[] typingTime(String typingTime) {
+		String[] typedTimeStrings =
+				typingTime.substring(1, typingTime.length() - 1).split(",");
+		int characters = typedTimeStrings.length;
+		int[] typingTimeTable = new int[characters];
+		for (int i = 0 ; i < characters ; ++i) {
+			typingTimeTable[i] = Integer.parseInt(typedTimeStrings[i].trim());
+		}
+		return typingTimeTable;
 	}
 }

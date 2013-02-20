@@ -18,6 +18,8 @@ public class User implements Serializable {
 	@Id
 	private Long id;
 	@Index
+	private boolean isActive;
+	@Index
 	private String login;
 	private String password;
 	private String hashedPassword;
@@ -36,7 +38,7 @@ public class User implements Serializable {
 	private List<Key<KDPassword>> KDDataKeys = new ArrayList<Key<KDPassword>>();
 	// Enrollment
 	@Index
-	private int enrollmentStep; // from 0 (no data saved) to 5 (more than 50 data saved)
+	private int enrollmentStep; // from 0 (no data) to 3 (more than 30 data)
 	private Date lastStepDate;
 	private Date lastMailSentDate;
 
@@ -59,6 +61,7 @@ public class User implements Serializable {
 	public User(String login, String password, String hashedPassword,
 			String email, int age, String gender, String country,
 			int computerExperience, int computerUsage, Date registrationDate) {
+		this.setActive(true);
 		this.setLogin(login);
 		this.setPassword(password);
 		this.setHashedPassword(hashedPassword);
@@ -201,5 +204,13 @@ public class User implements Serializable {
 
 	public void setLastMailSentDate(Date lastMailSentDate) {
 		this.lastMailSentDate = lastMailSentDate;
+	}
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
 	}
 }

@@ -2,6 +2,8 @@ package fr.vhat.keydyn.client.entities;
 
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -13,7 +15,11 @@ import java.util.Date;
 public class KDPassword implements Serializable {
 	@Id
 	Long id;
+	@Index
 	String word;
+	int length;
+	@Index
+	String author;
 	String pressTimes;
 	String releaseTimes;
 	Date typingDate;
@@ -28,9 +34,10 @@ public class KDPassword implements Serializable {
 	 * @param releaseTimes Released times.
 	 * @param typingDate Typing date.
 	 */
-	public KDPassword(String word, String pressTimes, String releaseTimes,
-			Date typingDate) {
+	public KDPassword(String word, String author, String pressTimes,
+			String releaseTimes, Date typingDate) {
 		this.setWord(word);
+		this.setAuthor(author);
 		this.setPressTimes(pressTimes);
 		this.setReleaseTimes(releaseTimes);
 		this.setTypingDate(typingDate);
@@ -50,6 +57,23 @@ public class KDPassword implements Serializable {
 
 	public void setWord(String word) {
 		this.word = word;
+		this.length = word.length();
+	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
 	}
 
 	public String getPressTimes() {

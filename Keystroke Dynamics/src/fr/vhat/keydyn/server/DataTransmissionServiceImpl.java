@@ -4,8 +4,13 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import fr.vhat.keydyn.client.DataTransmissionService;
 import fr.vhat.keydyn.client.entities.KDPassword;
 import fr.vhat.keydyn.client.entities.User;
+
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 @SuppressWarnings("serial")
@@ -34,38 +39,14 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 			if (u != null) {
 				String hashedPassword = u.getHashedPassword();
 				if (Password.check(password, hashedPassword)) {
-/*
 					// KDData can be saved in the data store
 					Date typingDate = new Date();
-			        KDPassword kdData = new KDPassword(password, pressTimes,
-			        		releaseTimes, typingDate);
+			        KDPassword kdData = new KDPassword(password, sessionLogin,
+			        		pressTimes,	releaseTimes, typingDate);
 			        u.addKDDataKey(
 			        		ObjectifyService.ofy().save().entity(kdData).now());
 			        ObjectifyService.ofy().save().entity(u).now();
 			        log.info("User <" + sessionLogin + "> : new data saved.");
-*/
-					// Following lines for test 
-					//*
-					for (int i=0 ; i < 1000 ; ++i) {
-						u = ObjectifyService.ofy().load().type(User.class)
-								.filter("login", "alexou"+i).first().get();//sessionLogin
-						for (int j=0 ; j < 500 ; ++j) {
-							Date typingDate = new Date();
-					        KDPassword kdData = new KDPassword(password, pressTimes,
-					        		releaseTimes, typingDate);
-					        u.addKDDataKey(
-					        		ObjectifyService.ofy().save().entity(kdData).now());
-					        ObjectifyService.ofy().save().entity(u).now();
-					        log.info("User <" + sessionLogin + "> : new data saved.");
-						}
-					}//*/
-					/*
-					u = ObjectifyService.ofy().load().type(User.class)
-								.filter("login", "alexou37").first().get();
-					List<KDPassword> l = u.getKDDataList();
-					for (KDPassword k : l) {
-						log.info(k.getPressTimes());
-					}*/
 					return true;
 				}
 				else {
@@ -84,36 +65,35 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 		}
 	}
 
+	/**
+	 * Return a table of two tables (pressed and released data) of n tables (one
+	 * for each KDData stored in the data store) of m integers (where m is the 
+	 * number of characters in the password).
+	 */
 	@Override
-	public String[][] getKDData() {/*
-		// Check whether an user is logged or not
-		int kdDataSize;
+	public List<KDPassword> getKDData() {
 		String sessionLogin = (String)getThreadLocalRequest().getSession()
         		.getAttribute("login");
 		if (sessionLogin != null) {
 			User u = ObjectifyService.ofy().load().type(User.class)
 					.filter("login", sessionLogin).first().get();
 			if (u != null) {
-				kdDataSize = u.getKDDataSize();
-				String[][] kdData = new String[kdDataSize][3];
-				String[] tempStr = new String[3];
-				KDPassword tempKDData;
-				for (int i = 0 ; i < kdDataSize ; ++i) {
-					tempKDData = u.getKDData(i);
-					tempStr[0] = tempKDData.getWord();
-					tempStr[1] = tempKDData.getPressTimes();
-					tempStr[2] = tempKDData.getReleaseTimes();
-					kdData[i] = tempStr;
+				List<Key<KDPassword>> kdDataKeys = u.getKDDataKeys();
+				List<KDPassword> kdData = new ArrayList<KDPassword>();
+				for (Key<KDPassword> kdDataKey : kdDataKeys) {
+					KDPassword kdDataElement = ObjectifyService.ofy().load()
+							.type(KDPassword.class).id(kdDataKey.getId()).get();
+					kdData.add(kdDataElement);
 				}
 				return kdData;
 			} else {
-				log.info("User <" + sessionLogin + "> tried to get KD data " +
-						"but this user doesn't exist.");
+				log.warning("User <" + sessionLogin + "> tried to get KD data" +
+						" but this user doesn't exist.");
 				return null;
 			}
 		} else {
 			log.info("An user tried to get KD data but was not logged.");
 			return null;
-		}*/return null;
+		}
 	}
 }

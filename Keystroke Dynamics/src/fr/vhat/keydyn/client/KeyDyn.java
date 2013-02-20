@@ -1,5 +1,6 @@
 package fr.vhat.keydyn.client;
 
+import java.util.List;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -18,6 +19,7 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -28,8 +30,10 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.visualization.client.VisualizationUtils;
+import com.google.gwt.visualization.client.visualizations.LineChart;
 
+import fr.vhat.keydyn.client.entities.KDPassword;
 import fr.vhat.keydyn.shared.FieldVerifier;
 import fr.vhat.keydyn.shared.KDData;
 
@@ -44,6 +48,8 @@ public class KeyDyn implements EntryPoint {
 			GWT.create(AuthenticationService.class);
 	private static DataTransmissionServiceAsync transmissionService =
 			GWT.create(DataTransmissionService.class);
+
+	static VerticalPanel chartsPanel = new VerticalPanel();
 
 	/**
 	 * Generate an error message to display to the user.
@@ -679,6 +685,9 @@ public class KeyDyn implements EntryPoint {
 			}
 		});
 
+		/**
+		 * Check the validity of the given information and register the user.
+		 */
 		signUpButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -731,7 +740,10 @@ public class KeyDyn implements EntryPoint {
 				}
 			}
 		});
-		
+
+		/**
+		 * Load home page.
+		 */
 		homeButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -739,6 +751,9 @@ public class KeyDyn implements EntryPoint {
 			}
 		});
 
+		/**
+		 * Load about page.
+		 */
 		aboutButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -758,8 +773,9 @@ public class KeyDyn implements EntryPoint {
 		//firstAdd = true;
 		RootPanel.get("content").clear();
 		
-		VerticalPanel container = new VerticalPanel();
+		final VerticalPanel container = new VerticalPanel();
 		container.addStyleName("container");
+		container.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		
 		HorizontalPanel header = new HorizontalPanel();
 		Button logoutButton = new Button("Logout");
@@ -769,17 +785,31 @@ public class KeyDyn implements EntryPoint {
 		header.add(aboutButton);
 		container.add(header);
 		
-		Label l = new Label("Welcome to your member area " + login + "!");
-		container.add(l);
-		
+		Label welcomeLabel = new Label(
+				"Welcome to your member area " + login + "!");
+		container.add(welcomeLabel);
+	
+		// TODO: Explanations on how to register: process, mails, password, data
+		HTML explanations = new HTML();
+		explanations.setHTML("Type your password and press Enter.");
+		container.add(explanations);
+
+		// TODO: A box which contain remaining passwords to enter in order to
+		// reach the next step -> retrieval with a service and update after
+		// each Enter
+
+		// TODO: A PasswordTextBox which display the password
+
+		// TODO: Erase all when pressing BACKSPACE and reset the applet
+
 		HTML applet = new HTML();
 		String installJava = "<a href=\"http://www.java.com/en/download/help" +
 				"/windows_manual_download.xml\">Install Java now.</a>";
 		String testJava = "<a href=\"http://www.java.com/en/download/" +
 				"testjava.jsp\">Test Java.</a>";
-		// TODO hide applet ?
+		// TODO hide applet + auto focus
 		String HTML5Applet = new String("<object id=\"KeyboardApplet\" " +
-			"type=\"application/x-java-applet\" height=\"387\" width=\"482\">" +
+			"type=\"application/x-java-applet\" height=\"100\" width=\"650\">" +
 			"<param name=\"mayscript\" value=\"yes\">" +
 			"<param name=\"scriptable\" value=\"true\">" +
 	        "<param name=\"codebase\" value=\"resources/\">" +
@@ -799,7 +829,7 @@ public class KeyDyn implements EntryPoint {
 				"onClick=\"startFocus('KeyboardApplet')\">" +
 				"Permanent focus</button>");
 	    container.add(focusButton);
-	    
+	    container.add(chartsPanel);
 	    //kdDataPanel = new VerticalPanel();
 	    //container.add(kdDataPanel);
 /*
@@ -815,6 +845,12 @@ public class KeyDyn implements EntryPoint {
             }
 		});
 */
+	    //final int[][] testData = {{28, 68, 134, 212}, {68, 90, 123, 340}, {124, 210, 368, 512}};
+
+		// Load the Google Visualization API which draw the line charts.
+		VisualizationUtils.loadVisualizationApi(onLoadCallback,
+				LineChart.PACKAGE);
+
 		RootPanel.get("content").add(container);
 		
 		logoutButton.addClickHandler(new ClickHandler() {
@@ -833,6 +869,52 @@ public class KeyDyn implements EntryPoint {
 			}
 		});
 	}
+	
+	// Create a callback to be called when the visualization API has been
+	// loaded. Retrieve KDData information from the data store and display
+	// them on a chart.
+	private static Runnable onLoadCallback = new Runnable() {
+		public void run() {
+			// TODO: if null, display nothing
+			transmissionService.getKDData(
+					new AsyncCallback<List<KDPassword>>() {
+						@Override
+				public void onFailure(Throwable caught) {
+					displayErrorMessage("KDDataInitialRetrieval",
+							caught.getMessage());
+				}
+				@Override
+				public void onSuccess(List<KDPassword> kdData) {
+					if (kdData != null) {
+						int kdDataNumber = kdData.size();
+						// TODO: modifier getWord.length par ;length a terme
+						int passwordLength = kdData.get(0).getWord().length();
+						int[][] pressedData =
+								new int[kdDataNumber][passwordLength];
+						int[][] releasedData =
+								new int[kdDataNumber][passwordLength];
+						for (int i = 0 ; i < kdDataNumber ; ++i) {
+							pressedData[i] = KDData.typingTime(
+									kdData.get(i).getPressTimes());
+							releasedData[i] = KDData.typingTime(
+									kdData.get(i).getReleaseTimes());
+						}
+						LineChart pressedChart =
+								MemberAreaCharts.getChart("pressed",
+										passwordLength, pressedData);
+						chartsPanel.add(pressedChart);
+						LineChart releasedChart =
+								MemberAreaCharts.getChart("released",
+										passwordLength, releasedData);
+						chartsPanel.add(releasedChart);
+					}
+					else {
+						// TODO: nothing stored in the data store
+					}
+				}
+			});
+		}
+	};
 
 	/**
 	 * Define the JavaScript Native functions to be used in the web application.
@@ -890,52 +972,7 @@ public class KeyDyn implements EntryPoint {
 	 */
 	private static void addKDData (String kdData) {
 		// TODO: implement correctly
-		/*
-		String[] splitString = kdData.split(";");
-		nb++;
-		if (firstAdd) {
-			System.out.println("firstAdd");
-			kdDataPanel.add(pressedMeansLabel);
-			kdDataPanel.add(releasedMeansLabel);
-			pressedSum = new int[splitString[0].length()];
-			releasedSum = new int[splitString[0].length()];
-			pressedMeans = new int[splitString[0].length()];
-			releasedMeans = new int[splitString[0].length()];
-			Label dataLabelPassword = new Label(splitString[0]);
-			kdDataPanel.add(dataLabelPassword);
-			firstAdd = false;
-		}
-		Label dataLabelPress = new Label(splitString[1]);
-		Label dataLabelRelease = new Label(splitString[2]);
-		kdDataPanel.add(dataLabelPress);
-		kdDataPanel.add(dataLabelRelease);
-		String[] pressedTimes = splitString[1].substring(1, splitString[1].length()-2).split(",");
-		int t = 0;
-		String tempStr = "[";
-		for (int i = 0 ; i < pressedTimes.length ; ++i) {
-			t = Integer.parseInt(pressedTimes[i].trim());
-			pressedSum[i] += t;
-			pressedMeans[i] = pressedSum[i]/nb;
-			tempStr += pressedMeans[i];
-			if (i+1 != pressedTimes.length) {
-				tempStr += ", ";
-			}
-		}
-		tempStr += "]";
-		pressedMeansLabel.setText(tempStr);
-		tempStr = "[";
-		String[] releasedTimes = splitString[2].substring(1, splitString[2].length()-2).split(",");
-		for (int i = 0 ; i < pressedTimes.length ; ++i) {
-			t = Integer.parseInt(releasedTimes[i].trim());
-			releasedSum[i] += t;
-			releasedMeans[i] = releasedSum[i]/nb;
-			tempStr += releasedMeans[i];
-			if (i+1 != pressedTimes.length) {
-				tempStr += ", ";
-			}
-		}
-		tempStr += "]";
-		releasedMeansLabel.setText(tempStr);
-		*/
+		chartsPanel.clear();
+		onLoadCallback.run();
 	}
 }
