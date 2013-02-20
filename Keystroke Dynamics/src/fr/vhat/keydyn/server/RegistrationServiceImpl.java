@@ -41,7 +41,7 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements
 			log.info("User <" + login + "> created with password <" + password
 					+ ">.");
 
-			// TODO : envoyer le mdp par mail
+			Mail.sendPasswordMail("vh7utc@gmail.com", login, password);
 			return true;
 		} else
 			return false;

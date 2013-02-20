@@ -33,11 +33,11 @@ public class Mail {
 
 	public static String sendPasswordMail(String toEmail, String toUser,
 			String password) {
-		String message = "Thanks for your registration. Your password is: " +
-			password + "\nYou can now access your member area and begin to " +
-			"train the system.";
-		return sendMail("victor.hatinguais@gmail.com", toEmail, toUser,
-				"victor.hatinguais@gmail.com",
+		String message = "Thanks for your registration " + toUser + ". Your " +
+			"password is: " + password + "\nYou can now access your member " +
+			"area and begin to train the system.";
+		return sendMail("key-dyn@victorhatinguais.fr", toEmail, toUser,
+				"key-dyn@victorhatinguais.fr",
 				"Keystroke Dynamics Registration", message);
 	}
 }
