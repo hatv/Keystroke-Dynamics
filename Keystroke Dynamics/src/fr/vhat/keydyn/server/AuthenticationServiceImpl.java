@@ -54,10 +54,20 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
     public String validateSession() {
         String login = (String)getThreadLocalRequest().getSession()
         		.getAttribute("login");
-        // TODO: Check if login exists in DB and ?control a hash sequence?
-        if (login != null)
-        	log.fine("Session validated for login: <" + login + ">");
-    	return login;
+        if (login != null) {
+        	User u = ObjectifyService.ofy().load().type(User.class)
+    				.filter("login", login).first().get();
+    		if (u != null) {
+    			log.fine("Session validated for login: <" + login + ">");
+    			return login;
+    		} else {
+    			log.info("User <" + login + "> try to validate session but " +
+    					"this user doesn't exist in the data store.");
+    			return null;
+    		}
+        } else {
+        	return login;
+        }
     }
 
     public boolean checkLoginAvailability(String login) {
