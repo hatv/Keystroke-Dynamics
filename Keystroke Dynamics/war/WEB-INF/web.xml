@@ -34,6 +34,16 @@
     <servlet-name>transmissionServlet</servlet-name>
     <url-pattern>/keydyn/transmission</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>computationServlet</servlet-name>
+    <servlet-class>fr.vhat.keydyn.server.ComputationServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>computationServlet</servlet-name>
+    <url-pattern>/keydyn/computation</url-pattern>
+  </servlet-mapping>
   
   <!-- Default page to serve -->
   <welcome-file-list>
