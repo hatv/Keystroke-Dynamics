@@ -21,9 +21,9 @@ public class MemberAreaCharts {
 		options.setWidth(700);
 		options.setHeight(300);
 		if (type.equals("released"))
-			options.setTitle("Time between two key press");
-		else if (type.equals("pressed"))
 			options.setTitle("Time between two key release");
+		else if (type.equals("pressed"))
+			options.setTitle("Time between two key press");
 		else
 			options.setTitle("Unknown type of chart");
 		return options;

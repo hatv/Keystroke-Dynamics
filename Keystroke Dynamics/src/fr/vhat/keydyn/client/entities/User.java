@@ -2,6 +2,7 @@ package fr.vhat.keydyn.client.entities;
 
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Serialize;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 import java.io.Serializable;
@@ -18,7 +19,7 @@ public class User implements Serializable {
 	@Id
 	private Long id;
 	@Index
-	private boolean isActive;
+	private boolean isActive; // Active while account is not deleted
 	@Index
 	private String login;
 	private String password;
@@ -41,6 +42,11 @@ public class User implements Serializable {
 	private int enrollmentStep; // from 0 (no data) to 3 (more than 30 data)
 	private Date lastStepDate;
 	private Date lastMailSentDate;
+	// Computation
+	@Serialize
+	private int[][] means;
+	@Serialize
+	private int[][] sd;
 
 	@SuppressWarnings("unused")
 	private User() {}
@@ -212,5 +218,25 @@ public class User implements Serializable {
 
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
+	}
+
+
+	public int[][] getMeans() {
+		return means;
+	}
+
+
+	public void setMeans(int[][] means) {
+		this.means = means;
+	}
+
+
+	public int[][] getSd() {
+		return sd;
+	}
+
+
+	public void setSd(int[][] sd) {
+		this.sd = sd;
 	}
 }

@@ -4,6 +4,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import fr.vhat.keydyn.client.DataTransmissionService;
 import fr.vhat.keydyn.client.entities.KDPassword;
 import fr.vhat.keydyn.client.entities.User;
+import fr.vhat.keydyn.shared.KDData;
+import fr.vhat.keydyn.shared.StatisticsUnit;
 
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
+import java.lang.Math;
 
 @SuppressWarnings("serial")
 public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
@@ -45,6 +48,22 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 			        		pressTimes,	releaseTimes, typingDate);
 			        u.addKDDataKey(
 			        		ObjectifyService.ofy().save().entity(kdData).now());
+			        int dataNumber = u.getKDDataSize();
+			        int[][] means = u.getMeans();
+			        int[] newKDData = KDData.typingTime(pressTimes);
+			        int[] pressedBetweenTimes = new int[password.length() - 1];
+			        for (int i = 0 ; i < pressedBetweenTimes.length ; ++i) {
+			        	pressedBetweenTimes[i] = newKDData[i+1] - newKDData[i];
+			        }
+			        if (means != null) {
+				        for (int i = 0 ; i < means[0].length ; ++i) {
+				        	means[0][i] = Math.round((dataNumber * means[0][i] + pressedBetweenTimes[i])/(float)(dataNumber + 1));
+				        }
+			        } else {
+			        	means = new int[4][];
+			        	means[0] = pressedBetweenTimes;
+			        }
+			        u.setMeans(means);
 			        ObjectifyService.ofy().save().entity(u).now();
 			        log.info("User <" + sessionLogin + "> : new data saved.");
 					return true;
@@ -93,6 +112,36 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 			}
 		} else {
 			log.info("An user tried to get KD data but was not logged.");
+			return null;
+		}
+	}
+
+	public StatisticsUnit getMeans() {
+		String sessionLogin = (String)getThreadLocalRequest().getSession()
+        		.getAttribute("login");
+		if (sessionLogin != null) {
+			User u = ObjectifyService.ofy().load().type(User.class)
+					.filter("login", sessionLogin).first().get();
+			if (u != null) {
+				int[][] means = u.getMeans();
+				if (means != null) {
+					StatisticsUnit meansUnit = new StatisticsUnit();
+					for (int i = 0 ; i < means.length ; ++i) {
+						meansUnit.set(i, means[i]);
+					}
+					return meansUnit;
+				} else {
+					log.info("No means to return to user <" + sessionLogin +
+							">.");
+					return null;
+				}
+			} else {
+				log.warning("User <" + sessionLogin + "> tried to get means " +
+						"but this user doesn't exist.");
+				return null;
+			}
+		} else {
+			log.info("An user tried to get means but was not logged.");
 			return null;
 		}
 	}

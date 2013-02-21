@@ -36,6 +36,7 @@ import com.google.gwt.visualization.client.visualizations.LineChart;
 import fr.vhat.keydyn.client.entities.KDPassword;
 import fr.vhat.keydyn.shared.FieldVerifier;
 import fr.vhat.keydyn.shared.KDData;
+import fr.vhat.keydyn.shared.StatisticsUnit;
 
 public class KeyDyn implements EntryPoint {
 
@@ -830,22 +831,6 @@ public class KeyDyn implements EntryPoint {
 				"Permanent focus</button>");
 	    container.add(focusButton);
 	    container.add(chartsPanel);
-	    //kdDataPanel = new VerticalPanel();
-	    //container.add(kdDataPanel);
-/*
-	    transmissionService.getKDData(new AsyncCallback<String[][]>() {
-			@Override
-            public void onFailure(Throwable caught) {
-				System.out.println("FAILURE");
-            }
-            @Override
-            public void onSuccess(String[][] kdData) {
-            	System.out.println("SUCCESS");
-            	// TODO : noter les anciennes data et tracer le graphique (kdData)
-            }
-		});
-*/
-	    //final int[][] testData = {{28, 68, 134, 212}, {68, 90, 123, 340}, {124, 210, 368, 512}};
 
 		// Load the Google Visualization API which draw the line charts.
 		VisualizationUtils.loadVisualizationApi(onLoadCallback,
@@ -880,33 +865,55 @@ public class KeyDyn implements EntryPoint {
 					new AsyncCallback<List<KDPassword>>() {
 						@Override
 				public void onFailure(Throwable caught) {
-					displayErrorMessage("KDDataInitialRetrieval",
-							caught.getMessage());
+					displayErrorMessage("KDDataRetrieval", caught.getMessage());
 				}
 				@Override
 				public void onSuccess(List<KDPassword> kdData) {
 					if (kdData != null) {
 						int kdDataNumber = kdData.size();
-						// TODO: modifier getWord.length par ;length a terme
-						int passwordLength = kdData.get(0).getWord().length();
-						int[][] pressedData =
-								new int[kdDataNumber][passwordLength];
-						int[][] releasedData =
-								new int[kdDataNumber][passwordLength];
-						for (int i = 0 ; i < kdDataNumber ; ++i) {
-							pressedData[i] = KDData.typingTime(
-									kdData.get(i).getPressTimes());
-							releasedData[i] = KDData.typingTime(
-									kdData.get(i).getReleaseTimes());
+						// TODO: modifier getWord.length par .length a terme
+						if (kdDataNumber > 0) {
+							int passwordLength = kdData.get(0).getLength();
+							int[][] pressedData =
+									new int[kdDataNumber][passwordLength];
+							int[][] releasedData =
+									new int[kdDataNumber][passwordLength];
+							for (int i = 0 ; i < kdDataNumber ; ++i) {
+								pressedData[i] = KDData.typingTime(
+										kdData.get(i).getPressTimes());
+								releasedData[i] = KDData.typingTime(
+										kdData.get(i).getReleaseTimes());
+							}
+							LineChart pressedChart =
+									MemberAreaCharts.getChart("pressed",
+											passwordLength, pressedData);
+							chartsPanel.add(pressedChart);
+							LineChart releasedChart =
+									MemberAreaCharts.getChart("released",
+											passwordLength, releasedData);
+							chartsPanel.add(releasedChart);
 						}
-						LineChart pressedChart =
-								MemberAreaCharts.getChart("pressed",
-										passwordLength, pressedData);
-						chartsPanel.add(pressedChart);
-						LineChart releasedChart =
-								MemberAreaCharts.getChart("released",
-										passwordLength, releasedData);
-						chartsPanel.add(releasedChart);
+					}
+					else {
+						// TODO: nothing stored in the data store
+					}
+				}
+			});
+			transmissionService.getMeans(
+					new AsyncCallback<StatisticsUnit>() {
+						@Override
+				public void onFailure(Throwable caught) {
+					displayErrorMessage("MeansRetrieval", caught.getMessage());
+				}
+				@Override
+				public void onSuccess(StatisticsUnit means) {
+					if (means != null) {
+						Label pressedMeans = new Label(
+								means.displayPressedMeans());
+						chartsPanel.insert(pressedMeans, 0);
+						//Label releasedMeans = new Label(means
+							//	.getReleasedStatistics().toString());
+						//chartsPanel.insert(releasedMeans, 2);
 					}
 					else {
 						// TODO: nothing stored in the data store
@@ -940,8 +947,7 @@ public class KeyDyn implements EntryPoint {
 				new AsyncCallback<Boolean>() {
 			@Override
             public void onFailure(Throwable caught) {
-				displayErrorMessage("InitSessionValidation",
-						caught.getMessage());
+				displayErrorMessage("SaveNewKDData", caught.getMessage());
             }
             @Override
             public void onSuccess(Boolean KDDataSaved) {
