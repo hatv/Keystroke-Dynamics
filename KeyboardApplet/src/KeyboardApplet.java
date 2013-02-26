@@ -15,7 +15,6 @@ import netscape.javascript.JSObject;
 public class KeyboardApplet extends Applet implements KeyListener {
 
 	long first = 0;
-	int i = 0;
 	List<Long> pressed = new LinkedList<Long>();
 	List<Long> released = new LinkedList<Long>();
 	List<Character> characters = new LinkedList<Character>();
@@ -35,11 +34,17 @@ public class KeyboardApplet extends Applet implements KeyListener {
 	 * Action which is done on key press event.
 	 */
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyChar() != KeyEvent.VK_ENTER) {
+		int code = e.getKeyCode();
+		if ((code >= KeyEvent.VK_A && code <= KeyEvent.VK_Z)
+				|| code == KeyEvent.VK_SPACE) {
+			char c = e.getKeyChar();
 			long tsp = e.getWhen();
 			if (first == 0)
 				first = tsp;
 			pressed.add(tsp - first);
+			characters.add(c);
+			string = string + c;
+			this.callJSCharacter(Character.toString(c));
 		}
 	}
 
@@ -47,39 +52,28 @@ public class KeyboardApplet extends Applet implements KeyListener {
 	 * Action which is done on key release event.
 	 */
 	public void keyReleased(KeyEvent e) {
-		char c = e.getKeyChar();
-		long tsp = e.getWhen();
-		if (c == KeyEvent.VK_ENTER || c == KeyEvent.VK_BACK_SPACE) {
-			i++;
-			System.out.println("chars    " + characters);
-			//System.out.println("typed    " + typed);
-			System.out.println("pressed  " + pressed);
-			System.out.println("released " + released);
-			newData = true;
-			repaint();
-		}
-		else if (c != KeyEvent.VK_ENTER) {
-			released.add(tsp - first);
+		if (pressed.size() != 0) {
+			int code = e.getKeyCode();
+			if ((code >= KeyEvent.VK_A && code <= KeyEvent.VK_Z)
+					|| code == KeyEvent.VK_SPACE) {
+				long tsp = e.getWhen();
+				released.add(tsp - first);
+			}
+			else {
+				System.out.println("chars    " + characters);
+				//System.out.println("typed    " + typed);
+				System.out.println("pressed  " + pressed);
+				System.out.println("released " + released);
+				newData = true;
+				repaint();
+			}
 		}
 	}
 
 	/**
 	 * Action which is done on key typed event.
 	 */
-	public void keyTyped(KeyEvent e) {
-		char c = e.getKeyChar();
-		int code = e.getKeyCode();
-		//long tsp = e.getWhen();
-		System.out.println(code);
-		// keyPress and release only
-		if ((code >= KeyEvent.VK_A && code <= KeyEvent.VK_Z)
-				|| code == KeyEvent.VK_SPACE) {
-			//typed.add(tsp - first);
-			characters.add(c);
-			string = string + c;
-			this.callJSCharacter(Character.toString(c));
-		}
-	}
+	public void keyTyped(KeyEvent e) {	}
 
 	/**
 	 * Call the JavaScript function <appletCallback> which has to be defined
