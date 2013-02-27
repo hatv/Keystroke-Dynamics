@@ -37,6 +37,7 @@ import fr.vhat.keydyn.client.entities.KDPassword;
 import fr.vhat.keydyn.shared.FieldVerifier;
 import fr.vhat.keydyn.shared.KDData;
 import fr.vhat.keydyn.shared.StatisticsUnit;
+import fr.vhat.keydyn.shared.TimeSequence;
 
 /**
  * Main class of the Keystroke Dynamics Authentication system.
