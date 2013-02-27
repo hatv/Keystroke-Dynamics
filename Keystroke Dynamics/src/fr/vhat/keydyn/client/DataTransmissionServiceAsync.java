@@ -5,6 +5,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import fr.vhat.keydyn.client.entities.KDPassword;
 import fr.vhat.keydyn.shared.StatisticsUnit;
 
+/**
+ * Keystroke Dynamics and statistics data communication.
+ * @author Victor Hatinguais, www.victorhatinguais.fr
+ */
 public interface DataTransmissionServiceAsync {
 	void saveKDData(String password, String pressTimes, String releaseTimes,
 			AsyncCallback<Boolean> callback);

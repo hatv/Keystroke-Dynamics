@@ -2,6 +2,11 @@ package fr.vhat.keydyn.shared;
 
 import java.io.Serializable;
 
+/**
+ * Describe the Statics Unit object which is a set of four Time Sequence.
+ * Used to store statistics information.
+ * @author Victor Hatinguais, www.victorhatinguais.fr
+ */
 @SuppressWarnings("serial")
 public class StatisticsUnit implements Serializable {
 	private int[] pressedStatistics;
@@ -62,7 +67,7 @@ public class StatisticsUnit implements Serializable {
 		}
 	}
 
-	private String toString(int[] dataTable) {
+	private static String toString(int[] dataTable) {
 		String result = "[";
 		for (int i = 0 ; i < dataTable.length ; ++i) {
 			result += dataTable[i];

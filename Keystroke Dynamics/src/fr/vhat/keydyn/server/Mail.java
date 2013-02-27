@@ -7,8 +7,23 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+/**
+ * Mail management class.
+ * @author Victor Hatinguais, www.victorhatinguais.fr
+ */
 public class Mail {
 	// TODO: update lastMailSent Field of User if it is a stepMail
+
+	/**
+	 * Function to send an email from the server.
+	 * @param from Email of the sender.
+	 * @param toEmail Email address of the recipient.
+	 * @param toUser Name of the recipient.
+	 * @param replyTo Reply email address.
+	 * @param subject Subject of the mail.
+	 * @param message Content of the mail.
+	 * @return Error message or null if everything is good.
+	 */
 	public static String sendMail(String from, String toEmail, String toUser,
 			String replyTo, String subject, String message) {
         String output = null;
@@ -31,7 +46,14 @@ public class Mail {
         return output;
     }
 
-	public static String sendPasswordMail(String toEmail, String toUser,
+	/**
+	 * Function to send a mail to a new user with his password inside.
+	 * @param toEmail Email address of the recipient.
+	 * @param toUser Name of the recipient.
+	 * @param password Password of the new user.
+	 * @return Error message or null if everything is good.
+	 */
+	public static String sendWelcomeMail(String toEmail, String toUser,
 			String password) {
 		String message = "Thanks for your registration " + toUser + ". Your " +
 			"password is: " + password + "\nYou can now access your member " +

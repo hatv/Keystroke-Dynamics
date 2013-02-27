@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * Describe the User entity in order to be used by Objectify.
+ * @author Victor Hatinguais, www.victorhatinguais.fr
  */
 @SuppressWarnings("serial")
 @Entity
@@ -220,21 +221,17 @@ public class User implements Serializable {
 		this.isActive = isActive;
 	}
 
-
 	public int[][] getMeans() {
 		return means;
 	}
-
 
 	public void setMeans(int[][] means) {
 		this.means = means;
 	}
 
-
 	public int[][] getSd() {
 		return sd;
 	}
-
 
 	public void setSd(int[][] sd) {
 		this.sd = sd;

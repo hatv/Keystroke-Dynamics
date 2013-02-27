@@ -16,18 +16,30 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.lang.Math;
 
+/**
+ * The Data Transmission Service provides the necessary functions to ensure the
+ * persistence of the Keystroke Dynamics Data.
+ * @author Victor Hatinguais, www.victorhatinguais.fr
+ */
 @SuppressWarnings("serial")
 public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 		DataTransmissionService {
 
 	private static final Logger log = Logger.getLogger(
 			DataTransmissionServiceImpl.class.getName());
-	
+
 	static {
 		ObjectifyService.register(User.class);
 		ObjectifyService.register(KDPassword.class);
 	}
 
+	/**
+	 * Save the given Keystroke Dynamics Data in the data store.
+	 * @param password String to store with the keystroke dynamics data.
+	 * @param pressTimes Press times.
+	 * @param releaseTimes Release times.
+	 * @return True if the data have been stored, false otherwise.
+	 */
 	@Override
 	public boolean saveKDData(String password, String pressTimes,
 			String releaseTimes) {
@@ -88,6 +100,7 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 	 * Return a table of two tables (pressed and released data) of n tables (one
 	 * for each KDData stored in the data store) of m integers (where m is the 
 	 * number of characters in the password).
+	 * @return See description.
 	 */
 	@Override
 	public List<KDPassword> getKDData() {
@@ -116,6 +129,10 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 		}
 	}
 
+	/**
+	 * Retrieve the means computed for an user.
+	 * @return Means of the user in a StatisticsUnit format or null.
+	 */
 	public StatisticsUnit getMeans() {
 		String sessionLogin = (String)getThreadLocalRequest().getSession()
         		.getAttribute("login");

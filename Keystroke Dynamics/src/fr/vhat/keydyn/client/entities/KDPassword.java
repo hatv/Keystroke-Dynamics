@@ -9,6 +9,7 @@ import java.util.Date;
 
 /**
  * Describe the KDPassword entity in order to be used by Objectify.
+ * @author Victor Hatinguais, www.victorhatinguais.fr
  */
 @SuppressWarnings("serial")
 @Entity
@@ -17,6 +18,7 @@ public class KDPassword implements Serializable {
 	Long id;
 	@Index
 	String word;
+	@Index
 	int length;
 	@Index
 	String author;

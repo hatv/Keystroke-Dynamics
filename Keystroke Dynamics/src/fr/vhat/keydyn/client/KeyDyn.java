@@ -38,6 +38,10 @@ import fr.vhat.keydyn.shared.FieldVerifier;
 import fr.vhat.keydyn.shared.KDData;
 import fr.vhat.keydyn.shared.StatisticsUnit;
 
+/**
+ * Main class of the Keystroke Dynamics Authentication system.
+ * @author Victor Hatinguais, www.victorhatinguais.fr
+ */
 public class KeyDyn implements EntryPoint {
 
 	/**
@@ -50,6 +54,9 @@ public class KeyDyn implements EntryPoint {
 	private static DataTransmissionServiceAsync transmissionService =
 			GWT.create(DataTransmissionService.class);
 
+	/**
+	 * Panel to store the member area charts and statistics.
+	 */
 	static VerticalPanel chartsPanel = new VerticalPanel();
 
 	/**
@@ -66,16 +73,29 @@ public class KeyDyn implements EntryPoint {
 	}
 	
 	/**
-	 * Display an error message on the HTML web page.
+	 * Display a communication error message on the HTML web page.
 	 * @param function Action or feature which needed the RPC request. 
 	 * @param caughtMessage Message caught from the exception.
 	 */
-	private static void displayErrorMessage(String function, String caughtMessage) {
-		// TODO : gérer le CSS #errors .gwt-Label
+	private static void displayErrorMessage(String function,
+			String caughtMessage) {
+		// TODO : gérer le CSS #errors .gwt-Label en rouge
 		RootPanel.get("errors").clear();
 		String errorMessage = errorMessage(function, caughtMessage);
 		Label errorLabel = new Label(errorMessage);
 		RootPanel.get("errors").add(errorLabel);
+	}
+
+	/**
+	 * Display an information message on the HTML web page.
+	 * @param message Message to display.
+	 * @param isError Displays a red message if true, green otherwise.
+	 */
+	private static void displayInfoMessage(String message, boolean isError) {
+		// TODO : gérer le CSS en fonction de isError (red) ou non (vert)
+		RootPanel.get("infos").clear();
+		Label infoLabel = new Label(message);
+		RootPanel.get("infos").add(infoLabel);
 	}
 
 	/**
@@ -115,6 +135,7 @@ public class KeyDyn implements EntryPoint {
 		// TODO: replace with the Java applet when ready to use.
 		// Java Applet focus when password, unfocus after
 		RootPanel.get("content").clear();
+		RootPanel.get("infos").clear();
 
 		VerticalPanel container = new VerticalPanel();
 		container.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
@@ -145,10 +166,10 @@ public class KeyDyn implements EntryPoint {
 		Button forgottenPasswordButton = new Button("I forgot my password");
 		buttonsPanel.add(forgottenPasswordButton);
 		container.add(buttonsPanel);
-		
+
 		container.addStyleName("container");
 		RootPanel.get("content").add(container);
-		
+
 		registrationButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -197,6 +218,7 @@ public class KeyDyn implements EntryPoint {
 			final PasswordTextBox passwordBox,
 			final Label loginStateLabel) {
 
+		// TODO: afficher une image comme quoi la vérification est en cours
 		final String login = loginBox.getText();
 		final String password = passwordBox.getText();
 
@@ -209,6 +231,7 @@ public class KeyDyn implements EntryPoint {
 			@Override
 			public void onSuccess(Boolean result) {
 				// TODO: CSS success failure
+				// TODO: HTML messages
 				if (result) {
 					loginStateLabel.setText("Successfully authenticated by " +
 							"the server.");
@@ -217,7 +240,7 @@ public class KeyDyn implements EntryPoint {
 				}
 				else {
 					loginStateLabel.setText("Authentication rejected. Please" +
-							" try again." + "\newline" + "If you forgot your " +
+							" try again." + " If you forgot your " +
 							"password, you can click the eponymous button.");
 					loginStateLabel.setStylePrimaryName("failure");
 					loginBox.setText("");
@@ -231,7 +254,9 @@ public class KeyDyn implements EntryPoint {
 	 * Load the about page: information about the project.
 	 */
 	private void loadAboutPage () {
+		// TODO: content
 		RootPanel.get("content").clear();
+		RootPanel.get("infos").clear();
 		VerticalPanel container = new VerticalPanel();
 		container.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		container.addStyleName("container");
@@ -277,7 +302,8 @@ public class KeyDyn implements EntryPoint {
 		 * Build the registration page
 		 */
 		RootPanel.get("content").clear();
-		
+		RootPanel.get("infos").clear();
+
 		VerticalPanel container = new VerticalPanel();
 		container.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		final TextBox loginUser;
@@ -289,7 +315,7 @@ public class KeyDyn implements EntryPoint {
 		final RadioButton genderUserMale;
 		final ListBox experienceList;
 		final ListBox usageList;
-		
+
 		HorizontalPanel header = new HorizontalPanel();
 		Button homeButton = new Button("Home");
 		Button aboutButton = new Button("About");
@@ -297,7 +323,7 @@ public class KeyDyn implements EntryPoint {
 		header.add(homeButton);
 		header.add(aboutButton);
 		container.add(header);
-		
+
 		HTML registeringExplanation = new HTML();
 		String explanationText = "To sign up, please fill out the following " +
 			    "form and send it.<br />You'll receive an email with your " +
@@ -324,7 +350,7 @@ public class KeyDyn implements EntryPoint {
 		loginPanel.add(loginAvailability);
 		userDataGrid.setWidget(0, 0, loginLabel);
 		userDataGrid.setWidget(0, 1, loginPanel);
-		
+
 		Label emailLabel = new Label("E-mail");
 		emailLabel.addStyleName("registrationLabel");
 		HorizontalPanel emailPanel = new HorizontalPanel();
@@ -338,7 +364,7 @@ public class KeyDyn implements EntryPoint {
 		emailPanel.add(emailValidity);
 		userDataGrid.setWidget(1, 0, emailLabel);
 		userDataGrid.setWidget(1, 1, emailPanel);
-		
+
 		Label ageLabel = new Label("Age");
 		ageLabel.addStyleName("registrationLabel");
 		HorizontalPanel agePanel = new HorizontalPanel();
@@ -351,7 +377,7 @@ public class KeyDyn implements EntryPoint {
 		agePanel.add(ageValidity);
 		userDataGrid.setWidget(2, 0, ageLabel);
 		userDataGrid.setWidget(2, 1, agePanel);
-		
+
 		Label genderLabel = new Label("Gender");
 		genderLabel.addStyleName("registrationLabel");
 		userDataGrid.setWidget(3, 0, genderLabel);
@@ -367,7 +393,7 @@ public class KeyDyn implements EntryPoint {
 		genderValidity.setVisible(false);
 		genderPanel.add(genderValidity);
 		userDataGrid.setWidget(3, 1, genderPanel);
-		
+
 		Label countryLabel = new Label("Country");
 		countryLabel.addStyleName("registrationLabel");
 		userDataGrid.setWidget(4, 0, countryLabel);
@@ -387,7 +413,7 @@ public class KeyDyn implements EntryPoint {
 		countryValidity.setVisible(false);
 		countryPanel.add(countryValidity);
 		userDataGrid.setWidget(4, 1, countryPanel);
-		
+
 		Label experienceLabel = new Label("Computer experience");
 		experienceLabel.addStyleName("registrationLabel");
 		userDataGrid.setWidget(5, 0, experienceLabel);
@@ -405,7 +431,7 @@ public class KeyDyn implements EntryPoint {
 		experienceValidity.setVisible(false);
 		experiencePanel.add(experienceValidity);
 		userDataGrid.setWidget(5, 1, experiencePanel);
-		
+
 		Label usageLabel = new Label("Typing per week");
 		usageLabel.addStyleName("registrationLabel");
 		userDataGrid.setWidget(6, 0, usageLabel);
@@ -423,7 +449,7 @@ public class KeyDyn implements EntryPoint {
 		usageValidity.setVisible(false);
 		usagePanel.add(usageValidity);
 		userDataGrid.setWidget(6, 1, usagePanel);
-		
+
 		container.add(userDataGrid);
 
 		signUpButton = new Button("Sign up");
@@ -606,7 +632,7 @@ public class KeyDyn implements EntryPoint {
 		});
 
 		/**
-		 * Check that one the gender fields is selected.
+		 * Check that one of the gender fields is selected.
 		 */
 		genderUserMale.addClickHandler(new ClickHandler() {
 			@Override
@@ -618,7 +644,7 @@ public class KeyDyn implements EntryPoint {
 		});
 
 		/**
-		 * Check that one the gender fields is selected.
+		 * Check that one of the gender fields is selected.
 		 */
 		genderUserFemale.addClickHandler(new ClickHandler() {
 			@Override
@@ -725,19 +751,21 @@ public class KeyDyn implements EntryPoint {
                         }
                         @Override
                         public void onSuccess(Boolean registered) {
-                        	System.out.println("SUCCESS");
-                        	// TODO : Gérer le retour
-                        	if (registered)
-                        		// TODO : bien inscrit
-                        		loginUser.setText("OKKKKK.serverOk");
-                        	else
+                        	if (registered) {
+                        		// TODO : Gérer le retour : vous allez recevoir
+                            	// un mail avec votre mot de passe
+                        		loadHomePage();
+                        	} else {
                         		// TODO : highlight les problèmes
-                        		loginUser.setText("FAIL.serverFAIL");
+                        		displayInfoMessage("Please fill out all the " +
+                        				"requested information.", true);
+                        	}
                         }
 					});
 				} else {
-					System.out.println("PROBLEME");
 					// TODO: highlight les champs problématiques
+					displayInfoMessage("Please fill out all the " +
+            				"requested information.", true);
 				}
 			}
 		});
@@ -763,16 +791,15 @@ public class KeyDyn implements EntryPoint {
 		});
 	}
 
-	//TODO: registration page and loadUserPage
-
 	/**
 	 * Load the member area page which contain the training module and
 	 * information about the account.
 	 * @param login Login of the current user.
 	 */
 	private void loadUserPage (String login) {
-		//firstAdd = true;
+
 		RootPanel.get("content").clear();
+		RootPanel.get("infos").clear();
 		
 		final VerticalPanel container = new VerticalPanel();
 		container.addStyleName("container");
@@ -796,12 +823,9 @@ public class KeyDyn implements EntryPoint {
 		container.add(explanations);
 
 		// TODO: A box which contain remaining passwords to enter in order to
-		// reach the next step -> retrieval with a service and update after
-		// each Enter
+		// reach the next step
 
 		// TODO: A PasswordTextBox which display the password
-
-		// TODO: Erase all when pressing BACKSPACE and reset the applet
 
 		HTML applet = new HTML();
 		String installJava = "<a href=\"http://www.java.com/en/download/help" +
@@ -819,7 +843,6 @@ public class KeyDyn implements EntryPoint {
 	        "This application is designed to securely authenticate users " +
 	        "according to their keystroke dynamics. In order to do that, " +
 	        "Java must be installed on your computer. " + installJava + " " +
-	        // TODO: Message donnant les liens pour télécharger Java (JVM)
 	        testJava + "</object>");
 	    applet.setHTML(HTML5Applet);
 	    container.add(applet);
@@ -837,7 +860,7 @@ public class KeyDyn implements EntryPoint {
 				LineChart.PACKAGE);
 
 		RootPanel.get("content").add(container);
-		
+
 		logoutButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -854,7 +877,7 @@ public class KeyDyn implements EntryPoint {
 			}
 		});
 	}
-	
+
 	// Create a callback to be called when the visualization API has been
 	// loaded. Retrieve KDData information from the data store and display
 	// them on a chart.
@@ -871,7 +894,7 @@ public class KeyDyn implements EntryPoint {
 				public void onSuccess(List<KDPassword> kdData) {
 					if (kdData != null) {
 						int kdDataNumber = kdData.size();
-						// TODO: modifier getWord.length par .length a terme
+						// TODO: modifier getWord.length par .length à terme
 						if (kdDataNumber > 0) {
 							int passwordLength = kdData.get(0).getLength();
 							int[][] pressedData =
@@ -894,11 +917,9 @@ public class KeyDyn implements EntryPoint {
 							chartsPanel.add(releasedChart);
 						}
 					}
-					else {
-						// TODO: nothing stored in the data store
-					}
 				}
 			});
+
 			transmissionService.getMeans(
 					new AsyncCallback<StatisticsUnit>() {
 						@Override
@@ -915,9 +936,6 @@ public class KeyDyn implements EntryPoint {
 							//	.getReleasedStatistics().toString());
 						//chartsPanel.insert(releasedMeans, 2);
 					}
-					else {
-						// TODO: nothing stored in the data store
-					}
 				}
 			});
 		}
@@ -927,13 +945,17 @@ public class KeyDyn implements EntryPoint {
 	 * Define the JavaScript Native functions to be used in the web application.
 	 * appletCallback:
 	 *  	Called from Keyboard Applet to send Keystroke Dynamics data.
+	 * appletCallbackChar:
+	 * 		Called from Keyboard Applet to send last typed character.
 	 */
 	public native void JSNI() /*-{
     	$wnd.appletCallback = function(x) {
            @fr.vhat.keydyn.client.KeyDyn::appletCallback(Ljava/lang/String;)(x);
     	}
+    	$wnd.appletCallbackChar = function(x) {
+           @fr.vhat.keydyn.client.KeyDyn::appletCallbackChar(Ljava/lang/String;)(x);
+    	}
     }-*/;
-	// TODO : callback temps réel à chaque touche
 
 	/**
 	 * Check Keystroke Dynamics data and store them in the data store.
@@ -952,33 +974,34 @@ public class KeyDyn implements EntryPoint {
             @Override
             public void onSuccess(Boolean KDDataSaved) {
             	if (KDDataSaved) {
-            		// TODO: addKDData -> statistiques, tableau, etc.
-            		addKDData(kdData);
-            		// TODO: show user that 1 KDData saved, 1 less to train
+            		updateKDData();
+            		RootPanel.get("ingos").clear();
             	}
             	else {
-            		// TODO: show user that a problem did happen
+            		displayInfoMessage("Wrong data: not saved.", true);
             	}
             }
 		});
 	};
-/*
-	static boolean firstAdd = true;
-	static int[] pressedSum;
-	static int[] releasedSum;
-	static int[] pressedMeans;
-	static int[] releasedMeans;
-	static Label pressedMeansLabel = new Label("pressedMeans");
-	static Label releasedMeansLabel = new Label("releasedMeans");
-	static int nb = 0;*/
+
+	/**
+	 * Display last typed character on screen.
+	 * This function is called from the Keyboard Applet via JSNI.
+	 * @param char Last typed character.
+	 */
+	public static void appletCallbackChar(final String c) {
+		// TODO: display in a field
+		// TODO: when appletCallback is called, clear the field
+	}
+
 	/**
 	 * Display information about KDData saved in the data store : data,
 	 * statistics and chart
-	 * @param kdData : a string retrieved from the Java Applet
 	 */
-	private static void addKDData (String kdData) {
-		// TODO: implement correctly
+	private static void updateKDData () {
+		// Draw or refresh charts
 		chartsPanel.clear();
 		onLoadCallback.run();
+		// TODO: show user that 1 KDData saved, 1 less to train
 	}
 }

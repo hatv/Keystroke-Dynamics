@@ -8,6 +8,11 @@ import com.googlecode.objectify.ObjectifyService;
 import java.util.Date;
 import java.util.logging.Logger;
 
+/**
+ * The Registration Service provides the necessary functions to ensure the
+ * registration of a new user.
+ * @author Victor Hatinguais, www.victorhatinguais.fr
+ */
 @SuppressWarnings("serial")
 public class RegistrationServiceImpl extends RemoteServiceServlet implements
 		RegistrationService {
@@ -19,6 +24,17 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements
 		ObjectifyService.register(User.class);
 	}
 
+	/**
+	 * Register a new user according to the given information.
+	 * @param login An available valid login for the user to register.
+	 * @param email A valid email address.
+	 * @param age Age of the user.
+	 * @param gender Gender of the user among "Male" or "Female".
+	 * @param country Living country of the user.
+	 * @param computerExperience Experience of the user with computers.
+	 * @param typingUsage Estimation of the time spending typing on a keyboard.
+	 * @return Success of the registration.
+	 */
 	public boolean registerUser(String login, String email, int age,
 			String gender, String country, int computerExperience,
 			int typingUsage) {
@@ -41,7 +57,7 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements
 			log.info("User <" + login + "> created with password <" + password
 					+ ">.");
 
-			Mail.sendPasswordMail("vh7utc@gmail.com", login, password);
+			Mail.sendWelcomeMail("vh7utc@gmail.com", login, password);
 			return true;
 		} else
 			return false;
