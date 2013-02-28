@@ -62,5 +62,43 @@ public class KeystrokeSequence implements Serializable {
 		return phrase.length();
 	}
 
-	
+	public TimeSequence getPressToPressSequence() {
+		int[] pressToPressTimes = new int[this.length() - 1];
+		for (int i = 0 ; i < pressToPressTimes.length ; ++i) {
+			pressToPressTimes[i] =
+					this.pressSequence.getTimeTable()[i + 1]
+							- this.pressSequence.getTimeTable()[i];
+		}
+		return new TimeSequence(pressToPressTimes);
+	}
+
+	public TimeSequence getReleaseToReleaseSequence() {
+		int[] releaseToReleaseTimes = new int[this.length() - 1];
+		for (int i = 0 ; i < releaseToReleaseTimes.length ; ++i) {
+			releaseToReleaseTimes[i] =
+					this.releaseSequence.getTimeTable()[i + 1]
+							- this.releaseSequence.getTimeTable()[i];
+		}
+		return new TimeSequence(releaseToReleaseTimes);
+	}
+
+	public TimeSequence getPressToReleaseSequence() {
+		int[] pressToReleaseTimes = new int[this.length()];
+		for (int i = 0 ; i < pressToReleaseTimes.length ; ++i) {
+			pressToReleaseTimes[i] =
+					this.releaseSequence.getTimeTable()[i]
+							- this.pressSequence.getTimeTable()[i];
+		}
+		return new TimeSequence(pressToReleaseTimes);
+	}
+
+	public TimeSequence getReleaseToPressSequence() {
+		int[] releaseToPressTimes = new int[this.length() - 1];
+		for (int i = 0 ; i < releaseToPressTimes.length ; ++i) {
+			releaseToPressTimes[i] =
+					this.pressSequence.getTimeTable()[i + 1]
+							- this.releaseSequence.getTimeTable()[i];
+		}
+		return new TimeSequence(releaseToPressTimes);
+	}
 }

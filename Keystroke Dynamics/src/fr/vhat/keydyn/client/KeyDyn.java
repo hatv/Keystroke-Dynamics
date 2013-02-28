@@ -884,7 +884,7 @@ public class KeyDyn implements EntryPoint {
 	// them on a chart.
 	private static Runnable onLoadCallback = new Runnable() {
 		public void run() {
-			// TODO: if null, display nothing
+			// TODO: if null, display nothing.
 			transmissionService.getKDData(
 					new AsyncCallback<List<KDPassword>>() {
 						@Override
