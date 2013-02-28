@@ -49,7 +49,7 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 			}
 		} else {
 			log.info("User <" + login + "> tried to connect but doesn't exist" +
-					"in the data store.");
+					" in the data store.");
 			return false;
 		}
 	}

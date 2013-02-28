@@ -12,7 +12,7 @@ import fr.vhat.keydyn.shared.StatisticsUnit;
  */
 @RemoteServiceRelativePath("transmission")
 public interface DataTransmissionService extends RemoteService {
-	boolean saveKDData(String password, String pressTimes, String releaseTimes);
+	boolean saveKDData(String kdData);
 	List<KDPassword> getKDData();
 	StatisticsUnit getMeans();
 }

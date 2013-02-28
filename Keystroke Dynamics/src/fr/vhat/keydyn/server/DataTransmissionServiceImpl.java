@@ -4,17 +4,14 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import fr.vhat.keydyn.client.DataTransmissionService;
 import fr.vhat.keydyn.client.entities.KDPassword;
 import fr.vhat.keydyn.client.entities.User;
-import fr.vhat.keydyn.shared.KDData;
+import fr.vhat.keydyn.shared.KeystrokeSequence;
 import fr.vhat.keydyn.shared.StatisticsUnit;
-
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
-import java.lang.Math;
 
 /**
  * The Data Transmission Service provides the necessary functions to ensure the
@@ -41,8 +38,7 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 	 * @return True if the data have been stored, false otherwise.
 	 */
 	@Override
-	public boolean saveKDData(String password, String pressTimes,
-			String releaseTimes) {
+	public boolean saveKDData(String kdString) {
 		// Check whether an user is logged or not
 		String sessionLogin = (String)getThreadLocalRequest().getSession()
         		.getAttribute("login");
@@ -52,32 +48,41 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 			User u = ObjectifyService.ofy().load().type(User.class)
 					.filter("login", sessionLogin).first().get();
 			if (u != null) {
+				KeystrokeSequence keystrokeSequence =
+						new KeystrokeSequence(kdString);
+				String password = keystrokeSequence.getPhrase();
 				String hashedPassword = u.getHashedPassword();
 				if (Password.check(password, hashedPassword)) {
 					// KDData can be saved in the data store
 					Date typingDate = new Date();
 			        KDPassword kdData = new KDPassword(password, sessionLogin,
-			        		pressTimes,	releaseTimes, typingDate);
+			        		keystrokeSequence, typingDate);
 			        u.addKDDataKey(
 			        		ObjectifyService.ofy().save().entity(kdData).now());
 			        int dataNumber = u.getKDDataSize();
-			        int[][] means = u.getMeans();
-			        int[] newKDData = KDData.typingTime(pressTimes);
-			        int[] pressedBetweenTimes = new int[password.length() - 1];
-			        for (int i = 0 ; i < pressedBetweenTimes.length ; ++i) {
-			        	pressedBetweenTimes[i] = newKDData[i+1] - newKDData[i];
-			        }
+			        StatisticsUnit means = u.getMeans();
 			        if (means != null) {
-				        for (int i = 0 ; i < means[0].length ; ++i) {
-				        	means[0][i] = Math.round((dataNumber * means[0][i] + pressedBetweenTimes[i])/(float)(dataNumber + 1));
-				        }
+				        means.addToMeans(keystrokeSequence, dataNumber);
 			        } else {
-			        	means = new int[4][];
-			        	means[0] = pressedBetweenTimes;
+			        	means = new StatisticsUnit();
+			        	means.set(0,
+			        			keystrokeSequence.getPressToPressSequence());
+			        	means.set(1,
+			        			keystrokeSequence
+			        			.getReleaseToReleaseSequence());
+			        	means.set(2,
+			        			keystrokeSequence.getPressToReleaseSequence());
+			        	means.set(3,
+			        			keystrokeSequence.getReleaseToPressSequence());
 			        }
 			        u.setMeans(means);
 			        ObjectifyService.ofy().save().entity(u).now();
-			        log.info("User <" + sessionLogin + "> : new data saved.");
+			        log.info("User <" + sessionLogin + "> : new data saved: " +
+			        		"WORD=" + keystrokeSequence.getPhrase() +
+			        		" ; PRESS=" +
+			        		keystrokeSequence.getPressSequence().toString() +
+			        		" ; RELEASE=" +
+			        		keystrokeSequence.getReleaseSequence().toString());
 					return true;
 				}
 				else {
@@ -140,12 +145,8 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 			User u = ObjectifyService.ofy().load().type(User.class)
 					.filter("login", sessionLogin).first().get();
 			if (u != null) {
-				int[][] means = u.getMeans();
-				if (means != null) {
-					StatisticsUnit meansUnit = new StatisticsUnit();
-					for (int i = 0 ; i < means.length ; ++i) {
-						meansUnit.set(i, means[i]);
-					}
+				StatisticsUnit meansUnit = u.getMeans();
+				if (meansUnit != null) {
 					return meansUnit;
 				} else {
 					log.info("No means to return to user <" + sessionLogin +

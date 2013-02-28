@@ -13,6 +13,8 @@ public class KeystrokeSequence implements Serializable {
 	private TimeSequence pressSequence;
 	private TimeSequence releaseSequence;
 
+	public KeystrokeSequence() {}
+
 	public KeystrokeSequence(String kdString) {
 		this(KDData.password(kdString), KDData.typingTimes(kdString)[0],
 				KDData.typingTimes(kdString)[1]);

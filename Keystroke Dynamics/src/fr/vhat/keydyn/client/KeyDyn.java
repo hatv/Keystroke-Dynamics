@@ -34,8 +34,9 @@ import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.LineChart;
 import fr.vhat.keydyn.client.entities.KDPassword;
 import fr.vhat.keydyn.shared.FieldVerifier;
-import fr.vhat.keydyn.shared.KDData;
+import fr.vhat.keydyn.shared.KeystrokeSequence;
 import fr.vhat.keydyn.shared.StatisticsUnit;
+import fr.vhat.keydyn.shared.TimeSequence;
 
 /**
  * Main class of the Keystroke Dynamics Authentication system.
@@ -799,6 +800,7 @@ public class KeyDyn implements EntryPoint {
 
 		RootPanel.get("content").clear();
 		RootPanel.get("infos").clear();
+		chartsPanel.clear();
 		
 		final VerticalPanel container = new VerticalPanel();
 		container.addStyleName("container");
@@ -894,25 +896,49 @@ public class KeyDyn implements EntryPoint {
 					if (kdData != null) {
 						int kdDataNumber = kdData.size();
 						if (kdDataNumber > 0) {
-							int passwordLength = kdData.get(0).getLength();
-							int[][] pressedData =
-									new int[kdDataNumber][passwordLength];
-							int[][] releasedData =
-									new int[kdDataNumber][passwordLength];
+							TimeSequence[] pressedData =
+									new TimeSequence[kdDataNumber];
+							TimeSequence[] releasedData =
+									new TimeSequence[kdDataNumber];
+							TimeSequence[] pressedToReleasedData =
+									new TimeSequence[kdDataNumber];
+							TimeSequence[] releasedToPressedData =
+									new TimeSequence[kdDataNumber];
+							KeystrokeSequence keystrokeSequence;
 							for (int i = 0 ; i < kdDataNumber ; ++i) {
-								pressedData[i] = KDData.typingTime(
-										kdData.get(i).getPressTimes());
-								releasedData[i] = KDData.typingTime(
-										kdData.get(i).getReleaseTimes());
+								keystrokeSequence =
+										kdData.get(i).getKeystrokeSequence();
+								pressedData[i] =
+										keystrokeSequence
+										.getPressToPressSequence();
+								releasedData[i] =
+										keystrokeSequence
+										.getReleaseToReleaseSequence();
+								pressedToReleasedData[i] =
+										keystrokeSequence
+										.getPressToReleaseSequence();
+								releasedToPressedData[i] =
+										keystrokeSequence
+										.getReleaseToPressSequence();
 							}
 							LineChart pressedChart =
-									MemberAreaCharts.getChart("pressed",
-											passwordLength, pressedData);
+									MemberAreaCharts.getChart(
+											"pressed", pressedData);
 							chartsPanel.add(pressedChart);
 							LineChart releasedChart =
-									MemberAreaCharts.getChart("released",
-											passwordLength, releasedData);
+									MemberAreaCharts.getChart(
+											"released", releasedData);
 							chartsPanel.add(releasedChart);
+							LineChart pressedToReleaseChart =
+									MemberAreaCharts.getChart(
+											"pressedToReleased",
+											pressedToReleasedData);
+							chartsPanel.add(pressedToReleaseChart);
+							LineChart releasedToPressedChart =
+									MemberAreaCharts.getChart(
+											"releasedToPressed",
+											releasedToPressedData);
+							chartsPanel.add(releasedToPressedChart);
 						}
 					}
 				}
@@ -927,12 +953,20 @@ public class KeyDyn implements EntryPoint {
 				@Override
 				public void onSuccess(StatisticsUnit means) {
 					if (means != null) {
-						Label pressedMeans = new Label(
+						Label pressedMeans = new Label("Means: " +
 								means.getPressedStatistics().toString());
 						chartsPanel.insert(pressedMeans, 0);
-						//Label releasedMeans = new Label(means
-							//	.getReleasedStatistics().toString());
-						//chartsPanel.insert(releasedMeans, 2);
+						Label releasedMeans = new Label("Means: " +
+								means.getReleasedStatistics().toString());
+						chartsPanel.insert(releasedMeans, 2);
+						Label pressedToReleasedMeans = new Label("Means: " +
+								means.getPressedToReleasedStatistics()
+								.toString());
+						chartsPanel.insert(pressedToReleasedMeans, 4);
+						Label releasedToPressedMeans = new Label("Means: " +
+								means.getReleasedToPressedStatistics()
+								.toString());
+						chartsPanel.insert(releasedToPressedMeans, 6);
 					}
 				}
 			});
@@ -961,10 +995,8 @@ public class KeyDyn implements EntryPoint {
 	 * @param kdData Keystroke Dynamics data.
 	 */
 	public static void appletCallback(final String kdData) {
-		String[] data = KDData.strings(kdData);
 
-		transmissionService.saveKDData(data[0], data[1], data[2],
-				new AsyncCallback<Boolean>() {
+		transmissionService.saveKDData(kdData, new AsyncCallback<Boolean>() {
 			@Override
             public void onFailure(Throwable caught) {
 				displayErrorMessage("SaveNewKDData", caught.getMessage());
@@ -973,7 +1005,7 @@ public class KeyDyn implements EntryPoint {
             public void onSuccess(Boolean KDDataSaved) {
             	if (KDDataSaved) {
             		updateKDData();
-            		RootPanel.get("ingos").clear();
+            		RootPanel.get("infos").clear();
             	}
             	else {
             		displayInfoMessage("Wrong data: not saved.", true);

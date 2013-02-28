@@ -121,7 +121,7 @@ public class KDData {
 
 		String releasedTimesString = kdData[2];
 		String[] releasedTimesStrings = releasedTimesString
-				.substring(1, releasedTimesString.length() - 2).split(",");
+				.substring(1, releasedTimesString.length() - 1).split(",");
 		int[] releasedTimes = new int[releasedTimesStrings.length];
 		for (int i = 0 ; i < releasedTimesStrings.length ; ++i) {
 			tmpTime = Integer.parseInt(releasedTimesStrings[i].trim());

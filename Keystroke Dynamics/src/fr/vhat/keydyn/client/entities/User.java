@@ -5,6 +5,9 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Serialize;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+
+import fr.vhat.keydyn.shared.StatisticsUnit;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,9 +48,9 @@ public class User implements Serializable {
 	private Date lastMailSentDate;
 	// Computation
 	@Serialize
-	private int[][] means;
+	private StatisticsUnit means;
 	@Serialize
-	private int[][] sd;
+	private StatisticsUnit sd;
 
 	@SuppressWarnings("unused")
 	private User() {}
@@ -221,19 +224,23 @@ public class User implements Serializable {
 		this.isActive = isActive;
 	}
 
-	public int[][] getMeans() {
+
+	public StatisticsUnit getMeans() {
 		return means;
 	}
 
-	public void setMeans(int[][] means) {
+
+	public void setMeans(StatisticsUnit means) {
 		this.means = means;
 	}
 
-	public int[][] getSd() {
+
+	public StatisticsUnit getSd() {
 		return sd;
 	}
 
-	public void setSd(int[][] sd) {
+
+	public void setSd(StatisticsUnit sd) {
 		this.sd = sd;
 	}
 }
