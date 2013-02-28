@@ -11,16 +11,11 @@ public class TimeSequence implements Serializable {
 	private int[] timeTable;
 
 	public TimeSequence(int[] timeTable) {
-		this.timeTable = timeTable;
+		this.setTimeTable(timeTable);
 	}
 
 	public TimeSequence(String timeString) {
-		String[] times =
-				timeString.substring(1, timeString.length() - 1).split(",");
-		this.timeTable = new int[times.length];
-		for (int i = 0 ; i < times.length ; ++i) {
-			this.timeTable[i] = Integer.parseInt(times[i].trim());
-		}
+		this.setTimeTable(timeString);
 	}
 
 	public int[] getTimeTable() {
@@ -29,6 +24,15 @@ public class TimeSequence implements Serializable {
 
 	public void setTimeTable(int[] timeTable) {
 		this.timeTable = timeTable;
+	}
+
+	public void setTimeTable(String timeString) {
+		String[] times =
+				timeString.substring(1, timeString.length() - 1).split(",");
+		this.timeTable = new int[times.length];
+		for (int i = 0 ; i < times.length ; ++i) {
+			this.timeTable[i] = Integer.parseInt(times[i].trim());
+		}
 	}
 
 	public int length() {
