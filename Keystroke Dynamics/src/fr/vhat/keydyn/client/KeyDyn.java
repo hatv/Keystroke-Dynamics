@@ -931,7 +931,7 @@ public class KeyDyn implements EntryPoint {
 				public void onSuccess(StatisticsUnit means) {
 					if (means != null) {
 						Label pressedMeans = new Label(
-								means.displayPressedMeans());
+								means.getPressedStatistics().toString());
 						chartsPanel.insert(pressedMeans, 0);
 						//Label releasedMeans = new Label(means
 							//	.getReleasedStatistics().toString());

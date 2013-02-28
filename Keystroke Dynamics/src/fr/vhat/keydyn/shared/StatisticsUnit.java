@@ -9,46 +9,46 @@ import java.io.Serializable;
  */
 @SuppressWarnings("serial")
 public class StatisticsUnit implements Serializable {
-	private int[] pressedStatistics;
-	private int[] releasedStatistics;
-	private int[] pressedToReleasedStatistics;
-	private int[] releasedToPressedStatistics;
+	private TimeSequence pressedStatistics;
+	private TimeSequence releasedStatistics;
+	private TimeSequence pressedToReleasedStatistics;
+	private TimeSequence releasedToPressedStatistics;
 
-	public int[] getPressedStatistics() {
+	public TimeSequence getPressedStatistics() {
 		return pressedStatistics;
 	}
 
-	public void setPressedStatistics(int[] pressedStatistics) {
+	public void setPressedStatistics(TimeSequence pressedStatistics) {
 		this.pressedStatistics = pressedStatistics;
 	}
 
-	public int[] getReleasedStatistics() {
+	public TimeSequence getReleasedStatistics() {
 		return releasedStatistics;
 	}
 
-	public void setReleasedStatistics(int[] releasedStatistics) {
+	public void setReleasedStatistics(TimeSequence releasedStatistics) {
 		this.releasedStatistics = releasedStatistics;
 	}
 
-	public int[] getPressedToReleasedStatistics() {
+	public TimeSequence getPressedToReleasedStatistics() {
 		return pressedToReleasedStatistics;
 	}
 
 	public void setPressedToReleasedStatistics(
-			int[] pressedToReleasedStatistics) {
+			TimeSequence pressedToReleasedStatistics) {
 		this.pressedToReleasedStatistics = pressedToReleasedStatistics;
 	}
 
-	public int[] getReleasedToPressedStatistics() {
+	public TimeSequence getReleasedToPressedStatistics() {
 		return releasedToPressedStatistics;
 	}
 
 	public void setReleasedToPressedStatistics(
-			int[] releasedToPressedStatistics) {
+			TimeSequence releasedToPressedStatistics) {
 		this.releasedToPressedStatistics = releasedToPressedStatistics;
 	}
 
-	public void set(int i, int[] data) {
+	public void set(int i, TimeSequence data) {
 		switch(i) {
 			case 0:
 				this.setPressedStatistics(data);
@@ -67,20 +67,7 @@ public class StatisticsUnit implements Serializable {
 		}
 	}
 
-	private static String toString(int[] dataTable) {
-		String result = "[";
-		for (int i = 0 ; i < dataTable.length ; ++i) {
-			result += dataTable[i];
-			if (i != dataTable.length-1) {
-				result += ", ";
-			} else {
-				result += "]";
-			}
-		}
-		return result;
-	}
-
-	public String displayPressedMeans() {
-		return toString(this.pressedStatistics);
+	public void set(int i, int[] data) {
+		this.set(i, new TimeSequence(data));
 	}
 }

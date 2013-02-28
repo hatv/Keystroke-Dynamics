@@ -10,6 +10,8 @@ import java.io.Serializable;
 public class TimeSequence implements Serializable {
 	private int[] timeTable;
 
+	public TimeSequence() {}
+	
 	public TimeSequence(int[] timeTable) {
 		this.setTimeTable(timeTable);
 	}
