@@ -3,6 +3,9 @@ package fr.vhat.keydyn.client.entities;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Serialize;
+
+import fr.vhat.keydyn.shared.KeystrokeSequence;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -22,8 +25,8 @@ public class KDPassword implements Serializable {
 	int length;
 	@Index
 	String author;
-	String pressTimes;
-	String releaseTimes;
+	@Serialize
+	KeystrokeSequence keystrokeSequence;
 	Date typingDate;
 
 	@SuppressWarnings("unused")
@@ -36,12 +39,11 @@ public class KDPassword implements Serializable {
 	 * @param releaseTimes Released times.
 	 * @param typingDate Typing date.
 	 */
-	public KDPassword(String word, String author, String pressTimes,
-			String releaseTimes, Date typingDate) {
+	public KDPassword(String word, String author,
+			KeystrokeSequence keystrokeSequence, Date typingDate) {
 		this.setWord(word);
 		this.setAuthor(author);
-		this.setPressTimes(pressTimes);
-		this.setReleaseTimes(releaseTimes);
+		this.setKeystrokeSequence(keystrokeSequence);
 		this.setTypingDate(typingDate);
 	}
 
@@ -78,20 +80,13 @@ public class KDPassword implements Serializable {
 		this.author = author;
 	}
 
-	public String getPressTimes() {
-		return pressTimes;
+	public KeystrokeSequence getKeystrokeSequence() {
+		return keystrokeSequence;
 	}
 
-	public void setPressTimes(String pressTimes) {
-		this.pressTimes = pressTimes;
-	}
-
-	public String getReleaseTimes() {
-		return releaseTimes;
-	}
-
-	public void setReleaseTimes(String releaseTimes) {
-		this.releaseTimes = releaseTimes;
+	public void setKeystrokeSequence(KeystrokeSequence keystrokeSequence) {
+		this.keystrokeSequence = keystrokeSequence;
+		this.word = this.keystrokeSequence.getPhrase();
 	}
 
 	public Date getTypingDate() {

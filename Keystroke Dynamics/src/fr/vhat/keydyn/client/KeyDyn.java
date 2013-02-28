@@ -32,12 +32,10 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.LineChart;
-
 import fr.vhat.keydyn.client.entities.KDPassword;
 import fr.vhat.keydyn.shared.FieldVerifier;
 import fr.vhat.keydyn.shared.KDData;
 import fr.vhat.keydyn.shared.StatisticsUnit;
-import fr.vhat.keydyn.shared.TimeSequence;
 
 /**
  * Main class of the Keystroke Dynamics Authentication system.
@@ -895,7 +893,6 @@ public class KeyDyn implements EntryPoint {
 				public void onSuccess(List<KDPassword> kdData) {
 					if (kdData != null) {
 						int kdDataNumber = kdData.size();
-						// TODO: modifier getWord.length par .length à terme
 						if (kdDataNumber > 0) {
 							int passwordLength = kdData.get(0).getLength();
 							int[][] pressedData =
