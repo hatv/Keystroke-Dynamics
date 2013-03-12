@@ -288,4 +288,37 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 			return null;
 		}
 	}
+
+	public Float getThreshold() {
+		String sessionLogin = (String)getThreadLocalRequest().getSession()
+        		.getAttribute("login");
+		if (sessionLogin != null) {
+			return getUserThreshold(sessionLogin);
+		} else {
+			log.info("An user tried to get threshold but was not logged.");
+			return null;
+		}
+	}
+
+	public static Float getUserThreshold(String user) {
+		User u = ObjectifyService.ofy().load().type(User.class)
+				.filter("login", user).first().get();
+		if (u != null) {
+			StatisticsUnit sdUnit = u.getSd();
+			StatisticsUnit meansUnit = u.getMeans();
+			List<KDPassword> kdPassword = getUserKDData(user);
+			if (sdUnit != null && meansUnit != null) {
+				return ComputationServiceImpl.threshold(kdPassword, meansUnit,
+						sdUnit);
+			} else {
+				log.info("No distance to return to user <" + user + ">: " +
+						"unable to compute it.");
+				return null;
+			}
+		} else {
+			log.warning("User <" + user + "> tried to get distance but this " +
+					"user doesn't exist.");
+			return null;
+		}
+	}
 }

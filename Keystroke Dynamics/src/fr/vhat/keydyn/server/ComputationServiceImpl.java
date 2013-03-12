@@ -131,8 +131,9 @@ public class ComputationServiceImpl extends RemoteServiceServlet implements
 	public static Float distance(KeystrokeSequence keystrokeSequence,
 			StatisticsUnit means, StatisticsUnit sd) {
 		Float distance = (float)0;
-		int sdSum = 0;
+		//int sdSum = 0;
 		int parametersNumber = 0;
+
 		TimeSequence pressToPressSequence =
 				keystrokeSequence.getPressToPressSequence();
 		TimeSequence pressToPressSequenceMeans = means.getPressedStatistics();
@@ -140,11 +141,86 @@ public class ComputationServiceImpl extends RemoteServiceServlet implements
 		for (int i = 0 ; i < pressToPressSequence.length() ; ++i) {
 			distance += Math.abs((float)pressToPressSequence.getTimeTable()[i] 
 					- (float)pressToPressSequenceMeans.getTimeTable()[i])
-					/ (float)pressToPressSequenceSd.getTimeTable()[i];
-			sdSum += pressToPressSequenceSd.getTimeTable()[i];
+					/ (float)Math.pow(pressToPressSequenceSd.getTimeTable()[i],
+							2);
+			//sdSum += pressToPressSequenceSd.getTimeTable()[i];
 			parametersNumber++;
 		}
-		distance /= sdSum * parametersNumber;
+
+		TimeSequence releaseToReleaseSequence =
+				keystrokeSequence.getReleaseToReleaseSequence();
+		TimeSequence releaseToReleaseSequenceMeans =
+				means.getReleasedStatistics();
+		TimeSequence releaseToReleaseSequenceSd = sd.getReleasedStatistics();
+		for (int i = 0 ; i < releaseToReleaseSequence.length() ; ++i) {
+			distance +=
+					Math.abs((float)releaseToReleaseSequence.getTimeTable()[i] 
+					- (float)releaseToReleaseSequenceMeans.getTimeTable()[i])
+					/ (float)Math.pow(releaseToReleaseSequenceSd
+							.getTimeTable()[i], 2);
+			//sdSum += releaseToReleaseSequenceSd.getTimeTable()[i];
+			parametersNumber++;
+		}
+
+		TimeSequence pressToReleaseSequence =
+				keystrokeSequence.getPressToReleaseSequence();
+		TimeSequence pressToReleaseSequenceMeans =
+				means.getPressedToReleasedStatistics();
+		TimeSequence pressToReleaseSequenceSd =
+				sd.getPressedToReleasedStatistics();
+		for (int i = 0 ; i < pressToReleaseSequence.length() ; ++i) {
+			distance += Math.abs((float)pressToReleaseSequence.getTimeTable()[i] 
+					- (float)pressToReleaseSequenceMeans.getTimeTable()[i])
+					/ (float)Math.pow(pressToReleaseSequenceSd
+							.getTimeTable()[i], 2);
+			//sdSum += pressToReleaseSequenceSd.getTimeTable()[i];
+			parametersNumber++;
+		}
+
+		TimeSequence releaseToPressSequence =
+				keystrokeSequence.getReleaseToPressSequence();
+		TimeSequence releaseToPressSequenceMeans =
+				means.getReleasedToPressedStatistics();
+		TimeSequence releaseToPressSequenceSd =
+				sd.getReleasedToPressedStatistics();
+		for (int i = 0 ; i < releaseToPressSequence.length() ; ++i) {
+			distance += Math.abs((float)releaseToPressSequence.getTimeTable()[i] 
+					- (float)releaseToPressSequenceMeans.getTimeTable()[i])
+					/ (float)Math.pow(releaseToPressSequenceSd
+							.getTimeTable()[i], 2);
+			//sdSum += releaseToPressSequenceSd.getTimeTable()[i];
+			parametersNumber++;
+		}
+
+		distance /= parametersNumber;
 		return ((float)Math.round(1000000 * distance)) / 1000;
+	}
+
+	public static Float threshold(List<KDPassword> kdPassword,
+			StatisticsUnit means, StatisticsUnit sd) {
+		int size = kdPassword.size();
+		Float[] distances = new Float[size];
+		KDPassword password;
+		for (int i = 0 ; i < size ; ++i) {
+			password = kdPassword.get(i);
+			KeystrokeSequence keystrokeSequence =
+					password.getKeystrokeSequence();
+			distances[i] = distance(keystrokeSequence, means, sd);
+		}
+		Float distanceMean = (float)0;
+		for (int i = 0 ; i < size ; ++i) {
+			distanceMean += distances[i];
+		}
+		distanceMean /= size;
+		Float distanceSd = (float)0;
+		for (int i = 0 ; i < size ; ++i) {
+			distanceSd += (float)Math.pow(distances[i] - distanceMean, 2);
+		}
+		distanceSd /= size;
+		distanceSd = (float)Math.sqrt(distanceSd);
+		System.out.println(size);
+		System.out.println(distanceMean.toString());
+		System.out.println(distanceSd.toString());
+		return distanceMean + 2 * distanceSd;
 	}
 }

@@ -18,4 +18,5 @@ public interface DataTransmissionService extends RemoteService {
 	StatisticsUnit getMeans();
 	StatisticsUnit getSd();
 	Float getDistance(KeystrokeSequence keystrokeSequence);
+	Float getThreshold();
 }

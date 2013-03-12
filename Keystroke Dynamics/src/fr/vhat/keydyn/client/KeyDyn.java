@@ -1042,9 +1042,33 @@ public class KeyDyn implements EntryPoint {
             						caught.getMessage());
                         }
                         @Override
-                        public void onSuccess(Float distance) {
-                        	Label distanceLabel = new Label("Distance: " +
+                        public void onSuccess(final Float distance) {
+                        	final Label distanceLabel = new Label("Distance: " +
         							distance.toString());
+                        	transmissionService.getThreshold(
+                        			new AsyncCallback<Float>() {
+                				@Override
+                                public void onFailure(Throwable caught) {
+                    				displayErrorMessage("GetThreshold",
+                    						caught.getMessage());
+                                }
+                                @Override
+                                public void onSuccess(Float threshold) {
+                                	if (distance <= threshold) {
+                                		distanceLabel.setText(
+                                				distanceLabel.getText() +
+                                				" ; Authentication : OK" +
+                                				" (Threshold = " +
+                                				threshold.toString() + ")");
+                                	} else {
+                                		distanceLabel.setText(
+                                				distanceLabel.getText() +
+                                				" ; Authentication : FAIL" +
+                                				" (Threshold = " +
+                                				threshold.toString() + ")");
+                                	}
+                                }
+                        	});
         					chartsPanel.setWidget(0, 0, distanceLabel);
                         }
             		});

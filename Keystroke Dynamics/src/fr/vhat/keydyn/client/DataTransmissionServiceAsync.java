@@ -17,4 +17,5 @@ public interface DataTransmissionServiceAsync {
 	void getSd(AsyncCallback<StatisticsUnit> callback);
 	void getDistance(KeystrokeSequence keystrokeSequence,
 			AsyncCallback<Float> callback);
+	void getThreshold(AsyncCallback<Float> callback);
 }
