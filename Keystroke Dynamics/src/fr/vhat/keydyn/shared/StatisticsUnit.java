@@ -71,6 +71,12 @@ public class StatisticsUnit implements Serializable {
 		this.set(i, new TimeSequence(data));
 	}
 
+	/**
+	 * Add a keystroke sequence to the means.
+	 * @param keystrokeSequence New keystroke sequence to add.
+	 * @param dataNumber Number of data taken into account into the already
+	 * computed mean.
+	 */
 	public void addToMeans(KeystrokeSequence keystrokeSequence,
 			int dataNumber) {
 

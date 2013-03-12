@@ -224,21 +224,17 @@ public class User implements Serializable {
 		this.isActive = isActive;
 	}
 
-
 	public StatisticsUnit getMeans() {
 		return means;
 	}
-
 
 	public void setMeans(StatisticsUnit means) {
 		this.means = means;
 	}
 
-
 	public StatisticsUnit getSd() {
 		return sd;
 	}
-
 
 	public void setSd(StatisticsUnit sd) {
 		this.sd = sd;

@@ -6,6 +6,7 @@ import fr.vhat.keydyn.client.entities.KDPassword;
 import fr.vhat.keydyn.client.entities.User;
 import fr.vhat.keydyn.shared.KeystrokeSequence;
 import fr.vhat.keydyn.shared.StatisticsUnit;
+
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 import java.util.ArrayList;
@@ -59,9 +60,10 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 			        		keystrokeSequence, typingDate);
 			        u.addKDDataKey(
 			        		ObjectifyService.ofy().save().entity(kdData).now());
-			        int dataNumber = u.getKDDataSize();
+			        // Compute or update the means vectors
 			        StatisticsUnit means = u.getMeans();
 			        if (means != null) {
+			        	int dataNumber = u.getKDDataSize();
 				        means.addToMeans(keystrokeSequence, dataNumber);
 			        } else {
 			        	means = new StatisticsUnit();
@@ -76,6 +78,24 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 			        			keystrokeSequence.getReleaseToPressSequence());
 			        }
 			        u.setMeans(means);
+			        // Compute or update the standard deviation vectors
+			        StatisticsUnit sd = u.getSd();
+			        if (sd != null) {
+				        sd = ComputationServiceImpl.computeSd(sessionLogin);
+			        } else {
+			        	sd = new StatisticsUnit();
+			        	int[] sdTimes = new int[kdData.getLength() - 1];
+			        	for (int i = 0 ; i < sdTimes.length ; ++i)
+			        		sdTimes[i] = 0;
+			        	int[] sdTimesMore = new int[kdData.getLength()];
+			        	for (int i = 0 ; i < sdTimesMore.length ; ++i)
+			        		sdTimesMore[i] = 0;
+			        	sd.set(0, sdTimes);
+			        	sd.set(1, sdTimes);
+			        	sd.set(2, sdTimesMore);
+			        	sd.set(3, sdTimes);
+			        }
+			        u.setSd(sd);
 			        ObjectifyService.ofy().save().entity(u).now();
 			        log.info("User <" + sessionLogin + "> : new data saved: " +
 			        		"WORD=" + keystrokeSequence.getPhrase() +
@@ -112,22 +132,7 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 		String sessionLogin = (String)getThreadLocalRequest().getSession()
         		.getAttribute("login");
 		if (sessionLogin != null) {
-			User u = ObjectifyService.ofy().load().type(User.class)
-					.filter("login", sessionLogin).first().get();
-			if (u != null) {
-				List<Key<KDPassword>> kdDataKeys = u.getKDDataKeys();
-				List<KDPassword> kdData = new ArrayList<KDPassword>();
-				for (Key<KDPassword> kdDataKey : kdDataKeys) {
-					KDPassword kdDataElement = ObjectifyService.ofy().load()
-							.type(KDPassword.class).id(kdDataKey.getId()).get();
-					kdData.add(kdDataElement);
-				}
-				return kdData;
-			} else {
-				log.warning("User <" + sessionLogin + "> tried to get KD data" +
-						" but this user doesn't exist.");
-				return null;
-			}
+			return getUserKDData(sessionLogin);
 		} else {
 			log.info("An user tried to get KD data but was not logged.");
 			return null;
@@ -135,31 +140,151 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 	}
 
 	/**
-	 * Retrieve the means computed for an user.
+	 * Static function which retrieve the KDData of a given user.
+	 * @param user Login of the user.
+	 * @return See getKDData function description.
+	 */
+	public static List<KDPassword> getUserKDData(String user) {
+		User u = ObjectifyService.ofy().load().type(User.class)
+				.filter("login", user).first().get();
+		if (u != null) {
+			List<Key<KDPassword>> kdDataKeys = u.getKDDataKeys();
+			List<KDPassword> kdData = new ArrayList<KDPassword>();
+			for (Key<KDPassword> kdDataKey : kdDataKeys) {
+				KDPassword kdDataElement = ObjectifyService.ofy().load()
+						.type(KDPassword.class).id(kdDataKey.getId()).get();
+				kdData.add(kdDataElement);
+			}
+			return kdData;
+		} else {
+			log.warning("User <" + user + "> tried to get KD data" +
+					" but this user doesn't exist.");
+			return null;
+		}
+	}
+
+	/**
+	 * Retrieve the means computed for the current user.
 	 * @return Means of the user in a StatisticsUnit format or null.
 	 */
 	public StatisticsUnit getMeans() {
 		String sessionLogin = (String)getThreadLocalRequest().getSession()
         		.getAttribute("login");
 		if (sessionLogin != null) {
-			User u = ObjectifyService.ofy().load().type(User.class)
-					.filter("login", sessionLogin).first().get();
-			if (u != null) {
-				StatisticsUnit meansUnit = u.getMeans();
-				if (meansUnit != null) {
-					return meansUnit;
-				} else {
-					log.info("No means to return to user <" + sessionLogin +
-							">.");
-					return null;
-				}
+			return getUserMeans(sessionLogin);
+		} else {
+			log.info("An user tried to get means but was not logged.");
+			return null;
+		}
+	}
+
+	/**
+	 * Static function which retrieve the means of a given user.
+	 * @param user Login of the user.
+	 * @return See getMeans function description.
+	 */
+	public static StatisticsUnit getUserMeans (String user) {
+		User u = ObjectifyService.ofy().load().type(User.class)
+				.filter("login", user).first().get();
+		if (u != null) {
+			StatisticsUnit meansUnit = u.getMeans();
+			if (meansUnit != null) {
+				return meansUnit;
 			} else {
-				log.warning("User <" + sessionLogin + "> tried to get means " +
-						"but this user doesn't exist.");
+				log.info("No means to return to user <" + user +
+						">.");
 				return null;
 			}
 		} else {
-			log.info("An user tried to get means but was not logged.");
+			log.warning("User <" + user + "> tried to get means " +
+					"but this user doesn't exist.");
+			return null;
+		}
+	}
+
+	/**
+	 * Retrieve the standard deviations computed for the current user.
+	 * @return Standard deviations of the user in a StatisticsUnit format or
+	 * null.
+	 */
+	public StatisticsUnit getSd() {
+		String sessionLogin = (String)getThreadLocalRequest().getSession()
+        		.getAttribute("login");
+		if (sessionLogin != null) {
+			return getUserSd(sessionLogin);
+		} else {
+			log.info("An user tried to get standard deviations but was not" +
+					" logged.");
+			return null;
+		}
+	}
+
+	/**
+	 * Static function which retrieve the standard deviations of a given user.
+	 * @param user Login of the user.
+	 * @return See getSd function description.
+	 */
+	public static StatisticsUnit getUserSd(String user) {
+		User u = ObjectifyService.ofy().load().type(User.class)
+				.filter("login", user).first().get();
+		if (u != null) {
+			StatisticsUnit sdUnit = u.getSd();
+			if (sdUnit != null) {
+				return sdUnit;
+			} else {
+				log.info("No standard deviations to return to user <" + user +
+						">.");
+				return null;
+			}
+		} else {
+			log.warning("User <" + user + "> tried to get means " +
+					"but this user doesn't exist.");
+			return null;
+		}
+	}
+
+	/**
+	 * Compute or retrieve the distance value between the KeystrokeSequence and
+	 * the stored data.
+	 * @param keystrokeSequence KeystrokeSequence to estimate distance from.
+	 * @return Distance.
+	 */
+	public Float getDistance(KeystrokeSequence keystrokeSequence) {
+		String sessionLogin = (String)getThreadLocalRequest().getSession()
+        		.getAttribute("login");
+		if (sessionLogin != null) {
+			return getUserDistance(keystrokeSequence, sessionLogin);
+		} else {
+			log.info("An user tried to get distance but was not logged.");
+			return null;
+		}
+	}
+
+	/**
+	 * Static function which compute or retrieve the distance between the
+	 * KeystrokeSequence and the stored data of a given user.
+	 * @param keystrokeSequence KeystrokeSequence to estimate distance from.
+	 * @param user User login.
+	 * @return Distance.
+	 */
+	public static Float getUserDistance(KeystrokeSequence keystrokeSequence,
+			String user) {
+		User u = ObjectifyService.ofy().load().type(User.class)
+				.filter("login", user).first().get();
+		if (u != null) {
+			StatisticsUnit sdUnit = u.getSd();
+			StatisticsUnit meansUnit = u.getMeans();
+			if (sdUnit != null && meansUnit != null) {
+				return ComputationServiceImpl.distance(keystrokeSequence,
+						meansUnit, sdUnit);
+			} else {
+				log.info("No distance to return to user <" + user + ">: " +
+						"unable to compute it.");
+				return null;
+			}
+		} else {
+			log.warning("User <" + user + "> tried to get distance but this " +
+					"user doesn't exist.");
 			return null;
 		}
 	}

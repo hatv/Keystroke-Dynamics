@@ -57,7 +57,7 @@ public class KeyDyn implements EntryPoint {
 	/**
 	 * Panel to store the member area charts and statistics.
 	 */
-	static VerticalPanel chartsPanel = new VerticalPanel();
+	static Grid chartsPanel = new Grid(13, 1);
 
 	/**
 	 * Generate an error message to display to the user.
@@ -924,21 +924,22 @@ public class KeyDyn implements EntryPoint {
 							LineChart pressedChart =
 									MemberAreaCharts.getChart(
 											"pressed", pressedData);
-							chartsPanel.add(pressedChart);
+							chartsPanel.setWidget(3, 0, pressedChart);
 							LineChart releasedChart =
 									MemberAreaCharts.getChart(
 											"released", releasedData);
-							chartsPanel.add(releasedChart);
-							LineChart pressedToReleaseChart =
+							chartsPanel.setWidget(6, 0, releasedChart);
+							LineChart pressedToReleasedChart =
 									MemberAreaCharts.getChart(
 											"pressedToReleased",
 											pressedToReleasedData);
-							chartsPanel.add(pressedToReleaseChart);
+							chartsPanel.setWidget(9, 0, pressedToReleasedChart);
 							LineChart releasedToPressedChart =
 									MemberAreaCharts.getChart(
 											"releasedToPressed",
 											releasedToPressedData);
-							chartsPanel.add(releasedToPressedChart);
+							chartsPanel.setWidget(
+									12, 0, releasedToPressedChart);
 						}
 					}
 				}
@@ -955,18 +956,45 @@ public class KeyDyn implements EntryPoint {
 					if (means != null) {
 						Label pressedMeans = new Label("Means: " +
 								means.getPressedStatistics().toString());
-						chartsPanel.insert(pressedMeans, 0);
+						chartsPanel.setWidget(1, 0, pressedMeans);
 						Label releasedMeans = new Label("Means: " +
 								means.getReleasedStatistics().toString());
-						chartsPanel.insert(releasedMeans, 2);
+						chartsPanel.setWidget(4, 0, releasedMeans);
 						Label pressedToReleasedMeans = new Label("Means: " +
 								means.getPressedToReleasedStatistics()
 								.toString());
-						chartsPanel.insert(pressedToReleasedMeans, 4);
+						chartsPanel.setWidget(7, 0, pressedToReleasedMeans);
 						Label releasedToPressedMeans = new Label("Means: " +
 								means.getReleasedToPressedStatistics()
 								.toString());
-						chartsPanel.insert(releasedToPressedMeans, 6);
+						chartsPanel.setWidget(10, 0, releasedToPressedMeans);
+					}
+				}
+			});
+
+			transmissionService.getSd(
+					new AsyncCallback<StatisticsUnit>() {
+						@Override
+				public void onFailure(Throwable caught) {
+					displayErrorMessage("SdRetrieval", caught.getMessage());
+				}
+				@Override
+				public void onSuccess(StatisticsUnit sd) {
+					if (sd != null) {
+						Label pressedSd = new Label("Sd: " +
+								sd.getPressedStatistics().toString());
+						chartsPanel.setWidget(2, 0, pressedSd);
+						Label releasedSd = new Label("Sd: " +
+								sd.getReleasedStatistics().toString());
+						chartsPanel.setWidget(5, 0, releasedSd);
+						Label pressedToReleasedSd = new Label("Sd: " +
+								sd.getPressedToReleasedStatistics()
+								.toString());
+						chartsPanel.setWidget(8, 0, pressedToReleasedSd);
+						Label releasedToPressedSd = new Label("Sd: " +
+								sd.getReleasedToPressedStatistics()
+								.toString());
+						chartsPanel.setWidget(11, 0, releasedToPressedSd);
 					}
 				}
 			});
@@ -995,7 +1023,6 @@ public class KeyDyn implements EntryPoint {
 	 * @param kdData Keystroke Dynamics data.
 	 */
 	public static void appletCallback(final String kdData) {
-
 		transmissionService.saveKDData(kdData, new AsyncCallback<Boolean>() {
 			@Override
             public void onFailure(Throwable caught) {
@@ -1005,6 +1032,22 @@ public class KeyDyn implements EntryPoint {
             public void onSuccess(Boolean KDDataSaved) {
             	if (KDDataSaved) {
             		updateKDData();
+            		KeystrokeSequence keystrokeSequence =
+            				new KeystrokeSequence(kdData);
+            		transmissionService.getDistance(keystrokeSequence,
+            				new AsyncCallback<Float>() {
+            			@Override
+                        public void onFailure(Throwable caught) {
+            				displayErrorMessage("GetDistance",
+            						caught.getMessage());
+                        }
+                        @Override
+                        public void onSuccess(Float distance) {
+                        	Label distanceLabel = new Label("Distance: " +
+        							distance.toString());
+        					chartsPanel.setWidget(0, 0, distanceLabel);
+                        }
+            		});
             		RootPanel.get("infos").clear();
             	}
             	else {
