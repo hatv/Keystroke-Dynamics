@@ -135,6 +135,7 @@ public class KeyDyn implements EntryPoint {
 		// TODO: replace with the Java applet when ready to use.
 		// Java Applet focus when password, unfocus after
 		RootPanel.get("content").clear();
+		RootPanel.get("errors").clear();
 		RootPanel.get("infos").clear();
 
 		VerticalPanel container = new VerticalPanel();
@@ -256,6 +257,7 @@ public class KeyDyn implements EntryPoint {
 	private void loadAboutPage () {
 		// TODO: content
 		RootPanel.get("content").clear();
+		RootPanel.get("errors").clear();
 		RootPanel.get("infos").clear();
 		VerticalPanel container = new VerticalPanel();
 		container.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
@@ -302,6 +304,7 @@ public class KeyDyn implements EntryPoint {
 		 * Build the registration page
 		 */
 		RootPanel.get("content").clear();
+		RootPanel.get("errors").clear();
 		RootPanel.get("infos").clear();
 
 		VerticalPanel container = new VerticalPanel();
@@ -801,6 +804,7 @@ public class KeyDyn implements EntryPoint {
 		this.trainJSNI();
 
 		RootPanel.get("content").clear();
+		RootPanel.get("errors").clear();
 		RootPanel.get("infos").clear();
 		chartsPanel.clear();
 		
@@ -906,6 +910,7 @@ public class KeyDyn implements EntryPoint {
 		this.testJSNI();
 
 		RootPanel.get("content").clear();
+		RootPanel.get("errors").clear();
 		RootPanel.get("infos").clear();
 		chartsPanel.clear();
 		
@@ -1200,6 +1205,7 @@ public class KeyDyn implements EntryPoint {
                         }
             		});
             		RootPanel.get("infos").clear();
+            		RootPanel.get("errors").clear();
             	}
             	else {
             		displayInfoMessage("Wrong data: not saved.", true);
@@ -1264,6 +1270,7 @@ public class KeyDyn implements EntryPoint {
                         }
             		});
             		RootPanel.get("infos").clear();
+            		RootPanel.get("errors").clear();
             	}
             	else {
             		displayInfoMessage("Wrong data: not saved.", true);
