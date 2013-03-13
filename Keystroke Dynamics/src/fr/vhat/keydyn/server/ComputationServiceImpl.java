@@ -218,9 +218,6 @@ public class ComputationServiceImpl extends RemoteServiceServlet implements
 		}
 		distanceSd /= size;
 		distanceSd = (float)Math.sqrt(distanceSd);
-		System.out.println(size);
-		System.out.println(distanceMean.toString());
-		System.out.println(distanceSd.toString());
 		return distanceMean + 2 * distanceSd;
 	}
 }

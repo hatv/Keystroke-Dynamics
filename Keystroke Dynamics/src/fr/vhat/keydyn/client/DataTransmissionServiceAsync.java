@@ -11,7 +11,8 @@ import fr.vhat.keydyn.shared.StatisticsUnit;
  * @author Victor Hatinguais, www.victorhatinguais.fr
  */
 public interface DataTransmissionServiceAsync {
-	void saveKDData(String kdData, AsyncCallback<Boolean> callback);
+	void saveKDData(String kdData, boolean test,
+			AsyncCallback<Boolean> callback);
 	void getKDData(AsyncCallback<List<KDPassword>> callback);
 	void getMeans(AsyncCallback<StatisticsUnit> callback);
 	void getSd(AsyncCallback<StatisticsUnit> callback);

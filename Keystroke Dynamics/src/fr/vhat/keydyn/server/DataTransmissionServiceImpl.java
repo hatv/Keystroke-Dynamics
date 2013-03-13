@@ -39,7 +39,7 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 	 * @return True if the data have been stored, false otherwise.
 	 */
 	@Override
-	public boolean saveKDData(String kdString) {
+	public boolean saveKDData(String kdString, boolean test) {
 		// Check whether an user is logged or not
 		String sessionLogin = (String)getThreadLocalRequest().getSession()
         		.getAttribute("login");
@@ -55,6 +55,9 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 				String hashedPassword = u.getHashedPassword();
 				if (Password.check(password, hashedPassword)) {
 					// KDData can be saved in the data store
+					if (test) {
+						return true;
+					}
 					Date typingDate = new Date();
 			        KDPassword kdData = new KDPassword(password, sessionLogin,
 			        		keystrokeSequence, typingDate);

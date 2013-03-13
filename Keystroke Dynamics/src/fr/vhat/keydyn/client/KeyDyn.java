@@ -796,7 +796,9 @@ public class KeyDyn implements EntryPoint {
 	 * information about the account.
 	 * @param login Login of the current user.
 	 */
-	private void loadUserPage (String login) {
+	private void loadUserPage (final String login) {
+
+		this.trainJSNI();
 
 		RootPanel.get("content").clear();
 		RootPanel.get("infos").clear();
@@ -815,12 +817,21 @@ public class KeyDyn implements EntryPoint {
 		container.add(header);
 		
 		Label welcomeLabel = new Label(
-				"Welcome to your member area " + login + "!");
+				"Welcome to your member area " + login + "! " +
+			    "You can train the system on this page.");
 		container.add(welcomeLabel);
-	
-		// TODO: Explanations on how to register: process, mails, password, data
+		container.setSpacing(5);
+
+		Button testButton = new Button("Test authentication");
+		container.add(testButton);
+
 		HTML explanations = new HTML();
-		explanations.setHTML("Type your password and press Enter.");
+		explanations.setHTML("Type your password and press Enter.<br/>" +
+				"If you typed the correct password, your keystroke dynamics " +
+				"will be saved and the authentication system will learn.<br/>" +
+				"<br/>At any time, if you consider the current keystroke " +
+				"dynamics does not match your usual,<br/>feel free to press " +
+				"Enter or Backspace to automatically reset the application.");
 		container.add(explanations);
 
 		// TODO: A box which contain remaining passwords to enter in order to
@@ -875,6 +886,109 @@ public class KeyDyn implements EntryPoint {
                     	loadHomePage();
                     }
 				});
+			}
+		});
+
+		testButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				loadTestPage(login);
+			}
+		});
+	}
+
+	/**
+	 * Load the member area page which contain the authentication test module.
+	 * @param login Login of the current user.
+	 */
+	private void loadTestPage (final String login) {
+
+		this.testJSNI();
+
+		RootPanel.get("content").clear();
+		RootPanel.get("infos").clear();
+		chartsPanel.clear();
+		
+		final VerticalPanel container = new VerticalPanel();
+		container.addStyleName("container");
+		container.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		
+		HorizontalPanel header = new HorizontalPanel();
+		Button logoutButton = new Button("Logout");
+		Button aboutButton = new Button("About");
+		header.setSpacing(5);
+		header.add(logoutButton);
+		header.add(aboutButton);
+		container.add(header);
+		
+		Label welcomeLabel = new Label(
+				"Welcome to your member area " + login + "! " +
+			    "You can test the system on this page.");
+		container.add(welcomeLabel);
+		container.setSpacing(5);
+
+		Button trainButton = new Button("Train the system");
+		container.add(trainButton);
+
+		HTML explanations = new HTML();
+		explanations.setHTML("Type your password and press Enter.<br/>" +
+				"If you typed the correct password, your keystroke dynamics " +
+				"will be analyzed<br/> and the authentication system will " +
+				"tell you if it matches your usual one.");
+		container.add(explanations);
+
+		// TODO: A PasswordTextBox which display the password
+
+		HTML applet = new HTML();
+		String installJava = "<a href=\"http://www.java.com/en/download/help" +
+				"/windows_manual_download.xml\">Install Java now.</a>";
+		String testJava = "<a href=\"http://www.java.com/en/download/" +
+				"testjava.jsp\">Test Java.</a>";
+		// TODO hide applet + auto focus
+		String HTML5Applet = new String("<object id=\"KeyboardApplet\" " +
+			"type=\"application/x-java-applet\" height=\"100\" width=\"650\">" +
+			"<param name=\"mayscript\" value=\"yes\">" +
+			"<param name=\"scriptable\" value=\"true\">" +
+	        "<param name=\"codebase\" value=\"resources/\">" +
+	        "<param name=\"code\" value=\"KeyboardApplet.class\">" +
+	        "<!--  <param name=\"archive\" value=\"KeyboardApplet.jar\"> -->" +
+	        "This application is designed to securely authenticate users " +
+	        "according to their keystroke dynamics. In order to do that, " +
+	        "Java must be installed on your computer. " + installJava + " " +
+	        testJava + "</object>");
+	    applet.setHTML(HTML5Applet);
+	    container.add(applet);
+
+	    // TODO: l'applet doit libérer le focus une fois terminé
+	    HTML focusButton = new HTML();
+		focusButton.setHTML("<button " +
+				"onClick=\"startFocus('KeyboardApplet')\">" +
+				"Permanent focus</button>");
+	    container.add(focusButton);
+	    container.add(chartsPanel);
+
+		RootPanel.get("content").add(container);
+
+		logoutButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				authenticationService.logout(new AsyncCallback<Void>() {
+					@Override
+                    public void onFailure(Throwable caught) {
+						displayErrorMessage("Logout", caught.getMessage());
+                    }
+                    @Override
+                    public void onSuccess(Void result) {
+                    	loadHomePage();
+                    }
+				});
+			}
+		});
+
+		trainButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				loadUserPage(login);
 			}
 		});
 	}
@@ -1017,13 +1131,26 @@ public class KeyDyn implements EntryPoint {
     	}
     }-*/;
 
+	public native void testJSNI() /*-{
+		$wnd.appletCallback = function(x) {
+	    @fr.vhat.keydyn.client.KeyDyn::appletCallbackTest(Ljava/lang/String;)(x);
+		}
+	}-*/;
+
+	public native void trainJSNI() /*-{
+		$wnd.appletCallback = function(x) {
+	    @fr.vhat.keydyn.client.KeyDyn::appletCallback(Ljava/lang/String;)(x);
+		}
+	}-*/;
+
 	/**
 	 * Check Keystroke Dynamics data and store them in the data store.
 	 * This function is called from the Keyboard Applet via JSNI.
 	 * @param kdData Keystroke Dynamics data.
 	 */
 	public static void appletCallback(final String kdData) {
-		transmissionService.saveKDData(kdData, new AsyncCallback<Boolean>() {
+		transmissionService.saveKDData(kdData, false,
+				new AsyncCallback<Boolean>() {
 			@Override
             public void onFailure(Throwable caught) {
 				displayErrorMessage("SaveNewKDData", caught.getMessage());
@@ -1050,6 +1177,70 @@ public class KeyDyn implements EntryPoint {
                 				@Override
                                 public void onFailure(Throwable caught) {
                     				displayErrorMessage("GetThreshold",
+                    						caught.getMessage());
+                                }
+                                @Override
+                                public void onSuccess(Float threshold) {
+                                	if (distance <= threshold) {
+                                		distanceLabel.setText(
+                                				distanceLabel.getText() +
+                                				" ; Authentication : OK" +
+                                				" (Threshold = " +
+                                				threshold.toString() + ")");
+                                	} else {
+                                		distanceLabel.setText(
+                                				distanceLabel.getText() +
+                                				" ; Authentication : FAIL" +
+                                				" (Threshold = " +
+                                				threshold.toString() + ")");
+                                	}
+                                }
+                        	});
+        					chartsPanel.setWidget(0, 0, distanceLabel);
+                        }
+            		});
+            		RootPanel.get("infos").clear();
+            	}
+            	else {
+            		displayInfoMessage("Wrong data: not saved.", true);
+            	}
+            }
+		});
+	};
+
+	/**
+	 * Check Keystroke Dynamics data and test them.
+	 * This function is called from the Keyboard Applet via JSNI.
+	 * @param kdData Keystroke Dynamics data.
+	 */
+	public static void appletCallbackTest(final String kdData) {
+		transmissionService.saveKDData(kdData, true,
+				new AsyncCallback<Boolean>() {
+			@Override
+            public void onFailure(Throwable caught) {
+				displayErrorMessage("TestKDData", caught.getMessage());
+            }
+            @Override
+            public void onSuccess(Boolean KDDataSaved) {
+            	if (KDDataSaved) {
+            		KeystrokeSequence keystrokeSequence =
+            				new KeystrokeSequence(kdData);
+            		transmissionService.getDistance(keystrokeSequence,
+            				new AsyncCallback<Float>() {
+            			@Override
+                        public void onFailure(Throwable caught) {
+            				displayErrorMessage("GetDistanceTest",
+            						caught.getMessage());
+                        }
+                        @Override
+                        public void onSuccess(final Float distance) {
+                        	final Label distanceLabel = new Label("Distance: " +
+        							distance.toString());
+                        	transmissionService.getThreshold(
+                        			new AsyncCallback<Float>() {
+                				@Override
+                                public void onFailure(Throwable caught) {
+                    				displayErrorMessage("GetThresholdTest",
                     						caught.getMessage());
                                 }
                                 @Override
