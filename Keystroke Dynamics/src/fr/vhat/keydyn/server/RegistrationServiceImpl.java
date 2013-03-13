@@ -57,7 +57,7 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements
 			log.info("User <" + login + "> created with password <" + password
 					+ ">.");
 
-			Mail.sendWelcomeMail("vh7utc@gmail.com", login, password);
+			Mail.sendWelcomeMail(email, login, password);
 			return true;
 		} else
 			return false;
