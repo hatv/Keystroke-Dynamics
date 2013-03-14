@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.LinkedList;
 import java.util.List;
+
 import netscape.javascript.JSObject;
 
 /**

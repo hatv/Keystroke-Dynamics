@@ -24,6 +24,10 @@
 					document.getElementById(id).requestFocus();
 				};
 			}
+			function stopFocus() {
+                window.onfocus = function() {};
+                window.onclick = function() {};
+            }
 		</script>
 	</head>
 	<body>

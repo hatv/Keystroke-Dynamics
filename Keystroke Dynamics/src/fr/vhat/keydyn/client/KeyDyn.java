@@ -939,7 +939,10 @@ public class KeyDyn implements EntryPoint {
 		explanations.setHTML("Type your password and press Enter.<br/>" +
 				"If you typed the correct password, your keystroke dynamics " +
 				"will be analyzed<br/> and the authentication system will " +
-				"tell you if it matches your usual one.");
+				"tell you if it matches your usual one.<br/><br/>" +
+				"You can also try to log in as an other user by entering a " +
+				"login in the textbox.<br/>A list of existing login and " +
+				"pasword is given so you can try.");
 		container.add(explanations);
 
 		// TODO: A PasswordTextBox which display the password
@@ -965,12 +968,47 @@ public class KeyDyn implements EntryPoint {
 	    container.add(applet);
 
 	    // TODO: l'applet doit libérer le focus une fois terminé
-	    HTML focusButton = new HTML();
+	    /*HTML focusButton = new HTML();
 		focusButton.setHTML("<button " +
 				"onClick=\"startFocus('KeyboardApplet')\">" +
 				"Permanent focus</button>");
-	    container.add(focusButton);
+	    container.add(focusButton);*/
 	    container.add(chartsPanel);
+
+	    HorizontalPanel testLoginPanel = new HorizontalPanel();
+	    Label testLoginLabel = new Label("Login");
+	    TextBox testLogin = new TextBox();
+	    testLogin.setText(login);
+	    testLoginPanel.add(testLoginLabel);
+	    testLoginPanel.add(testLogin);
+	    HorizontalPanel testPasswordPanel = new HorizontalPanel();
+	    Label testPasswordLabel = new Label("Password");
+	    PasswordTextBox testPassword = new PasswordTextBox();
+	    testPasswordPanel.add(testPasswordLabel);
+	    testPasswordPanel.add(testPassword);
+	    container.add(testLoginPanel);
+	    container.add(testPassword);
+
+	    testLogin.addFocusHandler(new FocusHandler() {
+			@Override
+			public native void onFocus(FocusEvent event) /*-{
+			    $wnd.stopFocus();
+			}-*/;
+		});
+
+	    testLogin.addBlurHandler(new BlurHandler() {
+			@Override
+			public native void onBlur(BlurEvent event) /*-{
+			    $wnd.startFocus('KeyboardApplet');
+			}-*/;
+		});
+
+	    testPassword.addFocusHandler(new FocusHandler() {
+			@Override
+			public native void onFocus(FocusEvent event) /*-{
+			    $wnd.startFocus('KeyboardApplet');
+			}-*/;
+		});
 
 		RootPanel.get("content").add(container);
 
@@ -1128,6 +1166,9 @@ public class KeyDyn implements EntryPoint {
 	 * 		Called from Keyboard Applet to send last typed character.
 	 */
 	public native void JSNI() /*-{
+		$wnd.requestFocus = function() {
+			$wnd.startFocus('KeyboardApplet');
+		}
     	$wnd.appletCallback = function(x) {
            @fr.vhat.keydyn.client.KeyDyn::appletCallback(Ljava/lang/String;)(x);
     	}
@@ -1208,6 +1249,8 @@ public class KeyDyn implements EntryPoint {
             		RootPanel.get("errors").clear();
             	}
             	else {
+            		RootPanel.get("infos").clear();
+            		RootPanel.get("errors").clear();
             		displayInfoMessage("Wrong data: not saved.", true);
             	}
             }
@@ -1273,6 +1316,8 @@ public class KeyDyn implements EntryPoint {
             		RootPanel.get("errors").clear();
             	}
             	else {
+            		RootPanel.get("infos").clear();
+            		RootPanel.get("errors").clear();
             		displayInfoMessage("Wrong data: not saved.", true);
             	}
             }
@@ -1287,6 +1332,7 @@ public class KeyDyn implements EntryPoint {
 	public static void appletCallbackChar(final String c) {
 		// TODO: display in a field
 		// TODO: when appletCallback is called, clear the field
+		
 	}
 
 	/**
