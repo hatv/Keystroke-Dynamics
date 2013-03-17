@@ -1,7 +1,9 @@
-package fr.vhat.keydyn.client;
+package fr.vhat.keydyn.client.services;
 
 import java.util.List;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import fr.vhat.keydyn.client.entities.KDPassword;
 import fr.vhat.keydyn.shared.KeystrokeSequence;
 import fr.vhat.keydyn.shared.StatisticsUnit;
@@ -11,8 +13,6 @@ import fr.vhat.keydyn.shared.StatisticsUnit;
  * @author Victor Hatinguais, www.victorhatinguais.fr
  */
 public interface DataTransmissionServiceAsync {
-	void saveKDData(String kdData, boolean test,
-			AsyncCallback<Boolean> callback);
 	void getKDData(AsyncCallback<List<KDPassword>> callback);
 	void getMeans(AsyncCallback<StatisticsUnit> callback);
 	void getSd(AsyncCallback<StatisticsUnit> callback);

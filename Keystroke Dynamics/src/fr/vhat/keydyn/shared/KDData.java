@@ -2,6 +2,7 @@ package fr.vhat.keydyn.shared;
 
 /**
  * Implement several static functions to manage Keystroke Dynamics data.
+ * @author Victor Hatinguais, www.victorhatinguais.fr
  */
 public class KDData {
 

@@ -1,4 +1,4 @@
-package fr.vhat.keydyn.client;
+package fr.vhat.keydyn.client.services;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -7,8 +7,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author Victor Hatinguais, www.victorhatinguais.fr
  */
 public interface RegistrationServiceAsync {
+	void checkLoginAvailability(String login, AsyncCallback<Boolean> callback);
 	void registerUser(String login, String email, int age, String gender,
 			String country, int computerExperience, int computerUsage, 
-			AsyncCallback<Boolean> callback)
-					throws IllegalArgumentException;
+			AsyncCallback<Boolean> callback);
 }

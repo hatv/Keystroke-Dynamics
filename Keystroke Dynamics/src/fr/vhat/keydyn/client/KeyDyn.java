@@ -33,6 +33,12 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.LineChart;
 import fr.vhat.keydyn.client.entities.KDPassword;
+import fr.vhat.keydyn.client.services.AuthenticationService;
+import fr.vhat.keydyn.client.services.AuthenticationServiceAsync;
+import fr.vhat.keydyn.client.services.DataTransmissionService;
+import fr.vhat.keydyn.client.services.DataTransmissionServiceAsync;
+import fr.vhat.keydyn.client.services.RegistrationService;
+import fr.vhat.keydyn.client.services.RegistrationServiceAsync;
 import fr.vhat.keydyn.shared.FieldVerifier;
 import fr.vhat.keydyn.shared.KeystrokeSequence;
 import fr.vhat.keydyn.shared.StatisticsUnit;
@@ -328,16 +334,16 @@ public class KeyDyn implements EntryPoint {
 		container.add(header);
 
 		HTML registeringExplanation = new HTML();
-		String explanationText = "To sign up, please fill out the following " +
-			    "form and send it.<br />You'll receive an email with your " +
-			    "password.";
+		String explanationText = "Pour vous inscrire, merci de compléter ce " +
+			    "formulaire.<br />Vous recevrez un courriel contenant votre " +
+			    "mot de passe dans les minutes qui suivent.";
 		registeringExplanation.setHTML(explanationText);
 		container.add(registeringExplanation);
 
 		Grid userDataGrid = new Grid(7, 2);
 		userDataGrid.setCellPadding(7);
 
-		Label loginLabel = new Label("Login");
+		Label loginLabel = new Label("Identifiant");
 		loginLabel.addStyleName("registrationLabel");
 		HorizontalPanel loginPanel = new HorizontalPanel();
 		loginUser = new TextBox();
@@ -354,7 +360,7 @@ public class KeyDyn implements EntryPoint {
 		userDataGrid.setWidget(0, 0, loginLabel);
 		userDataGrid.setWidget(0, 1, loginPanel);
 
-		Label emailLabel = new Label("E-mail");
+		Label emailLabel = new Label("Courriel");
 		emailLabel.addStyleName("registrationLabel");
 		HorizontalPanel emailPanel = new HorizontalPanel();
 		emailUser = new TextBox();
@@ -368,7 +374,7 @@ public class KeyDyn implements EntryPoint {
 		userDataGrid.setWidget(1, 0, emailLabel);
 		userDataGrid.setWidget(1, 1, emailPanel);
 
-		Label ageLabel = new Label("Age");
+		Label ageLabel = new Label("Âge");
 		ageLabel.addStyleName("registrationLabel");
 		HorizontalPanel agePanel = new HorizontalPanel();
 		ageUser = new TextBox();
@@ -381,23 +387,23 @@ public class KeyDyn implements EntryPoint {
 		userDataGrid.setWidget(2, 0, ageLabel);
 		userDataGrid.setWidget(2, 1, agePanel);
 
-		Label genderLabel = new Label("Gender");
+		Label genderLabel = new Label("Sexe");
 		genderLabel.addStyleName("registrationLabel");
 		userDataGrid.setWidget(3, 0, genderLabel);
 		HorizontalPanel genderPanel = new HorizontalPanel();
 		genderPanel.setSpacing(5);
 		VerticalPanel genderRadioPanel = new VerticalPanel();
 		genderPanel.add(genderRadioPanel);
-		genderUserFemale = new RadioButton("gender", "Female");
+		genderUserFemale = new RadioButton("gender", "Féminin");
 		genderRadioPanel.add(genderUserFemale);
-		genderUserMale = new RadioButton("gender", "Male");
+		genderUserMale = new RadioButton("gender", "Masculin");
 		genderRadioPanel.add(genderUserMale);
 		final Image genderValidity = new Image();
 		genderValidity.setVisible(false);
 		genderPanel.add(genderValidity);
 		userDataGrid.setWidget(3, 1, genderPanel);
 
-		Label countryLabel = new Label("Country");
+		Label countryLabel = new Label("Pays");
 		countryLabel.addStyleName("registrationLabel");
 		userDataGrid.setWidget(4, 0, countryLabel);
 		HorizontalPanel countryPanel = new HorizontalPanel();
@@ -407,46 +413,47 @@ public class KeyDyn implements EntryPoint {
 		countryList.addItem("Canada");
 		countryList.addItem("France");
 		countryList.addItem("U.S.A.");
-		countryList.addItem("United Kingdom");
-		countryList.addItem("Spain");
-		countryList.addItem("Belgium");
-		countryList.addItem("Other");
+		countryList.addItem("Royaume-Uni");
+		countryList.addItem("Espagne");
+		countryList.addItem("Belgique");
+		countryList.addItem("Suisse");
+		countryList.addItem("Autre");
 		countryPanel.add(countryList);
 		final Image countryValidity = new Image();
 		countryValidity.setVisible(false);
 		countryPanel.add(countryValidity);
 		userDataGrid.setWidget(4, 1, countryPanel);
 
-		Label experienceLabel = new Label("Computer experience");
+		Label experienceLabel = new Label("Expérience informatique");
 		experienceLabel.addStyleName("registrationLabel");
 		userDataGrid.setWidget(5, 0, experienceLabel);
 		HorizontalPanel experiencePanel = new HorizontalPanel();
 		experienceList = new ListBox();
 		experienceList.addStyleName("registrationLabel");
 		experienceList.addItem("");
-		experienceList.addItem("< 2 years");
-		experienceList.addItem("~ 4 years");
-		experienceList.addItem("~ 7 years");
-		experienceList.addItem("~ 10 years");
-		experienceList.addItem("> 13 years");
+		experienceList.addItem("< 2 ans");
+		experienceList.addItem("~ 4 ans");
+		experienceList.addItem("~ 7 ans");
+		experienceList.addItem("~ 10 ans");
+		experienceList.addItem("> 13 ans");
 		experiencePanel.add(experienceList);
 		final Image experienceValidity = new Image();
 		experienceValidity.setVisible(false);
 		experiencePanel.add(experienceValidity);
 		userDataGrid.setWidget(5, 1, experiencePanel);
 
-		Label usageLabel = new Label("Typing per week");
+		Label usageLabel = new Label("Usage quotidien du clavier");
 		usageLabel.addStyleName("registrationLabel");
 		userDataGrid.setWidget(6, 0, usageLabel);
 		HorizontalPanel usagePanel = new HorizontalPanel();
 		usageList = new ListBox();
 		usageList.addStyleName("registrationLabel");
 		usageList.addItem("");
-		usageList.addItem("< 30 minutes a day");
-		usageList.addItem("~ 1 hour a day");
-		usageList.addItem("~ 2 hours a day");
-		usageList.addItem("~ 4 hours a day");
-		usageList.addItem("> 5 hours a day");
+		usageList.addItem("< 30 minutes");
+		usageList.addItem("~ 1 heure");
+		usageList.addItem("~ 2 heures");
+		usageList.addItem("~ 4 heures");
+		usageList.addItem("> 5 heures");
 		usagePanel.add(usageList);
 		final Image usageValidity = new Image();
 		usageValidity.setVisible(false);
@@ -455,7 +462,7 @@ public class KeyDyn implements EntryPoint {
 
 		container.add(userDataGrid);
 
-		signUpButton = new Button("Sign up");
+		signUpButton = new Button("S'inscrire");
 		container.add(signUpButton);
 
 		container.addStyleName("container");
@@ -488,7 +495,7 @@ public class KeyDyn implements EntryPoint {
 					loginAvailability.setUrl("resources/img/working.png");
 					loginAvailability.setTitle(
 							"Checking login availability...");
-					authenticationService.checkLoginAvailability(login,
+					registrationService.checkLoginAvailability(login,
 							new AsyncCallback<Boolean>() {
 						@Override
 						public void onFailure(Throwable caught) {
@@ -726,10 +733,10 @@ public class KeyDyn implements EntryPoint {
 				String age = ageUser.getText();
 				String gender = "Undefined";
 				if (genderUserMale.getValue() && !genderUserFemale.getValue()) {
-					gender = "Male";
+					gender = "Masculin";
 				} else if (!genderUserMale.getValue() &&
 						genderUserFemale.getValue()) {
-					gender = "Female";
+					gender = "Féminin";
 				}
 				String country =
 						countryList.getValue(countryList.getSelectedIndex());
@@ -1067,16 +1074,16 @@ public class KeyDyn implements EntryPoint {
 										kdData.get(i).getKeystrokeSequence();
 								pressedData[i] =
 										keystrokeSequence
-										.getPressToPressSequence();
+										.getPressedToPressedSequence();
 								releasedData[i] =
 										keystrokeSequence
-										.getReleaseToReleaseSequence();
+										.getReleasedToReleasedSequence();
 								pressedToReleasedData[i] =
 										keystrokeSequence
-										.getPressToReleaseSequence();
+										.getPressedToReleasedSequence();
 								releasedToPressedData[i] =
 										keystrokeSequence
-										.getReleaseToPressSequence();
+										.getReleasedToPressedSequence();
 							}
 							LineChart pressedChart =
 									MemberAreaCharts.getChart(
@@ -1112,10 +1119,10 @@ public class KeyDyn implements EntryPoint {
 				public void onSuccess(StatisticsUnit means) {
 					if (means != null) {
 						Label pressedMeans = new Label("Means: " +
-								means.getPressedStatistics().toString());
+								means.getPressedToPressedStatistics().toString());
 						chartsPanel.setWidget(1, 0, pressedMeans);
 						Label releasedMeans = new Label("Means: " +
-								means.getReleasedStatistics().toString());
+								means.getReleasedToReleasedStatistics().toString());
 						chartsPanel.setWidget(4, 0, releasedMeans);
 						Label pressedToReleasedMeans = new Label("Means: " +
 								means.getPressedToReleasedStatistics()
@@ -1139,10 +1146,10 @@ public class KeyDyn implements EntryPoint {
 				public void onSuccess(StatisticsUnit sd) {
 					if (sd != null) {
 						Label pressedSd = new Label("Sd: " +
-								sd.getPressedStatistics().toString());
+								sd.getPressedToPressedStatistics().toString());
 						chartsPanel.setWidget(2, 0, pressedSd);
 						Label releasedSd = new Label("Sd: " +
-								sd.getReleasedStatistics().toString());
+								sd.getReleasedToReleasedStatistics().toString());
 						chartsPanel.setWidget(5, 0, releasedSd);
 						Label pressedToReleasedSd = new Label("Sd: " +
 								sd.getPressedToReleasedStatistics()

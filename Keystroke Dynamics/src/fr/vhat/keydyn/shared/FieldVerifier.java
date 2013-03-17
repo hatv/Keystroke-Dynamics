@@ -39,15 +39,15 @@ public class FieldVerifier {
 	}
 
 	public static boolean isValidGender(String gender) {
-		if (gender.equals("Male") || gender.equals("Female"))
+		if (gender.equals("Masculin") || gender.equals("Féminin"))
 			return true;
 		else
 			return false;
 	}
 
 	public static boolean isValidCountry(String country) {
-		String[] countries = {"Canada", "France", "U.S.A.", "United Kingdom",
-				"Spain", "Belgium", "Other"};
+		String[] countries = {"Canada", "France", "U.S.A.", "Royaume-Uni",
+				"Espagne", "Belgique", "Suisse", "Autre"};
 		for (int i = 0 ; i < countries.length ; ++i) {
 			if (country.equals(countries[i])) {
 				return true;
@@ -57,8 +57,8 @@ public class FieldVerifier {
 	}
 
 	public static boolean isValidExperience(String computerExperience) {
-		String[] experienceTable = {"< 2 years", "~ 4 years", "~ 7 years",
-				"~ 10 years", "> 13 years"};
+		String[] experienceTable = {"< 2 ans", "~ 4 ans", "~ 7 ans",
+				"~ 10 ans", "> 13 ans"};
 		for (int i = 0 ; i < experienceTable.length ; ++i) {
 			if (computerExperience.equals(experienceTable[i])) {
 				return true;
@@ -75,8 +75,8 @@ public class FieldVerifier {
 	}
 
 	public static boolean isValidUsage(String typingUsage) {
-		String[] usageTable = {"< 30 minutes a day", "~ 1 hour a day",
-				"~ 2 hours a day", "~ 4 hours a day", "> 5 hours a day"};
+		String[] usageTable = {"< 30 minutes", "~ 1 heure",
+				"~ 2 heures", "~ 4 heures", "> 5 heures"};
 		for (int i = 0 ; i < usageTable.length ; ++i) {
 			if (typingUsage.equals(usageTable[i])) {
 				return true;

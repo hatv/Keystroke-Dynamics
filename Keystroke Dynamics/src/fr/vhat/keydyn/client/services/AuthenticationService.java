@@ -1,7 +1,9 @@
-package fr.vhat.keydyn.client;
+package fr.vhat.keydyn.client.services;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+
+import fr.vhat.keydyn.shared.KeystrokeSequence;
 
 /**
  * Authentication and sessions management.
@@ -9,9 +11,9 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("authentication")
 public interface AuthenticationService extends RemoteService {
-	boolean authenticateUser(String login, String password)
-					throws IllegalArgumentException;
+	boolean authenticateUser(String login, String password);
+	Float[] authenticateUser(String login, int saveData,
+			KeystrokeSequence keystrokeSequence, boolean giveInfos);
 	void logout();
 	String validateSession();
-	boolean checkLoginAvailability(String login);
 }

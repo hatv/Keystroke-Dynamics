@@ -40,17 +40,17 @@ public class User implements Serializable {
 	@Index
 	private int typingUsage;
 	private Date registrationDate;
-	private List<Key<KDPassword>> KDDataKeys = new ArrayList<Key<KDPassword>>();
+	private List<Key<KDPassword>> kdPasswordKeys =
+			new ArrayList<Key<KDPassword>>();
 	// Enrollment
 	@Index
-	private int enrollmentStep; // from 0 (no data) to 3 (more than 30 data)
-	private Date lastStepDate;
-	private Date lastMailSentDate;
+	private boolean isEnoughTrained;
 	// Computation
 	@Serialize
 	private StatisticsUnit means;
 	@Serialize
 	private StatisticsUnit sd;
+	private Float threshold;
 
 	@SuppressWarnings("unused")
 	private User() {}
@@ -65,12 +65,12 @@ public class User implements Serializable {
 	 * @param gender Gender among "Male" and "Female".
 	 * @param country Country.
 	 * @param computerExperience Computer experience level.
-	 * @param computerUsage Typing usage level.
+	 * @param typingUsage Typing usage level.
 	 * @param registrationDate Registration date.
 	 */
 	public User(String login, String password, String hashedPassword,
 			String email, int age, String gender, String country,
-			int computerExperience, int computerUsage, Date registrationDate) {
+			int computerExperience, int typingUsage, Date registrationDate) {
 		this.setActive(true);
 		this.setLogin(login);
 		this.setPassword(password);
@@ -80,8 +80,10 @@ public class User implements Serializable {
 		this.setGender(gender);
 		this.setCountry(country);
 		this.setComputerExperience(computerExperience);
-		this.setTypingUsage(computerUsage);
+		this.setTypingUsage(typingUsage);
 		this.setRegistrationDate(registrationDate);
+		this.setEnoughTrained(false);
+		this.setThreshold((float)0);
 	}
 	
 	public String getLogin() {
@@ -154,6 +156,9 @@ public class User implements Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
+		int charactersNumber = password.length();
+		this.setMeans(new StatisticsUnit(charactersNumber));
+		this.setSd(new StatisticsUnit(charactersNumber));
 	}
 
 	public String getHashedPassword() {
@@ -172,48 +177,12 @@ public class User implements Serializable {
 		this.registrationDate = registrationDate;
 	}
 
-	public Key<KDPassword> getKDDataKey(int index) {
-		return KDDataKeys.get(index);
+	public boolean isEnoughTrained() {
+		return isEnoughTrained();
 	}
 
-	public int getKDDataSize() {
-		return KDDataKeys.size();
-	}
-
-	public void addKDDataKey(Key<KDPassword> kdDataKey) {
-		KDDataKeys.add(kdDataKey);
-	}
-
-	public List<Key<KDPassword>> getKDDataKeys() {
-		return KDDataKeys;
-	}
-
-	public void setKDDataKeys(List<Key<KDPassword>> kDDataKeys) {
-		KDDataKeys = kDDataKeys;
-	}
-
-	public int getEnrollmentStep() {
-		return enrollmentStep;
-	}
-
-	public void setEnrollmentStep(int enrollmentStep) {
-		this.enrollmentStep = enrollmentStep;
-	}
-
-	public Date getLastStepDate() {
-		return lastStepDate;
-	}
-
-	public void setLastStepDate(Date lastStepDate) {
-		this.lastStepDate = lastStepDate;
-	}
-
-	public Date getLastMailSentDate() {
-		return lastMailSentDate;
-	}
-
-	public void setLastMailSentDate(Date lastMailSentDate) {
-		this.lastMailSentDate = lastMailSentDate;
+	public void setEnoughTrained(boolean isEnoughTrained) {
+		this.isEnoughTrained = isEnoughTrained;
 	}
 
 	public boolean isActive() {
@@ -238,5 +207,47 @@ public class User implements Serializable {
 
 	public void setSd(StatisticsUnit sd) {
 		this.sd = sd;
+	}
+
+	public Float getThreshold() {
+		return threshold;
+	}
+
+	public void setThreshold(Float threshold) {
+		this.threshold = threshold;
+	}
+
+	public List<Key<KDPassword>> getKDPasswordKeys() {
+		return kdPasswordKeys;
+	}
+
+	public void setKDPasswordKeys(List<Key<KDPassword>> kDPasswordKeys) {
+		kdPasswordKeys = kDPasswordKeys;
+	}
+
+	/**
+	 * Return the key of the given index Keystroke Dynamics Password.
+	 * @param index Index of the key to retrieve.
+	 * @return Key of the given index Keystroke Dynamics Password.
+	 */
+	public Key<KDPassword> getKDPasswordKey(int index) {
+		return kdPasswordKeys.get(index);
+	}
+
+	/**
+	 * Return the number of Keystroke Dynamics Password stored in the data store
+	 * for this user.
+	 * @return Number of data stored.
+	 */
+	public int getKDPasswordNumber() {
+		return kdPasswordKeys.size();
+	}
+
+	/**
+	 * Add a Keystroke Dynamics Password key to the user list.
+	 * @param kdPasswordKey Key to add to the list.
+	 */
+	public void addKDPasswordKey(Key<KDPassword> kdPasswordKey) {
+		kdPasswordKeys.add(kdPasswordKey);
 	}
 }

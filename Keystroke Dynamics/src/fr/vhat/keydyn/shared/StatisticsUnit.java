@@ -9,25 +9,56 @@ import java.io.Serializable;
  */
 @SuppressWarnings("serial")
 public class StatisticsUnit implements Serializable {
-	private TimeSequence pressedStatistics;
-	private TimeSequence releasedStatistics;
+
+	private int length;
+	private TimeSequence pressedToPressedStatistics;
+	private TimeSequence releasedToReleasedStatistics;
 	private TimeSequence pressedToReleasedStatistics;
 	private TimeSequence releasedToPressedStatistics;
 
-	public TimeSequence getPressedStatistics() {
-		return pressedStatistics;
+	public StatisticsUnit() {}
+
+	/**
+	 * Constructor which initialize the Statistics Unit object with zero Time
+	 * Sequences.
+	 * @param length Length of the element.
+	 */
+	public StatisticsUnit(int length) {
+		this.setLength(length);
+		this.setPressedToPressedStatistics(
+				new TimeSequence(this.getLength() - 1));
+		this.setReleasedToReleasedStatistics(
+				new TimeSequence(this.getLength() - 1));
+		this.setPressedToReleasedStatistics(
+				new TimeSequence(this.getLength()));
+		this.setReleasedToPressedStatistics(
+				new TimeSequence(this.getLength() - 1));
 	}
 
-	public void setPressedStatistics(TimeSequence pressedStatistics) {
-		this.pressedStatistics = pressedStatistics;
+	public int getLength() {
+		return length;
 	}
 
-	public TimeSequence getReleasedStatistics() {
-		return releasedStatistics;
+	public void setLength(int length) {
+		this.length = length;
 	}
 
-	public void setReleasedStatistics(TimeSequence releasedStatistics) {
-		this.releasedStatistics = releasedStatistics;
+	public TimeSequence getPressedToPressedStatistics() {
+		return pressedToPressedStatistics;
+	}
+
+	public void setPressedToPressedStatistics(
+			TimeSequence pressedToPressedStatistics) {
+		this.pressedToPressedStatistics = pressedToPressedStatistics;
+	}
+
+	public TimeSequence getReleasedToReleasedStatistics() {
+		return releasedToReleasedStatistics;
+	}
+
+	public void setReleasedToReleasedStatistics(
+			TimeSequence releasedToReleasedStatistics) {
+		this.releasedToReleasedStatistics = releasedToReleasedStatistics;
 	}
 
 	public TimeSequence getPressedToReleasedStatistics() {
@@ -48,13 +79,18 @@ public class StatisticsUnit implements Serializable {
 		this.releasedToPressedStatistics = releasedToPressedStatistics;
 	}
 
+	/**
+	 * Set the given index Time Sequence to the specified value.
+	 * @param i Index of the Time Sequence to set.
+	 * @param data Time Sequence to set.
+	 */
 	public void set(int i, TimeSequence data) {
 		switch(i) {
 			case 0:
-				this.setPressedStatistics(data);
+				this.setPressedToPressedStatistics(data);
 				break;
 			case 1:
-				this.setReleasedStatistics(data);
+				this.setReleasedToReleasedStatistics(data);
 				break;
 			case 2:
 				this.setPressedToReleasedStatistics(data);
@@ -67,6 +103,11 @@ public class StatisticsUnit implements Serializable {
 		}
 	}
 
+	/**
+	 * Set the given index Time Sequence to the specified value.
+	 * @param i Index of the Time Sequence to set.
+	 * @param data Integer tables to set as Time Sequence.
+	 */
 	public void set(int i, int[] data) {
 		this.set(i, new TimeSequence(data));
 	}
@@ -80,32 +121,33 @@ public class StatisticsUnit implements Serializable {
 	public void addToMeans(KeystrokeSequence keystrokeSequence,
 			int dataNumber) {
 
-		int[] pressToPressTimesUnit = this.pressedStatistics.getTimeTable();
+		int[] pressToPressTimesUnit =
+				this.pressedToPressedStatistics.getTimeTable();
 		int[] pressToPressTimesNew =
-				keystrokeSequence.getPressToPressSequence().getTimeTable();
+				keystrokeSequence.getPressedToPressedSequence().getTimeTable();
 		for (int i = 0 ; i < pressToPressTimesUnit.length ; ++i) {
 			pressToPressTimesUnit[i] = Math.round(
 					(dataNumber * pressToPressTimesUnit[i]
 							+ pressToPressTimesNew[i])/(float)(dataNumber + 1));
 		}
-		this.pressedStatistics.setTimeTable(pressToPressTimesUnit);
+		this.pressedToPressedStatistics.setTimeTable(pressToPressTimesUnit);
 
 		int[] releaseToReleaseTimesUnit =
-				this.releasedStatistics.getTimeTable();
+				this.releasedToReleasedStatistics.getTimeTable();
 		int[] releaseToReleaseTimesNew =
-				keystrokeSequence.getPressToPressSequence().getTimeTable();
+				keystrokeSequence.getPressedToPressedSequence().getTimeTable();
 		for (int i = 0 ; i < releaseToReleaseTimesUnit.length ; ++i) {
 			releaseToReleaseTimesUnit[i] = Math.round(
 					(dataNumber * releaseToReleaseTimesUnit[i]
 							+ releaseToReleaseTimesNew[i])/
 							(float)(dataNumber + 1));
 		}
-		this.releasedStatistics.setTimeTable(releaseToReleaseTimesUnit);
+		this.releasedToReleasedStatistics.setTimeTable(releaseToReleaseTimesUnit);
 
 		int[] pressToReleaseTimesUnit =
 				this.pressedToReleasedStatistics.getTimeTable();
 		int[] pressToReleaseTimesNew =
-				keystrokeSequence.getPressToReleaseSequence().getTimeTable();
+				keystrokeSequence.getPressedToReleasedSequence().getTimeTable();
 		for (int i = 0 ; i < pressToReleaseTimesUnit.length ; ++i) {
 			pressToReleaseTimesUnit[i] = Math.round(
 					(dataNumber * pressToReleaseTimesUnit[i]
@@ -117,7 +159,7 @@ public class StatisticsUnit implements Serializable {
 		int[] releaseToPressTimesUnit =
 				this.releasedToPressedStatistics.getTimeTable();
 		int[] releaseToPressTimesNew =
-				keystrokeSequence.getReleaseToPressSequence().getTimeTable();
+				keystrokeSequence.getReleasedToPressedSequence().getTimeTable();
 		for (int i = 0 ; i < releaseToPressTimesUnit.length ; ++i) {
 			releaseToPressTimesUnit[i] = Math.round(
 					(dataNumber * releaseToPressTimesUnit[i]

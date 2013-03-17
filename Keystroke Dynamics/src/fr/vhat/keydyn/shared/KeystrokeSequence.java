@@ -9,31 +9,51 @@ import java.io.Serializable;
  */
 @SuppressWarnings("serial")
 public class KeystrokeSequence implements Serializable {
+
 	private String phrase;
-	private TimeSequence pressSequence;
-	private TimeSequence releaseSequence;
+	private TimeSequence pressedSequence;
+	private TimeSequence releasedSequence;
 
 	public KeystrokeSequence() {}
 
+	/**
+	 * Constructor.
+	 * @param kdString Keystroke Dynamics string to build the Keystroke Sequence
+	 * from.
+	 */
 	public KeystrokeSequence(String kdString) {
 		this(KDData.password(kdString), KDData.typingTimes(kdString)[0],
 				KDData.typingTimes(kdString)[1]);
 	}
 
-	public KeystrokeSequence(String phrase, TimeSequence pressSequence,
-			TimeSequence releaseSequence) {
-		if (phrase.length() == pressSequence.length() &&
-				phrase.length() == releaseSequence.length()) {
+	/**
+	 * Constructor.
+	 * @param phrase Phrase or password associated with the Keystroke Sequence.
+	 * @param pressedSequence Pressed Time Sequence.
+	 * @param releasedSequence Released Time Sequence.
+	 */
+	public KeystrokeSequence(String phrase, TimeSequence pressedSequence,
+			TimeSequence releasedSequence) {
+		if (phrase.length() == pressedSequence.length() &&
+				phrase.length() == releasedSequence.length()) {
 			this.setPhrase(phrase);
-			this.setPressSequence(pressSequence);
-			this.setReleaseSequence(releaseSequence);
+			this.setPressedSequence(pressedSequence);
+			this.setReleasedSequence(releasedSequence);
 		}
 	}
 
-	public KeystrokeSequence(String phrase, int[] pressTimes,
-			int[] releaseTimes) {
-		this(phrase, new TimeSequence(pressTimes),
-				new TimeSequence(releaseTimes));
+	/**
+	 * Constructor.
+	 * @param phrase Phrase or password associated with the Keystroke Sequence.
+	 * @param pressedSequence Integers table representing the Pressed Time
+	 * Sequence.
+	 * @param releasedSequence Integers table representing the Released Time
+	 * Sequence.
+	 */
+	public KeystrokeSequence(String phrase, int[] pressedTimes,
+			int[] releasedTimes) {
+		this(phrase, new TimeSequence(pressedTimes),
+				new TimeSequence(releasedTimes));
 	}
 
 	public String getPhrase() {
@@ -44,63 +64,96 @@ public class KeystrokeSequence implements Serializable {
 		this.phrase = phrase;
 	}
 
-	public TimeSequence getPressSequence() {
-		return pressSequence;
+	public TimeSequence getPressedSequence() {
+		return pressedSequence;
 	}
 
-	public void setPressSequence(TimeSequence pressSequence) {
-		this.pressSequence = pressSequence;
+	public void setPressedSequence(TimeSequence pressedSequence) {
+		this.pressedSequence = pressedSequence;
 	}
 
-	public TimeSequence getReleaseSequence() {
-		return releaseSequence;
+	public TimeSequence getReleasedSequence() {
+		return releasedSequence;
 	}
 
-	public void setReleaseSequence(TimeSequence releaseSequence) {
-		this.releaseSequence = releaseSequence;
+	public void setReleasedSequence(TimeSequence releasedSequence) {
+		this.releasedSequence = releasedSequence;
 	}
 
+	/**
+	 * Return the length of the Keystroke Sequence as the length of the phrase.
+	 * @return Length of the Keystroke Sequence.
+	 */
 	public int length() {
 		return phrase.length();
 	}
 
-	public TimeSequence getPressToPressSequence() {
-		int[] pressToPressTimes = new int[this.length() - 1];
-		for (int i = 0 ; i < pressToPressTimes.length ; ++i) {
-			pressToPressTimes[i] =
-					this.pressSequence.getTimeTable()[i + 1]
-							- this.pressSequence.getTimeTable()[i];
-		}
-		return new TimeSequence(pressToPressTimes);
+	/**
+	 * Return a string describing the Keystroke Sequence in a printable format.
+	 */
+	public String toString() {
+		return "WORD=" + this.getPhrase() + " ; PRESS=" +
+				this.getPressedSequence().toString() + " ; RELEASE=" +
+        		this.getReleasedSequence().toString();
 	}
 
-	public TimeSequence getReleaseToReleaseSequence() {
-		int[] releaseToReleaseTimes = new int[this.length() - 1];
-		for (int i = 0 ; i < releaseToReleaseTimes.length ; ++i) {
-			releaseToReleaseTimes[i] =
-					this.releaseSequence.getTimeTable()[i + 1]
-							- this.releaseSequence.getTimeTable()[i];
+	/**
+	 * Compute and return the Time Sequence corresponding to the delays between
+	 * two key press.
+	 * @return Pressed to pressed Time Sequence.
+	 */
+	public TimeSequence getPressedToPressedSequence() {
+		int[] pressedToPressedTimes = new int[this.length() - 1];
+		for (int i = 0 ; i < pressedToPressedTimes.length ; ++i) {
+			pressedToPressedTimes[i] =
+					this.pressedSequence.getTimeTable()[i + 1]
+							- this.pressedSequence.getTimeTable()[i];
 		}
-		return new TimeSequence(releaseToReleaseTimes);
+		return new TimeSequence(pressedToPressedTimes);
 	}
 
-	public TimeSequence getPressToReleaseSequence() {
-		int[] pressToReleaseTimes = new int[this.length()];
-		for (int i = 0 ; i < pressToReleaseTimes.length ; ++i) {
-			pressToReleaseTimes[i] =
-					this.releaseSequence.getTimeTable()[i]
-							- this.pressSequence.getTimeTable()[i];
+	/**
+	 * Compute and return the Time Sequence corresponding to the delays between
+	 * two key release.
+	 * @return Released to released Time Sequence.
+	 */
+	public TimeSequence getReleasedToReleasedSequence() {
+		int[] releasedToReleasedTimes = new int[this.length() - 1];
+		for (int i = 0 ; i < releasedToReleasedTimes.length ; ++i) {
+			releasedToReleasedTimes[i] =
+					this.releasedSequence.getTimeTable()[i + 1]
+							- this.releasedSequence.getTimeTable()[i];
 		}
-		return new TimeSequence(pressToReleaseTimes);
+		return new TimeSequence(releasedToReleasedTimes);
 	}
 
-	public TimeSequence getReleaseToPressSequence() {
-		int[] releaseToPressTimes = new int[this.length() - 1];
-		for (int i = 0 ; i < releaseToPressTimes.length ; ++i) {
-			releaseToPressTimes[i] =
-					this.pressSequence.getTimeTable()[i + 1]
-							- this.releaseSequence.getTimeTable()[i];
+	/**
+	 * Compute and return the Time Sequence corresponding to the delays between
+	 * a key press and its release.
+	 * @return Pressed to released Time Sequence.
+	 */
+	public TimeSequence getPressedToReleasedSequence() {
+		int[] pressedToReleasedTimes = new int[this.length()];
+		for (int i = 0 ; i < pressedToReleasedTimes.length ; ++i) {
+			pressedToReleasedTimes[i] =
+					this.releasedSequence.getTimeTable()[i]
+							- this.pressedSequence.getTimeTable()[i];
 		}
-		return new TimeSequence(releaseToPressTimes);
+		return new TimeSequence(pressedToReleasedTimes);
+	}
+
+	/**
+	 * Compute and return the Time Sequence corresponding to the delays between
+	 * a key release and the following one press, which could be negative.
+	 * @return Released to pressed Time Sequence.
+	 */
+	public TimeSequence getReleasedToPressedSequence() {
+		int[] releasedToPressedTimes = new int[this.length() - 1];
+		for (int i = 0 ; i < releasedToPressedTimes.length ; ++i) {
+			releasedToPressedTimes[i] =
+					this.pressedSequence.getTimeTable()[i + 1]
+							- this.releasedSequence.getTimeTable()[i];
+		}
+		return new TimeSequence(releasedToPressedTimes);
 	}
 }

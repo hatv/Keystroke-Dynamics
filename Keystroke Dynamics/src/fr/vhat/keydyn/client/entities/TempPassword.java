@@ -11,12 +11,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Describe the KDPassword entity in order to be used by Objectify.
+ * Describe the TempPassword entity in order to be used by Objectify.
  * @author Victor Hatinguais, www.victorhatinguais.fr
  */
 @SuppressWarnings("serial")
 @Entity
-public class KDPassword implements Serializable {
+public class TempPassword implements Serializable {
 	@Id
 	private Long id;
 	@Index
@@ -28,9 +28,14 @@ public class KDPassword implements Serializable {
 	@Serialize
 	private KeystrokeSequence keystrokeSequence;
 	private Date typingDate;
+	private String[] informationValues;
+	// TODO: IP + informations de la machine ou localisation dans une String
+	// getThreadLocalRequest().getRemoteHost(); (côté serveur)
+	// JavaScript : screen resolution, browser informations
+	// Applet : System.getProperties() + Locale.getDefault()
 
 	@SuppressWarnings("unused")
-	private KDPassword() {}
+	private TempPassword() {}
 
 	/**
 	 * Constructor.
@@ -39,12 +44,14 @@ public class KDPassword implements Serializable {
 	 * @param keystrokeSequence Keystroke Sequence of the password.
 	 * @param typingDate Typing date.
 	 */
-	public KDPassword(String word, String author,
-			KeystrokeSequence keystrokeSequence, Date typingDate) {
+	public TempPassword(String word, String author,
+			KeystrokeSequence keystrokeSequence, Date typingDate,
+			String[] infos) {
 		this.setWord(word);
 		this.setAuthor(author);
 		this.setKeystrokeSequence(keystrokeSequence);
 		this.setTypingDate(typingDate);
+		this.setInformationValues(infos);
 	}
 
 	public Long getId() {
@@ -95,5 +102,19 @@ public class KDPassword implements Serializable {
 
 	public void setTypingDate(Date typingDate) {
 		this.typingDate = typingDate;
+	}
+
+	public String[] getInformationValues() {
+		return informationValues;
+	}
+
+	public void setInformationValues(String[] informationValues) {
+		this.informationValues = informationValues;
+	}
+
+	public String[] getInformationLabels() {
+		String[] result = new String[4];
+		// TODO: correspond aux valeurs de getInformationValues (IP, etc.)
+		return result;
 	}
 }

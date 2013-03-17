@@ -1,6 +1,8 @@
 package fr.vhat.keydyn.server;
 
 import java.util.Properties;
+import java.util.logging.Logger;
+
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -12,7 +14,9 @@ import javax.mail.internet.MimeMessage;
  * @author Victor Hatinguais, www.victorhatinguais.fr
  */
 public class Mail {
-	// TODO: update lastMailSent Field of User if it is a stepMail
+
+	private static final Logger log = Logger.getLogger(
+			Mail.class.getName());
 
 	/**
 	 * Function to send an email from the server.
@@ -55,9 +59,17 @@ public class Mail {
 	 */
 	public static String sendWelcomeMail(String toEmail, String toUser,
 			String password) {
-		String message = "Thanks for your registration " + toUser + ". Your " +
-			"password is: " + password + "\nYou can now access your member " +
-			"area and begin to train the system.";
+		String message = "Nouvel utilisateur inscrit : <" + toUser + " ; " +
+			toEmail + ">";
+		sendMail("key-dyn@victorhatinguais.fr", "admin@victorhatinguais.fr",
+				"Administrateur KeyDyn", "key-dyn@victorhatinguais.fr",
+				"Nouvel inscrit", message);
+		log.info("An email is being sent to welcome a new user: <" + toUser +
+				" ; " + toEmail + ">.");
+		message = "Merci pour votre inscription " + toUser + " . Votre mot de" +
+			"passe est : " + password + "\nVous pouvez maintenant accéder à " +
+			"votre espace membre et commencer à entraîner le système afin " +
+			"qu'il vous reconnaisse.";
 		return sendMail("key-dyn@victorhatinguais.fr", toEmail, toUser,
 				"key-dyn@victorhatinguais.fr",
 				"Keystroke Dynamics Registration", message);

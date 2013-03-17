@@ -1,41 +1,29 @@
 package fr.vhat.keydyn.server;
+
 // Copyright (c) 2006 Damien Miller <djm@mindrot.org>
-//
-// Permission to use, copy, modify, and distribute this software for any
-// purpose with or without fee is hereby granted, provided that the above
-// copyright notice and this permission notice appear in all copies.
-//
-// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
 
 /**
- * BCrypt implements OpenBSD-style Blowfish password hashing using
- * the scheme described in "A Future-Adaptable Password Scheme" by
- * Niels Provos and David Mazieres.
+ * BCrypt implements OpenBSD-style Blowfish password hashing using the scheme
+ * described in "A Future-Adaptable Password Scheme" by Niels Provos and David
+ * Mazieres.
  * <p>
- * This password hashing system tries to thwart off-line password
- * cracking using a computationally-intensive hashing algorithm,
- * based on Bruce Schneier's Blowfish cipher. The work factor of
- * the algorithm is parameterised, so it can be increased as
- * computers get faster.
+ * This password hashing system tries to thwart off-line password cracking using
+ * a computationally-intensive hashing algorithm, based on Bruce Schneier's
+ * Blowfish cipher. The work factor of the algorithm is parameterized, so it can
+ * be increased as computers get faster.
  * <p>
- * Usage is really simple. To hash a password for the first time,
- * call the hashpw method with a random salt, like this:
+ * Usage is really simple. To hash a password for the first time, call the
+ * hashpw method with a random salt, like this:
  * <p>
  * <code>
  * String pw_hash = BCrypt.hashpw(plain_password, BCrypt.gensalt()); <br />
  * </code>
  * <p>
- * To check whether a plaintext password matches one that has been
- * hashed previously, use the checkpw method:
+ * To check whether a plain text password matches one that has been hashed
+ * previously, use the checkpw method:
  * <p>
  * <code>
  * if (BCrypt.checkpw(candidate_password, stored_hash))<br />
@@ -44,22 +32,23 @@ import java.security.SecureRandom;
  * &nbsp;&nbsp;&nbsp;&nbsp;System.out.println("It does not match");<br />
  * </code>
  * <p>
- * The gensalt() method takes an optional parameter (log_rounds)
- * that determines the computational complexity of the hashing:
+ * The gensalt() method takes an optional parameter (log_rounds) that determines
+ * the computational complexity of the hashing:
  * <p>
  * <code>
  * String strong_salt = BCrypt.gensalt(10)<br />
  * String stronger_salt = BCrypt.gensalt(12)<br />
  * </code>
  * <p>
- * The amount of work increases exponentially (2**log_rounds), so 
- * each increment is twice as much work. The default log_rounds is
- * 10, and the valid range is 4 to 31.
+ * The amount of work increases exponentially (2**log_rounds), so each increment
+ * is twice as much work. The default log_rounds is 10, and the valid range is 4
+ * to 31.
  *
  * @author Damien Miller
  * @version 0.2
  */
 public class BCrypt {
+
 	// BCrypt parameters
 	private static final int GENSALT_DEFAULT_LOG2_ROUNDS = 10;
 	private static final int BCRYPT_SALT_LEN = 16;
@@ -334,7 +323,7 @@ public class BCrypt {
 		0xb74e6132, 0xce77e25b, 0x578fdfe3, 0x3ac372e6
 	};
 
-	// bcrypt IV: "OrpheanBeholderScryDoubt"
+	// BCrypt IV: "OrpheanBeholderScryDoubt"
 	static private final int bf_crypt_ciphertext[] = {
 		0x4f727068, 0x65616e42, 0x65686f6c,
 		0x64657253, 0x63727944, 0x6f756274
@@ -372,14 +361,13 @@ public class BCrypt {
 	private int S[];
 
 	/**
-	 * Encode a byte array using bcrypt's slightly-modified base64
-	 * encoding scheme. Note that this is *not* compatible with
-	 * the standard MIME-base64 encoding.
-	 *
-	 * @param d	the byte array to encode
-	 * @param len	the number of bytes to encode
-	 * @return	base64-encoded string
-	 * @exception IllegalArgumentException if the length is invalid
+	 * Encode a byte array using BCrypt's slightly-modified base64 encoding
+	 * scheme. Note that this is *not* compatible with the standard MIME-base64
+	 * encoding.
+	 * @param d	The byte array to encode.
+	 * @param len The number of bytes to encode.
+	 * @return Base64-encoded string.
+	 * @exception IllegalArgumentException If the length is invalid.
 	 */
 	private static String encode_base64(byte d[], int len)
 		throws IllegalArgumentException {
@@ -416,9 +404,9 @@ public class BCrypt {
 
 	/**
 	 * Look up the 3 bits base64-encoded by the specified character,
-	 * range-checking againt conversion table
-	 * @param x	the base64-encoded value
-	 * @return	the decoded value of x
+	 * range-checking against conversion table.
+	 * @param x	The base64-encoded value.
+	 * @return The decoded value of x.
 	 */
 	private static byte char64(char x) {
 		if ((int)x < 0 || (int)x > index_64.length)
@@ -427,13 +415,13 @@ public class BCrypt {
 	}
 
 	/**
-	 * Decode a string encoded using bcrypt's base64 scheme to a
-	 * byte array. Note that this is *not* compatible with
-	 * the standard MIME-base64 encoding.
-	 * @param s	the string to decode
-	 * @param maxolen	the maximum number of bytes to decode
-	 * @return	an array containing the decoded bytes
-	 * @throws IllegalArgumentException if maxolen is invalid
+	 * Decode a string encoded using BCrypt's base64 scheme to a byte array.
+	 * Note that this is *not* compatible with the standard MIME-base64
+	 * encoding.
+	 * @param s	The string to decode.
+	 * @param maxolen The maximum number of bytes to decode.
+	 * @return An array containing the decoded bytes.
+	 * @throws IllegalArgumentException If maxolen is invalid.
 	 */
 	private static byte[] decode_base64(String s, int maxolen)
 		throws IllegalArgumentException {
@@ -477,10 +465,9 @@ public class BCrypt {
 	}
 
 	/**
-	 * Blowfish encipher a single 64-bit block encoded as
-	 * two 32-bit halves
-	 * @param lr	an array containing the two 32-bit half blocks
-	 * @param off	the position in the array of the blocks
+	 * Blowfish encipher a single 64-bit block encoded as two 32-bit halves.
+	 * @param lr An array containing the two 32-bit half blocks.
+	 * @param off The position in the array of the blocks.
 	 */
 	private final void encipher(int lr[], int off) {
 		int i, n, l = lr[off], r = lr[off + 1];
@@ -506,11 +493,11 @@ public class BCrypt {
 	}
 
 	/**
-	 * Cycically extract a word of key material
-	 * @param data	the string to extract the data from
-	 * @param offp	a "pointer" (as a one-entry array) to the
-	 * current offset into data
-	 * @return	the next word of material from data
+	 * Cyclically extract a word of key material.
+	 * @param data The string to extract the data from.
+	 * @param offp A "pointer" (as a one-entry array) to the current offset into
+	 * data.
+	 * @return The next word of material from data.
 	 */
 	private static int streamtoword(byte data[], int offp[]) {
 		int i;
@@ -527,7 +514,7 @@ public class BCrypt {
 	}
 
 	/**
-	 * Initialise the Blowfish key schedule
+	 * Initialize the Blowfish key schedule.
 	 */
 	private void init_key() {
 		P = (int[])P_orig.clone();
@@ -535,8 +522,8 @@ public class BCrypt {
 	}
 
 	/**
-	 * Key the Blowfish cipher
-	 * @param key	an array containing the key
+	 * Key the Blowfish cipher.
+	 * @param key An array containing the key.
 	 */
 	private void key(byte key[]) {
 		int i;
@@ -561,11 +548,11 @@ public class BCrypt {
 	}
 
 	/**
-	 * Perform the "enhanced key schedule" step described by
-	 * Provos and Mazieres in "A Future-Adaptable Password Scheme"
-	 * http://www.openbsd.org/papers/bcrypt-paper.ps
-	 * @param data	salt information
-	 * @param key	password information
+	 * Perform the "enhanced key schedule" step described by Provos and Mazieres
+	 * in "A Future-Adaptable Password Scheme".
+	 * @see http://www.openbsd.org/papers/bcrypt-paper.ps
+	 * @param data Salt information.
+	 * @param key Password information.
 	 */
 	private void ekskey(byte data[], byte key[]) {
 		int i;
@@ -594,13 +581,12 @@ public class BCrypt {
 	}
 
 	/**
-	 * Perform the central password hashing step in the
-	 * bcrypt scheme
-	 * @param password	the password to hash
-	 * @param salt	the binary salt to hash with the password
-	 * @param log_rounds	the binary logarithm of the number
-	 * of rounds of hashing to apply
-	 * @return	an array containing the binary hashed password
+	 * Perform the central password hashing step in the BCrypt scheme.
+	 * @param password The password to hash.
+	 * @param salt The binary salt to hash with the password.
+	 * @param log_rounds The binary logarithm of the number of rounds of hashing
+	 * to apply.
+	 * @return An array containing the binary hashed password.
 	 */
 	private byte[] crypt_raw(byte password[], byte salt[], int log_rounds) {
 		int rounds, i, j;
@@ -637,11 +623,10 @@ public class BCrypt {
 	}
 
 	/**
-	 * Hash a password using the OpenBSD bcrypt scheme
-	 * @param password	the password to hash
-	 * @param salt	the salt to hash with (perhaps generated
-	 * using BCrypt.gensalt)
-	 * @return	the hashed password
+	 * Hash a password using the OpenBSD BCrypt scheme.
+	 * @param password The password to hash.
+	 * @param salt The salt to hash with, maybe generated using BCrypt.gensalt.
+	 * @return The hashed password.
 	 */
 	public static String hashpw(String password, String salt) {
 		BCrypt B;
@@ -694,12 +679,11 @@ public class BCrypt {
 	}
 
 	/**
-	 * Generate a salt for use with the BCrypt.hashpw() method
-	 * @param log_rounds	the log2 of the number of rounds of
-	 * hashing to apply - the work factor therefore increases as
-	 * 2**log_rounds.
-	 * @param random		an instance of SecureRandom to use
-	 * @return	an encoded salt value
+	 * Generate a salt for use with the BCrypt.hashpw() method.
+	 * @param log_rounds The log2 of the number of rounds of hashing to apply -
+	 * the work factor therefore increases as 2**log_rounds.
+	 * @param random An instance of SecureRandom to use.
+	 * @return An encoded salt value.
 	 */
 	public static String gensalt(int log_rounds, SecureRandom random) {
 		StringBuffer rs = new StringBuffer();
@@ -717,32 +701,29 @@ public class BCrypt {
 	}
 
 	/**
-	 * Generate a salt for use with the BCrypt.hashpw() method
-	 * @param log_rounds	the log2 of the number of rounds of
-	 * hashing to apply - the work factor therefore increases as
-	 * 2**log_rounds.
-	 * @return	an encoded salt value
+	 * Generate a salt for use with the BCrypt.hashpw() method.
+	 * @param log_rounds The log2 of the number of rounds of hashing to apply -
+	 * the work factor therefore increases as 2**log_rounds.
+	 * @return An encoded salt value.
 	 */
 	public static String gensalt(int log_rounds) {
 		return gensalt(log_rounds, new SecureRandom());
 	}
 
 	/**
-	 * Generate a salt for use with the BCrypt.hashpw() method,
-	 * selecting a reasonable default for the number of hashing
-	 * rounds to apply
-	 * @return	an encoded salt value
+	 * Generate a salt for use with the BCrypt.hashpw() method, selecting a
+	 * reasonable default for the number of hashing rounds to apply.
+	 * @return An encoded salt value.
 	 */
 	public static String gensalt() {
 		return gensalt(GENSALT_DEFAULT_LOG2_ROUNDS);
 	}
 
 	/**
-	 * Check that a plaintext password matches a previously hashed
-	 * one
-	 * @param plaintext	the plaintext password to verify
-	 * @param hashed	the previously-hashed password
-	 * @return	true if the passwords match, false otherwise
+	 * Check that a plain text password matches a previously hashed one.
+	 * @param plaintext The plain text password to verify.
+	 * @param hashed The previously-hashed password.
+	 * @return True if the passwords match, false otherwise.
 	 */
 	public static boolean checkpw(String plaintext, String hashed) {
 		return (hashed.compareTo(hashpw(plaintext, hashed)) == 0);

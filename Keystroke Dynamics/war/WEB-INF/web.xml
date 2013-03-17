@@ -7,7 +7,7 @@
   <!-- Servlets -->
   <servlet>
     <servlet-name>registrationServlet</servlet-name>
-    <servlet-class>fr.vhat.keydyn.server.RegistrationServiceImpl</servlet-class>
+    <servlet-class>fr.vhat.keydyn.server.services.RegistrationServiceImpl</servlet-class>
   </servlet>
   
   <servlet-mapping>
@@ -17,7 +17,7 @@
   
   <servlet>
     <servlet-name>authenticationServlet</servlet-name>
-    <servlet-class>fr.vhat.keydyn.server.AuthenticationServiceImpl</servlet-class>
+    <servlet-class>fr.vhat.keydyn.server.services.AuthenticationServiceImpl</servlet-class>
   </servlet>
   
   <servlet-mapping>
@@ -27,22 +27,12 @@
   
   <servlet>
     <servlet-name>transmissionServlet</servlet-name>
-    <servlet-class>fr.vhat.keydyn.server.DataTransmissionServiceImpl</servlet-class>
+    <servlet-class>fr.vhat.keydyn.server.services.DataTransmissionServiceImpl</servlet-class>
   </servlet>
   
   <servlet-mapping>
     <servlet-name>transmissionServlet</servlet-name>
     <url-pattern>/keydyn/transmission</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
-    <servlet-name>computationServlet</servlet-name>
-    <servlet-class>fr.vhat.keydyn.server.ComputationServiceImpl</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>computationServlet</servlet-name>
-    <url-pattern>/keydyn/computation</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->

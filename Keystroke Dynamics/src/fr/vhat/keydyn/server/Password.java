@@ -12,7 +12,7 @@ public class Password {
 	 * Generate a random password for an user.
 	 * @return A randomly generated password.
 	 */
-	static String generatePassword() {
+	public static String generatePassword() {
 		/*String[] animals = {"ecureuil", "renard", "elephant", "serpent", 
 				"albatros", "leopard", "caribou", "saumon", "guepard",
 				"mouton", "hamster", "kangourou", "macaque", "herisson",
@@ -53,7 +53,7 @@ public class Password {
 	 * @param password Password to hash.
 	 * @return Hash signature.
 	 */
-	static String hash(String password) {
+	public static String hash(String password) {
 		return BCrypt.hashpw(password, BCrypt.gensalt());
 	}
 
@@ -63,7 +63,7 @@ public class Password {
 	 * @param stored Hashed signature to compare.
 	 * @return Validity of the candidate password.
 	 */
-	static boolean check(String candidate, String stored) {
+	public static boolean check(String candidate, String stored) {
 		return BCrypt.checkpw(candidate, stored);
 	}
 }

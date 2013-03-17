@@ -1,4 +1,4 @@
-package fr.vhat.keydyn.client;
+package fr.vhat.keydyn.client.services;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -9,7 +9,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("registration")
 public interface RegistrationService extends RemoteService {
+	boolean checkLoginAvailability(String login);
 	boolean registerUser(String login, String email, int age, String gender,
-			String country, int computerExperience, int computerUsage)
-					throws IllegalArgumentException;
+			String country, int computerExperience, int computerUsage);
 }

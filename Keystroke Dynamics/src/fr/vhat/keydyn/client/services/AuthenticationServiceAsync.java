@@ -1,6 +1,8 @@
-package fr.vhat.keydyn.client;
+package fr.vhat.keydyn.client.services;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import fr.vhat.keydyn.shared.KeystrokeSequence;
 
 /**
  * Authentication and sessions management.
@@ -9,7 +11,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface AuthenticationServiceAsync {
 	void authenticateUser(String login, String password, 
 			AsyncCallback<Boolean> callback);
+	void authenticateUser(String login, int saveData,
+			KeystrokeSequence keystrokeSequence, boolean giveInfos,
+			AsyncCallback<Float[]> callback);
 	void logout(AsyncCallback<Void> callback);
 	void validateSession(AsyncCallback<String> callback);
-	void checkLoginAvailability(String login, AsyncCallback<Boolean> callback);
 }
