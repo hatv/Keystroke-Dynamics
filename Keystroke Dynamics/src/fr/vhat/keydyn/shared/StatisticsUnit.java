@@ -121,51 +121,55 @@ public class StatisticsUnit implements Serializable {
 	public void addToMeans(KeystrokeSequence keystrokeSequence,
 			int dataNumber) {
 
-		int[] pressToPressTimesUnit =
+		int[] pressedToPressedTimesUnit =
 				this.pressedToPressedStatistics.getTimeTable();
-		int[] pressToPressTimesNew =
+		int[] pressedToPressedTimesNew =
 				keystrokeSequence.getPressedToPressedSequence().getTimeTable();
-		for (int i = 0 ; i < pressToPressTimesUnit.length ; ++i) {
-			pressToPressTimesUnit[i] = Math.round(
-					(dataNumber * pressToPressTimesUnit[i]
-							+ pressToPressTimesNew[i])/(float)(dataNumber + 1));
-		}
-		this.pressedToPressedStatistics.setTimeTable(pressToPressTimesUnit);
-
-		int[] releaseToReleaseTimesUnit =
-				this.releasedToReleasedStatistics.getTimeTable();
-		int[] releaseToReleaseTimesNew =
-				keystrokeSequence.getPressedToPressedSequence().getTimeTable();
-		for (int i = 0 ; i < releaseToReleaseTimesUnit.length ; ++i) {
-			releaseToReleaseTimesUnit[i] = Math.round(
-					(dataNumber * releaseToReleaseTimesUnit[i]
-							+ releaseToReleaseTimesNew[i])/
-							(float)(dataNumber + 1));
-		}
-		this.releasedToReleasedStatistics.setTimeTable(releaseToReleaseTimesUnit);
-
-		int[] pressToReleaseTimesUnit =
-				this.pressedToReleasedStatistics.getTimeTable();
-		int[] pressToReleaseTimesNew =
-				keystrokeSequence.getPressedToReleasedSequence().getTimeTable();
-		for (int i = 0 ; i < pressToReleaseTimesUnit.length ; ++i) {
-			pressToReleaseTimesUnit[i] = Math.round(
-					(dataNumber * pressToReleaseTimesUnit[i]
-							+ pressToReleaseTimesNew[i])
+		for (int i = 0 ; i < pressedToPressedTimesUnit.length ; ++i) {
+			pressedToPressedTimesUnit[i] = Math.round(
+					(dataNumber * pressedToPressedTimesUnit[i]
+							+ pressedToPressedTimesNew[i])
 							/(float)(dataNumber + 1));
 		}
-		this.pressedToReleasedStatistics.setTimeTable(pressToReleaseTimesUnit);
+		this.pressedToPressedStatistics.setTimeTable(pressedToPressedTimesUnit);
 
-		int[] releaseToPressTimesUnit =
-				this.releasedToPressedStatistics.getTimeTable();
-		int[] releaseToPressTimesNew =
-				keystrokeSequence.getReleasedToPressedSequence().getTimeTable();
-		for (int i = 0 ; i < releaseToPressTimesUnit.length ; ++i) {
-			releaseToPressTimesUnit[i] = Math.round(
-					(dataNumber * releaseToPressTimesUnit[i]
-							+ releaseToPressTimesNew[i])/
+		int[] releasedToReleasedTimesUnit =
+				this.releasedToReleasedStatistics.getTimeTable();
+		int[] releasedToReleasedTimesNew =
+				keystrokeSequence.getReleasedToReleasedSequence().getTimeTable();
+		for (int i = 0 ; i < releasedToReleasedTimesUnit.length ; ++i) {
+			releasedToReleasedTimesUnit[i] = Math.round(
+					(dataNumber * releasedToReleasedTimesUnit[i]
+							+ releasedToReleasedTimesNew[i])/
 							(float)(dataNumber + 1));
 		}
-		this.releasedToPressedStatistics.setTimeTable(releaseToPressTimesUnit);
+		this.releasedToReleasedStatistics.setTimeTable(
+				releasedToReleasedTimesUnit);
+
+		int[] pressedToReleasedTimesUnit =
+				this.pressedToReleasedStatistics.getTimeTable();
+		int[] pressedToReleasedTimesNew =
+				keystrokeSequence.getPressedToReleasedSequence().getTimeTable();
+		for (int i = 0 ; i < pressedToReleasedTimesUnit.length ; ++i) {
+			pressedToReleasedTimesUnit[i] = Math.round(
+					(dataNumber * pressedToReleasedTimesUnit[i]
+							+ pressedToReleasedTimesNew[i])
+							/(float)(dataNumber + 1));
+		}
+		this.pressedToReleasedStatistics.setTimeTable(
+				pressedToReleasedTimesUnit);
+
+		int[] releasedToPressedTimesUnit =
+				this.releasedToPressedStatistics.getTimeTable();
+		int[] releasedToPressedTimesNew =
+				keystrokeSequence.getReleasedToPressedSequence().getTimeTable();
+		for (int i = 0 ; i < releasedToPressedTimesUnit.length ; ++i) {
+			releasedToPressedTimesUnit[i] = Math.round(
+					(dataNumber * releasedToPressedTimesUnit[i]
+							+ releasedToPressedTimesNew[i])/
+							(float)(dataNumber + 1));
+		}
+		this.releasedToPressedStatistics.setTimeTable(
+				releasedToPressedTimesUnit);
 	}
 }

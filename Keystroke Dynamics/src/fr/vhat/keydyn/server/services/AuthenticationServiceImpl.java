@@ -63,32 +63,41 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 	 * Authenticate an user from his login and the keystroke sequence of his
 	 * password according to the information stored in the data store.
 	 * @param login User's login.
-	 * @param saveData Save data behavior : 0 means "never save data" (test),
+	 * @param mode Save data behavior : 0 means "never save data" (test),
 	 * 1 means "always save data" (train) and 2 means "save data only if
-	 * authenticated" (production).
+	 * authenticated" (production). Furthermore, in train mode the login is
+	 * unused as the session login is used.
 	 * @param keystrokeSequence User's keystroke sequence password.
-	 * @param giveInfos True to get distance and threshold, false otherwise.
+	 * @param giveInfo True to get distance and threshold, false otherwise.
 	 * @return A Float table where the first element represents the success or
-	 * failure of the authentication (1 or -1) and follows the distance and the
-	 * threshold if giveInfos was set to true.
+	 * failure of the authentication (1, -1, -2 or -3), the second one tells if
+	 * the data have been saved or not in the data store (1 or -1) and then
+	 * follows the distance and the threshold if giveInfos was set to true.
 	 */
 	@Override
-	public Float[] authenticateUser(String login, int saveData,
-			KeystrokeSequence keystrokeSequence, boolean giveInfos) {
-		User u = DataStore.retrieveUser(login);
+	public Float[] authenticateUser(String login, int mode,
+			String kdPassword, boolean giveInfo) {
+		if (mode == 1 || (mode == 0 && login.equals(""))) {
+			login = (String)getThreadLocalRequest().getSession()
+					.getAttribute("login");
+		}
+		User user = DataStore.retrieveUser(login);
 		Float[] result;
-		if (giveInfos) {
-			result = new Float[3];
-			result[1] = (float)-1;
+		if (giveInfo) {
+			result = new Float[4];
 			result[2] = (float)-1;
+			result[3] = (float)-1;
 		} else {
-			result = new Float[1];
+			result = new Float[2];
 		}
 		result[0] = (float)-1;
-		if (u != null) {
+		result[1] = (float)-1;
+		if (user != null) {
 			// User u found in the data store
+			KeystrokeSequence keystrokeSequence =
+					new KeystrokeSequence(kdPassword);
 			String password = keystrokeSequence.getPhrase();
-			String hashedPassword = u.getHashedPassword();
+			String hashedPassword = user.getHashedPassword();
 			if (Password.check(password, hashedPassword)) {
 				Float distance =
 						DataTransmissionServiceImpl.getUserDistance(
@@ -108,20 +117,21 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 							"correct password but didn't succeed according " +
 							"to his keystroke dynamics.");
 				}
-				if (giveInfos) {
-					result[1] = distance;
-					result[2] = threshold;
+				if (giveInfo) {
+					result[2] = distance;
+					result[3] = threshold;
 				}
-				if (saveData == 1 || (saveData == 2 && result[0] == 1)) {
+				if (mode == 1 || (mode == 2 && result[0] == 1)) {
 				// Train mode or production mode with success
-					// saveKDData
+					DataStore.saveKDData(user, keystrokeSequence, false, null);
+					result[1] = (float)1;
 					//+ if(compteReady)
 					//		if result[0] == 1 -> ajouter un succes
 					// 		else if result[0] == 0 && saveData == 1 -> ajouter un echec
-				} else if (saveData == 0) {
+				} else if (mode == 0) {
 				// Test mode
 					// compléter authenticationAttempts car on est en test -> succes ou echec
-				} else if (saveData == 2 && result[0] == 0) {
+				} else if (mode == 2 && result[0] == 0) {
 				// Production mode with fail
 					// if compte ready, store dans TempPassword avec des
 					// infos supplémentaires issues du javascript et de l'applet + IP
@@ -129,12 +139,14 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 			} else {
 				log.info("User <" + login + "> tried to connect with the " +
 						"password <" + password + "> which is wrong. His " +
-						"right password is <" + u.getPassword() + ">. His " +
+						"right password is <" + user.getPassword() + ">. His " +
 						"keystroke dynamics will not be analyzed.");
+				result[0] = (float)-2;
 			}
 		} else {
 			log.info("User <" + login + "> tried to connect but doesn't exist" +
 					" in the data store.");
+			result[0] = (float)-3;
 		}
 		return result;
 	}

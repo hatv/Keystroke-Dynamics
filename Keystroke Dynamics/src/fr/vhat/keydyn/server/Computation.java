@@ -127,59 +127,74 @@ public class Computation {
 	 */
 	public static Float distance(KeystrokeSequence keystrokeSequence,
 			StatisticsUnit means, StatisticsUnit sd) {
+
 		Float distance = (float)0;
 		int parametersNumber = 0;
 
-		TimeSequence pressToPressSequence =
+		TimeSequence pressedToPressedSequence =
 				keystrokeSequence.getPressedToPressedSequence();
-		TimeSequence pressToPressSequenceMeans = means.getPressedToPressedStatistics();
-		TimeSequence pressToPressSequenceSd = sd.getPressedToPressedStatistics();
-		for (int i = 0 ; i < pressToPressSequence.length() ; ++i) {
-			distance += Math.abs((float)pressToPressSequence.getTimeTable()[i] 
-					- (float)pressToPressSequenceMeans.getTimeTable()[i])
-					/ (float)Math.pow(pressToPressSequenceSd.getTimeTable()[i],
-							2);
+		TimeSequence pressedToPressedSequenceMeans =
+				means.getPressedToPressedStatistics();
+		TimeSequence pressedToPressedSequenceSd =
+				sd.getPressedToPressedStatistics();
+		for (int i = 0 ; i < pressedToPressedSequence.length() ; ++i) {
+			if (pressedToPressedSequenceSd.getTimeTable()[i] == 0)
+				return (float)0;
+			distance += Math.abs((float)pressedToPressedSequence
+							.getTimeTable()[i] 
+					- (float)pressedToPressedSequenceMeans.getTimeTable()[i])
+					/ (float)Math.pow(pressedToPressedSequenceSd
+							.getTimeTable()[i],	2);
 			parametersNumber++;
 		}
 
-		TimeSequence releaseToReleaseSequence =
+		TimeSequence releasedToReleasedSequence =
 				keystrokeSequence.getReleasedToReleasedSequence();
-		TimeSequence releaseToReleaseSequenceMeans =
+		TimeSequence releasedToReleasedSequenceMeans =
 				means.getReleasedToReleasedStatistics();
-		TimeSequence releaseToReleaseSequenceSd = sd.getReleasedToReleasedStatistics();
-		for (int i = 0 ; i < releaseToReleaseSequence.length() ; ++i) {
+		TimeSequence releasedToReleasedSequenceSd =
+				sd.getReleasedToReleasedStatistics();
+		for (int i = 0 ; i < releasedToReleasedSequence.length() ; ++i) {
+			if (releasedToReleasedSequenceSd.getTimeTable()[i] == 0)
+				return (float)0;
 			distance +=
-					Math.abs((float)releaseToReleaseSequence.getTimeTable()[i] 
-					- (float)releaseToReleaseSequenceMeans.getTimeTable()[i])
-					/ (float)Math.pow(releaseToReleaseSequenceSd
+					Math.abs((float)releasedToReleasedSequence.getTimeTable()[i] 
+					- (float)releasedToReleasedSequenceMeans.getTimeTable()[i])
+					/ (float)Math.pow(releasedToReleasedSequenceSd
 							.getTimeTable()[i], 2);
 			parametersNumber++;
 		}
 
-		TimeSequence pressToReleaseSequence =
+		TimeSequence pressedToReleasedSequence =
 				keystrokeSequence.getPressedToReleasedSequence();
-		TimeSequence pressToReleaseSequenceMeans =
+		TimeSequence pressedToReleasedSequenceMeans =
 				means.getPressedToReleasedStatistics();
-		TimeSequence pressToReleaseSequenceSd =
+		TimeSequence pressedToReleasedSequenceSd =
 				sd.getPressedToReleasedStatistics();
-		for (int i = 0 ; i < pressToReleaseSequence.length() ; ++i) {
-			distance += Math.abs((float)pressToReleaseSequence.getTimeTable()[i] 
-					- (float)pressToReleaseSequenceMeans.getTimeTable()[i])
-					/ (float)Math.pow(pressToReleaseSequenceSd
+		for (int i = 0 ; i < pressedToReleasedSequence.length() ; ++i) {
+			if (pressedToReleasedSequenceSd.getTimeTable()[i] == 0)
+				return (float)0;
+			distance += Math.abs((float)pressedToReleasedSequence
+							.getTimeTable()[i] 
+					- (float)pressedToReleasedSequenceMeans.getTimeTable()[i])
+					/ (float)Math.pow(pressedToReleasedSequenceSd
 							.getTimeTable()[i], 2);
 			parametersNumber++;
 		}
 
-		TimeSequence releaseToPressSequence =
+		TimeSequence releasedToPressedSequence =
 				keystrokeSequence.getReleasedToPressedSequence();
-		TimeSequence releaseToPressSequenceMeans =
+		TimeSequence releasedToPressedSequenceMeans =
 				means.getReleasedToPressedStatistics();
-		TimeSequence releaseToPressSequenceSd =
+		TimeSequence releasedToPressedSequenceSd =
 				sd.getReleasedToPressedStatistics();
-		for (int i = 0 ; i < releaseToPressSequence.length() ; ++i) {
-			distance += Math.abs((float)releaseToPressSequence.getTimeTable()[i] 
-					- (float)releaseToPressSequenceMeans.getTimeTable()[i])
-					/ (float)Math.pow(releaseToPressSequenceSd
+		for (int i = 0 ; i < releasedToPressedSequence.length() ; ++i) {
+			if (releasedToPressedSequenceSd.getTimeTable()[i] == 0)
+				return (float)0;
+			distance += Math.abs((float)releasedToPressedSequence
+							.getTimeTable()[i] 
+					- (float)releasedToPressedSequenceMeans.getTimeTable()[i])
+					/ (float)Math.pow(releasedToPressedSequenceSd
 							.getTimeTable()[i], 2);
 			parametersNumber++;
 		}

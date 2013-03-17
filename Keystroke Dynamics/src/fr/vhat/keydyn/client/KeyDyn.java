@@ -1119,10 +1119,12 @@ public class KeyDyn implements EntryPoint {
 				public void onSuccess(StatisticsUnit means) {
 					if (means != null) {
 						Label pressedMeans = new Label("Means: " +
-								means.getPressedToPressedStatistics().toString());
+								means.getPressedToPressedStatistics()
+								.toString());
 						chartsPanel.setWidget(1, 0, pressedMeans);
 						Label releasedMeans = new Label("Means: " +
-								means.getReleasedToReleasedStatistics().toString());
+								means.getReleasedToReleasedStatistics()
+								.toString());
 						chartsPanel.setWidget(4, 0, releasedMeans);
 						Label pressedToReleasedMeans = new Label("Means: " +
 								means.getPressedToReleasedStatistics()
@@ -1196,72 +1198,59 @@ public class KeyDyn implements EntryPoint {
 		}
 	}-*/;
 
+	private static void authenticateUser(String login, int mode, String kdData,
+			boolean giveInfo) {
+		authenticationService.authenticateUser(login, mode, kdData, giveInfo,
+				new AsyncCallback<Float[]>() {
+			@Override
+            public void onFailure(Throwable caught) {
+				displayErrorMessage("authenticateUserTrainMode",
+						caught.getMessage());
+            }
+            @Override
+            public void onSuccess(Float[] info) {
+            	String information = new String();
+            	if (info[0] == -2) {
+            		information = "Le mot de passe saisi n'est pas valide.";
+            	} else if (info[0] == -3) {
+            		information = "Cet utilisateur n'est pas reconnu.";
+            	} else {
+	            	if (info[1] == 1) {
+	            		// New data have been saved
+	            		updateKDData();
+	            	}
+	            	if (info[2] != -1) {
+	            		String distance = info[2].toString();
+	            		information += "Distance : " + distance + " ; ";
+	            	}
+	            	String authenticationSuccess;
+	            	if (info[0] == 1) {
+	            		authenticationSuccess = "AUTHENTICATED";
+	            	} else {
+	            		authenticationSuccess = "FAILED";
+	            	}
+	            	information += "Authentification : "
+	            			+ authenticationSuccess;
+	            	if (info[3] != -1) {
+	            		String threshold = info[3].toString();
+	            		information += " (Seuil = " + threshold.toString()
+	            				+ ")";
+	            	}
+            	}
+            	final Label informationLabel = new Label(information);
+            	chartsPanel.setWidget(0, 0, informationLabel);
+            	RootPanel.get("infos").clear();
+        		RootPanel.get("errors").clear();
+            }
+		});
+	}
 	/**
 	 * Check Keystroke Dynamics data and store them in the data store.
 	 * This function is called from the Keyboard Applet via JSNI.
 	 * @param kdData Keystroke Dynamics data.
 	 */
 	public static void appletCallback(final String kdData) {
-		transmissionService.saveKDData(kdData, false,
-				new AsyncCallback<Boolean>() {
-			@Override
-            public void onFailure(Throwable caught) {
-				displayErrorMessage("SaveNewKDData", caught.getMessage());
-            }
-            @Override
-            public void onSuccess(Boolean KDDataSaved) {
-            	if (KDDataSaved) {
-            		updateKDData();
-            		KeystrokeSequence keystrokeSequence =
-            				new KeystrokeSequence(kdData);
-            		transmissionService.getDistance(keystrokeSequence,
-            				new AsyncCallback<Float>() {
-            			@Override
-                        public void onFailure(Throwable caught) {
-            				displayErrorMessage("GetDistance",
-            						caught.getMessage());
-                        }
-                        @Override
-                        public void onSuccess(final Float distance) {
-                        	final Label distanceLabel = new Label("Distance: " +
-        							distance.toString());
-                        	transmissionService.getThreshold(
-                        			new AsyncCallback<Float>() {
-                				@Override
-                                public void onFailure(Throwable caught) {
-                    				displayErrorMessage("GetThreshold",
-                    						caught.getMessage());
-                                }
-                                @Override
-                                public void onSuccess(Float threshold) {
-                                	if (distance <= threshold) {
-                                		distanceLabel.setText(
-                                				distanceLabel.getText() +
-                                				" ; Authentication : OK" +
-                                				" (Threshold = " +
-                                				threshold.toString() + ")");
-                                	} else {
-                                		distanceLabel.setText(
-                                				distanceLabel.getText() +
-                                				" ; Authentication : FAIL" +
-                                				" (Threshold = " +
-                                				threshold.toString() + ")");
-                                	}
-                                }
-                        	});
-        					chartsPanel.setWidget(0, 0, distanceLabel);
-                        }
-            		});
-            		RootPanel.get("infos").clear();
-            		RootPanel.get("errors").clear();
-            	}
-            	else {
-            		RootPanel.get("infos").clear();
-            		RootPanel.get("errors").clear();
-            		displayInfoMessage("Wrong data: not saved.", true);
-            	}
-            }
-		});
+		authenticateUser("", 1, kdData, true);
 	};
 
 	/**
@@ -1270,65 +1259,7 @@ public class KeyDyn implements EntryPoint {
 	 * @param kdData Keystroke Dynamics data.
 	 */
 	public static void appletCallbackTest(final String kdData) {
-		transmissionService.saveKDData(kdData, true,
-				new AsyncCallback<Boolean>() {
-			@Override
-            public void onFailure(Throwable caught) {
-				displayErrorMessage("TestKDData", caught.getMessage());
-            }
-            @Override
-            public void onSuccess(Boolean KDDataSaved) {
-            	if (KDDataSaved) {
-            		KeystrokeSequence keystrokeSequence =
-            				new KeystrokeSequence(kdData);
-            		transmissionService.getDistance(keystrokeSequence,
-            				new AsyncCallback<Float>() {
-            			@Override
-                        public void onFailure(Throwable caught) {
-            				displayErrorMessage("GetDistanceTest",
-            						caught.getMessage());
-                        }
-                        @Override
-                        public void onSuccess(final Float distance) {
-                        	final Label distanceLabel = new Label("Distance: " +
-        							distance.toString());
-                        	transmissionService.getThreshold(
-                        			new AsyncCallback<Float>() {
-                				@Override
-                                public void onFailure(Throwable caught) {
-                    				displayErrorMessage("GetThresholdTest",
-                    						caught.getMessage());
-                                }
-                                @Override
-                                public void onSuccess(Float threshold) {
-                                	if (distance <= threshold) {
-                                		distanceLabel.setText(
-                                				distanceLabel.getText() +
-                                				" ; Authentication : OK" +
-                                				" (Threshold = " +
-                                				threshold.toString() + ")");
-                                	} else {
-                                		distanceLabel.setText(
-                                				distanceLabel.getText() +
-                                				" ; Authentication : FAIL" +
-                                				" (Threshold = " +
-                                				threshold.toString() + ")");
-                                	}
-                                }
-                        	});
-        					chartsPanel.setWidget(0, 0, distanceLabel);
-                        }
-            		});
-            		RootPanel.get("infos").clear();
-            		RootPanel.get("errors").clear();
-            	}
-            	else {
-            		RootPanel.get("infos").clear();
-            		RootPanel.get("errors").clear();
-            		displayInfoMessage("Wrong data: not saved.", true);
-            	}
-            }
-		});
+		authenticateUser("", 0, kdData, true);
 	};
 
 	/**

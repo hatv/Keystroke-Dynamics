@@ -51,15 +51,16 @@ public class DataStore {
 
 	/**
 	 * Save the given Keystroke Dynamics data in the data store.
-	 * @param kdString Keystroke Dynamics data to store.
+	 * @param user User entity of the user.
+	 * @param keystrokeSequence Keystroke Dynamics data to store.
 	 * @param temp True if the data must be stored in the temporary password
 	 * data table.
-	 * @param infos String table of characteristics about the computer like IP
+	 * @param info String table of characteristics about the computer like IP
 	 * address, OS or browser in order to help the user to validate the
-	 * candidate keystroke record.
+	 * candidate keystroke record if temp is set to true.
 	 */
 	public static void saveKDData(User user,
-			KeystrokeSequence keystrokeSequence, boolean temp, String[] infos) {
+			KeystrokeSequence keystrokeSequence, boolean temp, String[] info) {
 		Date typingDate = new Date();
 		String login = user.getLogin();
 	    if (!temp) {
@@ -68,25 +69,36 @@ public class DataStore {
 	    			typingDate);
 	        user.addKDPasswordKey(
 	        		ObjectifyService.ofy().save().entity(kdPassword).now());
+	        log.info("User <" + login + "> : new data saved: " +
+	        		keystrokeSequence.toString());
+
 		    // Update the means vectors
 	        StatisticsUnit means = user.getMeans();
 	        int dataNumber = user.getKDPasswordNumber();
-		    means.addToMeans(keystrokeSequence, dataNumber);
+		    means.addToMeans(keystrokeSequence, dataNumber - 1);
 	        user.setMeans(means);
+	        // Means must be updated before the standard deviations computation
+	        DataStore.saveUser(user);
+	        log.info("Means have been updated for user <" + login + ">.");
+
 		    // Update the standard deviation vectors
 	        user.setSd(Computation.computeSd(login));
+	        // Standard deviations must be updated before the threshold
+	        // computation
+	        DataStore.saveUser(user);
+	        log.info("Standard deviations have been updated for user <" + login
+	        		+ ">.");
+
 		    // Update the threshold
 	        Float threshold = Computation.computeThreshold(user);
 	        user.setThreshold(threshold);
-	        log.info("Threshold has been updated for user <" + login + ">: " +
-	        		threshold);
 		    DataStore.saveUser(user);
-	        log.info("User <" + login + "> : new data saved: " +
-	        		keystrokeSequence.toString());
+		    log.info("Threshold has been updated for user <" + login + ">: " +
+	        		threshold);
 	    } else {
 	    	TempPassword tempPassword =
 	    			new TempPassword(keystrokeSequence.getPhrase(), login,
-	    					keystrokeSequence, typingDate, infos);
+	    					keystrokeSequence, typingDate, info);
 	    	ObjectifyService.ofy().save().entity(tempPassword).now();
 	    }
 	}
