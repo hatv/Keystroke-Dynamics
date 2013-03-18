@@ -32,7 +32,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.LineChart;
-import fr.vhat.keydyn.client.entities.KDPassword;
 import fr.vhat.keydyn.client.services.AuthenticationService;
 import fr.vhat.keydyn.client.services.AuthenticationServiceAsync;
 import fr.vhat.keydyn.client.services.DataTransmissionService;
@@ -43,6 +42,7 @@ import fr.vhat.keydyn.shared.FieldVerifier;
 import fr.vhat.keydyn.shared.KeystrokeSequence;
 import fr.vhat.keydyn.shared.StatisticsUnit;
 import fr.vhat.keydyn.shared.TimeSequence;
+import fr.vhat.keydyn.shared.entities.KDPassword;
 
 /**
  * Main class of the Keystroke Dynamics Authentication system.

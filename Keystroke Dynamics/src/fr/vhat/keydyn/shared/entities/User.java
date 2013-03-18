@@ -1,4 +1,4 @@
-package fr.vhat.keydyn.client.entities;
+package fr.vhat.keydyn.shared.entities;
 
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;

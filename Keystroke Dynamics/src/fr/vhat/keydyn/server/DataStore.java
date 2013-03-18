@@ -6,11 +6,11 @@ import java.util.logging.Logger;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 
-import fr.vhat.keydyn.client.entities.KDPassword;
-import fr.vhat.keydyn.client.entities.TempPassword;
-import fr.vhat.keydyn.client.entities.User;
 import fr.vhat.keydyn.shared.KeystrokeSequence;
 import fr.vhat.keydyn.shared.StatisticsUnit;
+import fr.vhat.keydyn.shared.entities.KDPassword;
+import fr.vhat.keydyn.shared.entities.TempPassword;
+import fr.vhat.keydyn.shared.entities.User;
 
 /**
  * Data store functionalities.

@@ -1,11 +1,11 @@
 package fr.vhat.keydyn.server;
 
-import fr.vhat.keydyn.client.entities.KDPassword;
-import fr.vhat.keydyn.client.entities.User;
 import fr.vhat.keydyn.server.services.DataTransmissionServiceImpl;
 import fr.vhat.keydyn.shared.KeystrokeSequence;
 import fr.vhat.keydyn.shared.StatisticsUnit;
 import fr.vhat.keydyn.shared.TimeSequence;
+import fr.vhat.keydyn.shared.entities.KDPassword;
+import fr.vhat.keydyn.shared.entities.User;
 
 import java.util.List;
 import java.util.logging.Logger;

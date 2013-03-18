@@ -2,12 +2,12 @@ package fr.vhat.keydyn.server.services;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-import fr.vhat.keydyn.client.entities.User;
 import fr.vhat.keydyn.client.services.RegistrationService;
 import fr.vhat.keydyn.server.DataStore;
 import fr.vhat.keydyn.server.Mail;
 import fr.vhat.keydyn.server.Password;
 import fr.vhat.keydyn.shared.FieldVerifier;
+import fr.vhat.keydyn.shared.entities.User;
 
 import com.googlecode.objectify.ObjectifyService;
 

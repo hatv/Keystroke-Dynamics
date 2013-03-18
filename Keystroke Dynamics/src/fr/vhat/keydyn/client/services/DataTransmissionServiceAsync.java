@@ -4,9 +4,9 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import fr.vhat.keydyn.client.entities.KDPassword;
 import fr.vhat.keydyn.shared.KeystrokeSequence;
 import fr.vhat.keydyn.shared.StatisticsUnit;
+import fr.vhat.keydyn.shared.entities.KDPassword;
 
 /**
  * Keystroke Dynamics and statistics data communication.
