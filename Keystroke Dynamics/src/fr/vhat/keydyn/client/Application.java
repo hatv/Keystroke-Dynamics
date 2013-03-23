@@ -103,7 +103,7 @@ public class Application implements ChangeGroupRequestedEventHandler {
 			@Override
 			public void onFailure(Throwable caught) {
 				new ServiceFailurePopup("InitSessionValidation: " + 
-						caught.getMessage()).show();
+						caught.getMessage()).showPopup();
 			}
 			@Override
 			public void onSuccess(String login) {
@@ -111,7 +111,8 @@ public class Application implements ChangeGroupRequestedEventHandler {
 					loadUserPage(login);
 				else
 					loadHomePage();*/
-				new ServiceFailurePopup("Le service s'est bien exécuté").show();
+				new ServiceFailurePopup("Le service s'est bien exécuté")
+						.showPopup();
 			}
 		});
 		return false;
