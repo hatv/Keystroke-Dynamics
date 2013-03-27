@@ -1,6 +1,12 @@
 package fr.vhat.keydyn.client;
 
+import com.github.gwtbootstrap.client.ui.Container;
+import com.github.gwtbootstrap.client.ui.FluidContainer;
+import com.github.gwtbootstrap.client.ui.FluidRow;
+import com.github.gwtbootstrap.client.ui.PageHeader;
+import com.github.gwtbootstrap.client.ui.Row;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.TextAlign;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -24,13 +30,14 @@ public class Application implements ChangeGroupRequestedEventHandler {
 	private GroupTabPanel connectedGroupTabPanel;
 	private String divId;
 	private int displayedGroupTabPanelIndex;
+	private FluidRow contentRow;
 
 	public Application(String divId) {
 		// Load the JSNI (JavaScript Native Interface) functions.
 		this.JSNI();
-		// Set the two GroupTabPanel.
-		this.setConnectedGroupTabPanel(new GroupTabPanel());
-		this.setNotConnectedGroupTabPanel(new GroupTabPanel());
+		// Init the two GroupTabPanel.
+		this.setConnectedGroupTabPanel(new GroupTabPanel(true, 0));
+		this.setNotConnectedGroupTabPanel(new GroupTabPanel(false, 0));
 		this.setDivId(divId);
 		// Check whether the user is already connected or not.
 		if (this.isValidSession()) {
@@ -38,6 +45,14 @@ public class Application implements ChangeGroupRequestedEventHandler {
 		} else {
 			this.setDisplayedGroupTabPanelIndex(0);
 		}
+		RootPanel.get().clear();
+		FluidContainer mainContainer = new FluidContainer();
+		mainContainer.setStyleName("mainContainer");
+		FluidRow headerRow = this.getHeaderRow();
+		mainContainer.add(headerRow);
+		contentRow = new FluidRow();
+		mainContainer.add(contentRow);
+		RootPanel.get().add(mainContainer);
 	}
 
 	private GroupTabPanel getNotConnectedGroupTabPanel() {
@@ -75,23 +90,32 @@ public class Application implements ChangeGroupRequestedEventHandler {
 	private void setDisplayedGroupTabPanelIndex(
 			int displayedGroupTabPanelIndex) {
 		this.displayedGroupTabPanelIndex = displayedGroupTabPanelIndex;
-		this.show();
 	}
 
 	public void show() {
-		RootPanel.get(this.getDivId()).clear();
 		GroupTabPanel displayedGroupTabPanel;
 		if (this.getDisplayedGroupTabPanelIndex() == 0) {
 			displayedGroupTabPanel = this.getNotConnectedGroupTabPanel();
 		} else {
 			displayedGroupTabPanel = this.getConnectedGroupTabPanel();
 		}
-		RootPanel.get(this.getDivId()).add(displayedGroupTabPanel);
+		contentRow.add(displayedGroupTabPanel);
+	}
+
+	private FluidRow getHeaderRow() {
+		PageHeader title = new PageHeader();
+		title.setText("Analyse de la Dynamique de Frappe");
+		title.setSubtext("");
+		title.getElement().getStyle().setTextAlign(TextAlign.CENTER);
+		FluidRow headerRow = new FluidRow();
+		headerRow.add(title);
+		return headerRow;
 	}
 
 	@Override
 	public void onChangeGroupRequested(ChangeGroupRequestedEvent event) {
 		this.setDisplayedGroupTabPanelIndex(event.getGroupIndex());
+		this.show();
 	}
 
 	/**

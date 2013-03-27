@@ -1,54 +1,7 @@
-#errors {
-	color: red;
-}
-.success {
-	color: green;
-}
-.failure {
-	color: red;
-}
-h1 {
-	font-size: 3em;
-	font-weight: bold;
-	color: #777777;
-	margin: 40px 0px 70px;
-	text-align: center;
-}
-.registrationLabel {
-	text-align: right;
-}
-.gwt-Button {
-	display: block;
-	font-size: 60pt;
-}
-.container {
-	background-color: silver;
-	border-radius: 20px;
-	margin-left: auto;
-	margin-right: auto;
-	padding: 10px 20px;
-}
-.errorText {
-	color: red;
-}
-/** Most GWT widgets already have a style name defined */
-.gwt-DialogBox {
-  width: 400px;
-}
-
-.gwt-Grid {
-    min-width: 500px;	
-}
-
-.dialogVPanel {
-  margin: 5px;
-}
-
-.serverResponseLabelError {
-  color: red;
-}
-
-/** Set ids using widget.getElement().setId("idOfElement") */
-#closeButton {
-  margin: 15px 6px 6px;
-}
+/***
+ * To set a fixed width to the application : not responsive
+ **
+.mainContainer {
+	width: 800px;
+	margin: auto;
+}*/

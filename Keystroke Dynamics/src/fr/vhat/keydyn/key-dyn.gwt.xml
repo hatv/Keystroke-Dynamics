@@ -20,7 +20,10 @@
   <!-- Other module inherits                                      -->
   <inherits name="com.googlecode.objectify.Objectify" />
   <inherits name='com.google.gwt.visualization.Visualization'/>
-	
+  <inherits name="com.github.gwtbootstrap.Bootstrap" />
+  
+  <set-property name="bootstrap.responsiveDesign" value="true"/>
+  
   <!-- Specify the app entry point class.                         -->
   <entry-point class='fr.vhat.keydyn.client.KeyDyn'/>
 
