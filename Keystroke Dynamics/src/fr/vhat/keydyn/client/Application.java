@@ -13,6 +13,7 @@ import fr.vhat.keydyn.client.events.ChangeGroupRequestedEventHandler;
 import fr.vhat.keydyn.client.services.AuthenticationService;
 import fr.vhat.keydyn.client.services.AuthenticationServiceAsync;
 import fr.vhat.keydyn.client.widgets.GroupTabPanel;
+import fr.vhat.keydyn.client.widgets.ServiceFailurePopup;
 
 /**
  * The Application class is the main class of the GUI.

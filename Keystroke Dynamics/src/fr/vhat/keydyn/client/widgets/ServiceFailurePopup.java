@@ -1,4 +1,4 @@
-package fr.vhat.keydyn.client;
+package fr.vhat.keydyn.client.widgets;
 
 import java.math.BigDecimal;
 
