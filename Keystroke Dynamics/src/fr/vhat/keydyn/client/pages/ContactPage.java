@@ -1,18 +1,17 @@
 package fr.vhat.keydyn.client.pages;
 
-import com.github.gwtbootstrap.client.ui.Tab;
 import com.github.gwtbootstrap.client.ui.base.TextNode;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ContactPage extends Tab {
+import fr.vhat.keydyn.client.widgets.Page;
+
+public class ContactPage extends Page {
 	public ContactPage() {
-		this.setHeading("Contact");
-		this.setIcon(IconType.ENVELOPE_ALT);
-		this.add(this.getContent());
+		super("Contact", IconType.ENVELOPE_ALT);
 	}
 
-	private Widget getContent() {
+	protected Widget getContent() {
 		return new TextNode("Pour me contacter, remplissez le formulaire :");
 	}
 }

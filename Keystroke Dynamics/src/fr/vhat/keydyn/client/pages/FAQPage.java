@@ -1,18 +1,17 @@
 package fr.vhat.keydyn.client.pages;
 
-import com.github.gwtbootstrap.client.ui.Tab;
 import com.github.gwtbootstrap.client.ui.base.TextNode;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.user.client.ui.Widget;
 
-public class FAQPage extends Tab {
+import fr.vhat.keydyn.client.widgets.Page;
+
+public class FAQPage extends Page {
 	public FAQPage() {
-		this.setHeading("F.A.Q.");
-		this.setIcon(IconType.QUESTION_SIGN);
-		this.add(this.getContent());
+		super("F.A.Q.", IconType.QUESTION_SIGN);
 	}
 
-	private Widget getContent() {
+	protected Widget getContent() {
 		return new TextNode("Questions que vous pourriez vous poser !");
 	}
 }

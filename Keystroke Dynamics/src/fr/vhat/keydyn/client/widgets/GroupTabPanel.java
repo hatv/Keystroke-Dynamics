@@ -1,6 +1,5 @@
 package fr.vhat.keydyn.client.widgets;
 
-import com.github.gwtbootstrap.client.ui.PageHeader;
 import com.github.gwtbootstrap.client.ui.Tab;
 import com.github.gwtbootstrap.client.ui.TabPanel;
 import com.google.gwt.event.shared.GwtEvent;

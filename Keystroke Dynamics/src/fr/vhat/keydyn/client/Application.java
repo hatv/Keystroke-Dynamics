@@ -1,10 +1,8 @@
 package fr.vhat.keydyn.client;
 
-import com.github.gwtbootstrap.client.ui.Container;
 import com.github.gwtbootstrap.client.ui.FluidContainer;
 import com.github.gwtbootstrap.client.ui.FluidRow;
 import com.github.gwtbootstrap.client.ui.PageHeader;
-import com.github.gwtbootstrap.client.ui.Row;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.TextAlign;
 import com.google.gwt.user.client.rpc.AsyncCallback;
