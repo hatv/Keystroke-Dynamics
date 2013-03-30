@@ -2,6 +2,6 @@
  * To set a fixed width to the application : not responsive
  **/
 .mainContainer {
-	width: 800px;
+	width: 700px;
 	margin: auto;
 }

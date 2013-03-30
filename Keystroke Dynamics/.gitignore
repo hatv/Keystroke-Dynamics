@@ -1,6 +1,10 @@
 /.settings
 /gwt-unitCache
-/war/keydyn
+/war/keydyn/font
+/war/keydyn/gwt
+/war/keydyn/img
+/war/keydyn/js
+/war/keydyn/prettify
 /war/WEB-INF/appengine-generated
 /war/WEB-INF/lib
 /war/WEB-INF/classes

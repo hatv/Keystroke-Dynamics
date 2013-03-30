@@ -1,0 +1,40 @@
+body { padding-top: 50px; }
+a.btn {color:#333333;}
+a.btn-primary, a.btn-warning, a.btn-danger, a.btn-success, a.btn-info, a.btn-inverse {color:#ffffff;}
+div.input-prepend>input,textarea,select,.uneditable-input { margin-bottom: 0; }
+div.input-append>input,textarea,select,.uneditable-input { margin-bottom: 0; }
+.gwt-PopupPanel .gwt-DatePicker { width: 200px; }
+.gwt-SuggestBoxPopup { z-index: 2100; }
+.gwt-SuggestBoxPopup .suggestPopupTop { background-color: white; }
+.gwt-SuggestBoxPopup .suggestPopupMiddle { background-color: white; }
+.gwt-SuggestBoxPopup .suggestPopupBottomCenter { background-color: white; }
+
+
+/* Personnalisations Victor Hatinguais */
+
+body {
+	padding-top: 10px;
+}
+
+.well {
+	padding: 15px;
+}
+
+legend {
+	margin-bottom: 10px;
+}
+
+.control-group {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.center {
+    float: none;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.text-node {
+	padding-bottom: 50px;
+}
