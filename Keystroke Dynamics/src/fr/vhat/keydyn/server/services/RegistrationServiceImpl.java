@@ -34,20 +34,20 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements
 	 * Register a new user according to the given information.
 	 * @param login An available valid login for the user to register.
 	 * @param email A valid email address.
-	 * @param age Age of the user.
+	 * @param birthYear Birth year of the user.
 	 * @param gender Gender of the user among "Male" or "Female".
 	 * @param country Living country of the user.
 	 * @param computerExperience Experience of the user with computers.
 	 * @param typingUsage Estimation of the time spending typing on a keyboard.
 	 * @return Success of the registration.
 	 */
-	public boolean registerUser(String login, String email, int age,
+	public boolean registerUser(String login, String email, int birthYear,
 			String gender, String country, int computerExperience,
 			int typingUsage) {
 
 		if (FieldVerifier.isValidLogin(login)
 				&& FieldVerifier.isValidEmail(email)
-				&& FieldVerifier.isValidAge(age)
+				&& FieldVerifier.isValidBirthYear(birthYear)
 				&& FieldVerifier.isValidGender(gender)
 				&& FieldVerifier.isValidCountry(country)
 				&& FieldVerifier.isValidExperience(computerExperience)
@@ -57,8 +57,9 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements
 			String password = Password.generatePassword();
 			String hashedPassword = Password.hash(password);
 			Date date = new Date();
-	        User user = new User(login, password, hashedPassword, email, age,
-	        		gender, country, computerExperience, typingUsage, date);
+	        User user = new User(login, password, hashedPassword, email,
+	        		birthYear, gender, country, computerExperience, typingUsage,
+	        		date);
 	        DataStore.saveUser(user);
 			log.info("User <" + login + "> created with password <" + password
 					+ ">.");

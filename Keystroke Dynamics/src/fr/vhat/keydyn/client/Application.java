@@ -3,6 +3,7 @@ package fr.vhat.keydyn.client;
 import com.github.gwtbootstrap.client.ui.FluidContainer;
 import com.github.gwtbootstrap.client.ui.FluidRow;
 import com.github.gwtbootstrap.client.ui.PageHeader;
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.TextAlign;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -13,7 +14,7 @@ import fr.vhat.keydyn.client.events.ChangeGroupRequestedEventHandler;
 import fr.vhat.keydyn.client.services.AuthenticationService;
 import fr.vhat.keydyn.client.services.AuthenticationServiceAsync;
 import fr.vhat.keydyn.client.widgets.GroupTabPanel;
-import fr.vhat.keydyn.client.widgets.ServiceFailurePopup;
+import fr.vhat.keydyn.client.widgets.InformationPopup;
 
 /**
  * The Application class is the main class of the GUI.
@@ -31,10 +32,14 @@ public class Application implements ChangeGroupRequestedEventHandler {
 	private int displayedGroupTabPanelIndex;
 	private FluidRow contentRow;
 
+	/**
+	 * Constructor.
+	 * @param divId Id of the container of the application on the page.
+	 */
 	public Application(String divId) {
 		// Load the JSNI (JavaScript Native Interface) functions.
 		this.JSNI();
-		// Init the two GroupTabPanel.
+		// Initialize the two GroupTabPanel.
 		this.setConnectedGroupTabPanel(new GroupTabPanel(true, 0));
 		this.setNotConnectedGroupTabPanel(new GroupTabPanel(false, 0));
 		this.setDivId(divId);
@@ -125,8 +130,9 @@ public class Application implements ChangeGroupRequestedEventHandler {
 		authenticationService.validateSession(new AsyncCallback<String>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				new ServiceFailurePopup("InitSessionValidation: " + 
-						caught.getMessage()).showPopup();
+				new InformationPopup("Échec de connexion",
+						"InitSessionValidation: " + caught.getMessage(),
+						AlertType.WARNING).showPopup();
 			}
 			@Override
 			public void onSuccess(String login) {
@@ -134,8 +140,6 @@ public class Application implements ChangeGroupRequestedEventHandler {
 					loadUserPage(login);
 				else
 					loadHomePage();*/
-				new ServiceFailurePopup("Le service s'est bien exécuté")
-						.showPopup();
 			}
 		});
 		return false;

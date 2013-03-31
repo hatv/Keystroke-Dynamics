@@ -11,7 +11,6 @@ import com.github.gwtbootstrap.client.ui.HelpBlock;
 import com.github.gwtbootstrap.client.ui.Legend;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Paragraph;
-import com.github.gwtbootstrap.client.ui.SubmitButton;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.Tooltip;
 import com.github.gwtbootstrap.client.ui.WellForm;
@@ -24,6 +23,12 @@ import com.github.gwtbootstrap.client.ui.constants.Placement;
 import com.github.gwtbootstrap.client.ui.constants.ToggleType;
 import com.github.gwtbootstrap.client.ui.constants.Trigger;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -33,9 +38,15 @@ import com.google.gwt.user.client.ui.Widget;
 
 import fr.vhat.keydyn.client.services.RegistrationService;
 import fr.vhat.keydyn.client.services.RegistrationServiceAsync;
+import fr.vhat.keydyn.client.widgets.GroupTabPanel;
 import fr.vhat.keydyn.client.widgets.Page;
+import fr.vhat.keydyn.client.widgets.InformationPopup;
 import fr.vhat.keydyn.shared.FieldVerifier;
 
+/**
+ * Represent the registration page.
+ * @author Victor Hatinguais, www.victorhatinguais.fr
+ */
 public class RegistrationPage extends Page {
 
 	private VerticalPanel panel;
@@ -44,33 +55,47 @@ public class RegistrationPage extends Page {
 	private HelpBlock loginHelpBlock;
 	private ControlGroup emailControlGroup;
 	private TextBox emailTextBox;
+	private HelpBlock emailHelpBlock;
 	private ControlGroup birthYearControlGroup;
 	private TextBox birthYearTextBox;
+	private HelpBlock birthYearHelpBlock;
 	private ControlGroup genderControlGroup;
 	private Button maleButton;
 	private Button femaleButton;
+	private HelpBlock genderHelpBlock;
 	private ControlGroup countryControlGroup;
 	private ListBox countryList;
+	private HelpBlock countryHelpBlock;
 	private ControlGroup computerExperienceControlGroup;
 	private ListBox computerExperienceList;
+	private HelpBlock computerExperienceHelpBlock;
 	private ControlGroup typingUsageControlGroup;
 	private ListBox typingUsageList;
+	private HelpBlock typingUsageHelpBlock;
+	private Button submitButton;
 	private VerticalPanel alertPanel;
 
 	// Services creation for RPC communication between client and server sides.
 	private static RegistrationServiceAsync registrationService =
 			GWT.create(RegistrationService.class);
 
-	public RegistrationPage() {
-		super("Inscription", IconType.OK);
+	/**
+	 * Constructor of the registration page.
+	 */
+	public RegistrationPage(GroupTabPanel owner) {
+		super("Inscription", IconType.OK, owner);
 	}
 
+	@Override
 	protected Widget getContent() {
 		this.generatePage();
 		this.generateHandlers();
 		return panel;
 	}
 
+	/**
+	 * Build the form.
+	 */
 	private void generatePage() {
 		panel = new VerticalPanel();
 		panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
@@ -119,6 +144,9 @@ public class RegistrationPage extends Page {
 		emailControlGroup.add(emailControl);
 		emailTextBox = new TextBox();
 		emailControl.add(emailTextBox);
+		emailHelpBlock = new HelpBlock();
+		emailHelpBlock.setVisible(false);
+		emailControl.add(emailHelpBlock);
 		Tooltip emailTooltip =
 				new Tooltip("Adresse courriel valide pour la réception du mot" +
 						" de passe. Vous ne recevrez aucun courriel " +
@@ -137,10 +165,12 @@ public class RegistrationPage extends Page {
 		birthYearTextBox = new TextBox();
 		birthYearTextBox.setMaxLength(4);
 		birthYearControl.add(birthYearTextBox);
+		birthYearHelpBlock = new HelpBlock();
+		birthYearHelpBlock.setVisible(false);
+		birthYearControl.add(birthYearHelpBlock);
 
 		genderControlGroup = new ControlGroup();
 		fieldset.add(genderControlGroup);
-		genderControlGroup.setType(ControlGroupType.ERROR);
 		ControlLabel genderLabel = new ControlLabel("Sexe");
 		genderControlGroup.add(genderLabel);
 		Controls genderControl = new Controls();
@@ -150,6 +180,9 @@ public class RegistrationPage extends Page {
 		ButtonGroup genderRadio = new ButtonGroup(maleButton, femaleButton);
 		genderRadio.setToggle(ToggleType.RADIO);
 		genderControl.add(genderRadio);
+		genderHelpBlock = new HelpBlock();
+		genderHelpBlock.setVisible(false);
+		genderControl.add(genderHelpBlock);
 
 		countryControlGroup = new ControlGroup();
 		fieldset.add(countryControlGroup);
@@ -170,6 +203,9 @@ public class RegistrationPage extends Page {
 		countryList.addItem("Pays d'Asie");
 		countryList.addItem("Autre pays");
 		countryControl.add(countryList);
+		countryHelpBlock = new HelpBlock();
+		countryHelpBlock.setVisible(false);
+		countryControl.add(countryHelpBlock);
 		Tooltip countryTooltip = new Tooltip("Pays dans lequel vous avez " + 
 					"passé  la majeure partie de votre vie.");
 		countryTooltip.setWidget(countryList);
@@ -193,6 +229,9 @@ public class RegistrationPage extends Page {
 		computerExperienceList.addItem("~ 10 ans");
 		computerExperienceList.addItem("> 13 ans");
 		computerExperienceControl.add(computerExperienceList);
+		computerExperienceHelpBlock = new HelpBlock();
+		computerExperienceHelpBlock.setVisible(false);
+		computerExperienceControl.add(computerExperienceHelpBlock);
 		Tooltip computerExperienceTooltip = new Tooltip("Années depuis " +
 				"lesquelles vous utilisez régulièrement l'informatique.");
 		computerExperienceTooltip.setWidget(computerExperienceList);
@@ -201,7 +240,6 @@ public class RegistrationPage extends Page {
 		computerExperienceTooltip.reconfigure();
 
 		typingUsageControlGroup = new ControlGroup();
-		typingUsageControlGroup.setType(ControlGroupType.ERROR);
 		fieldset.add(typingUsageControlGroup);
 		ControlLabel typingUsageLabel =
 				new ControlLabel("Utilisation du clavier");
@@ -217,6 +255,9 @@ public class RegistrationPage extends Page {
 		typingUsageList.addItem("~ 4 heures par jour");
 		typingUsageList.addItem("> 5 heures par jour");
 		typingUsageControl.add(typingUsageList);
+		typingUsageHelpBlock = new HelpBlock();
+		typingUsageHelpBlock.setVisible(false);
+		typingUsageControl.add(typingUsageHelpBlock);
 		Tooltip typingUsageTooltip = new Tooltip("Nombre moyen d'heures " +
 				"passées quotidiennement à faire de la saisie sur un clavier.");
 		typingUsageTooltip.setWidget(typingUsageList);
@@ -224,7 +265,7 @@ public class RegistrationPage extends Page {
 		typingUsageTooltip.setPlacement(Placement.RIGHT);
 		typingUsageTooltip.reconfigure();
 
-		SubmitButton submitButton = new SubmitButton("S'inscrire");
+		submitButton = new Button("S'inscrire");
 		submitButton.setType(ButtonType.SUCCESS);
 		registrationForm.add(submitButton);
 
@@ -232,16 +273,84 @@ public class RegistrationPage extends Page {
 		panel.add(alertPanel);
 	}
 
+	/**
+	 * Define the handlers of the form.
+	 */
 	private void generateHandlers() {
-		// Check login validity and availability on change event
+		// Check login validity and availability on key up event.
 		loginTextBox.addKeyUpHandler(new KeyUpHandler() {
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
 				checkLogin();
 			}
 		});
+
+		// Check email validity on blur event.
+		emailTextBox.addBlurHandler(new BlurHandler() {
+			@Override
+			public void onBlur(BlurEvent event) {
+				checkEmail();
+			}
+		});
+
+		// Check birth year validity on blur event.
+		birthYearTextBox.addBlurHandler(new BlurHandler() {
+			@Override
+			public void onBlur(BlurEvent event) {
+				checkBirthYear();
+			}
+		});
+
+		// Check that one of the gender has been selected.
+		maleButton.addBlurHandler(new BlurHandler() {
+			@Override
+			public void onBlur(BlurEvent event) {
+				checkGender();
+			}
+		});
+		femaleButton.addBlurHandler(new BlurHandler() {
+			@Override
+			public void onBlur(BlurEvent event) {
+				checkGender();
+			}
+		});
+
+		// Check that a country has been selected.
+		countryList.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				checkCountry();
+			}
+		});
+
+		// Check that a computer experience has been selected.
+		computerExperienceList.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				checkComputerExperience();
+			}
+		});
+
+		// Check that a typing usage has been selected.
+		typingUsageList.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				checkTypingUsage();
+			}
+		});
+
+		// Check all the form on submit event.
+		submitButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				checkAndSendForm();
+			}
+		});
 	}
 
+	/**
+	 * Check that the provided information for the field <login> are valid.
+	 */
 	private void checkLogin() {
 		String login = loginTextBox.getText();
 		if (login.equals("")) {
@@ -265,17 +374,19 @@ public class RegistrationPage extends Page {
 		}
 	}
 
+	/**
+	 * Check whether a given login is available or not.
+	 * @param login Login to check.
+	 */
 	private void checkLoginAvailability(String login) {
 		registrationService.checkLoginAvailability(login,
 			new AsyncCallback<Boolean>() {
 				@Override
 				public void onFailure(Throwable caught) {
-					Alert alert = new Alert(
-							"CheckLoginAvailability" + caught.getMessage(),
-							AlertType.WARNING,
-							true);
-					alert.setHeading("Échec de connexion");
-					alertPanel.add(alert);
+					loginControlGroup.setType(ControlGroupType.WARNING);
+					loginHelpBlock.setText("La disponibilité n'a pas pu être" +
+							" vérifiée.");
+					loginHelpBlock.setVisible(true);
 				}
 				@Override
 				public void onSuccess(Boolean available) {
@@ -291,5 +402,200 @@ public class RegistrationPage extends Page {
 					}
 				}
 			});
+	}
+
+	/**
+	 * Check that the provided information for the field <email> are valid.
+	 */
+	private void checkEmail() {
+		String email = emailTextBox.getText();
+		if (email.equals("")) {
+			emailControlGroup.setType(ControlGroupType.WARNING);
+			emailHelpBlock.setText(
+					"Une adresse valide est nécessaire pour la " +
+					"réception de votre mot de passe.");
+			emailHelpBlock.setVisible(true);
+		} else if (!FieldVerifier.isValidEmail(email)) {
+			emailControlGroup.setType(ControlGroupType.ERROR);
+			emailHelpBlock.setText(
+					"Veuillez saisir un courriel valide afin de recevoir " +
+					"votre mot de passe.");
+			emailHelpBlock.setVisible(true);
+		} else {
+			emailControlGroup.setType(ControlGroupType.SUCCESS);
+			emailHelpBlock.setText("");
+			emailHelpBlock.setVisible(false);
+		}
+	}
+
+	/**
+	 * Check that the provided information for the field <birth year> are valid.
+	 */
+	private void checkBirthYear() {
+		String birthYear = birthYearTextBox.getText();
+		if (birthYear.equals("")) {
+			birthYearControlGroup.setType(ControlGroupType.WARNING);
+			birthYearHelpBlock.setText(
+					"Veuillez entrer votre année de naissance.");
+			birthYearHelpBlock.setVisible(true);
+		} else if (!FieldVerifier.isValidBirthYear(birthYear)) {
+			birthYearControlGroup.setType(ControlGroupType.ERROR);
+			birthYearHelpBlock.setText(
+					"Veuillez entrer votre véritable année de naissance à " +
+					"quatre chiffres.");
+			birthYearHelpBlock.setVisible(true);
+		} else {
+			birthYearControlGroup.setType(ControlGroupType.SUCCESS);
+			birthYearHelpBlock.setText("");
+			birthYearHelpBlock.setVisible(false);
+		}
+	}
+
+	/**
+	 * Check that the provided information for the field <gender> are valid.
+	 */
+	private void checkGender() {
+		if (maleButton.isToggled() || femaleButton.isToggled()) {
+			genderControlGroup.setType(ControlGroupType.SUCCESS);
+			genderHelpBlock.setText("");
+			genderHelpBlock.setVisible(false);
+		} else {
+			genderControlGroup.setType(ControlGroupType.ERROR);
+			genderHelpBlock.setText("Veuillez indiquer votre sexe.");
+			genderHelpBlock.setVisible(true);
+		}
+	}
+
+	/**
+	 * Check that the provided information for the field <country> are valid.
+	 */
+	private void checkCountry() {
+		if (countryList.getSelectedIndex() == 0) {
+			countryControlGroup.setType(ControlGroupType.WARNING);
+			countryHelpBlock.setText("Veuillez sélectionner votre pays.");
+			countryHelpBlock.setVisible(true);
+		} else {
+			countryControlGroup.setType(ControlGroupType.SUCCESS);
+			countryHelpBlock.setText("");
+			countryHelpBlock.setVisible(false);
+		}
+	}
+
+	/**
+	 * Check that the provided information for the field <computer experience>
+	 * are valid.
+	 */
+	private void checkComputerExperience() {
+		if (computerExperienceList.getSelectedIndex() == 0) {
+			computerExperienceControlGroup.setType(ControlGroupType.WARNING);
+			computerExperienceHelpBlock.setText("Veuillez faire un choix.");
+			computerExperienceHelpBlock.setVisible(true);
+		} else {
+			computerExperienceControlGroup.setType(ControlGroupType.SUCCESS);
+			computerExperienceHelpBlock.setText("");
+			computerExperienceHelpBlock.setVisible(false);
+		}
+	}
+
+	/**
+	 * Check that the provided information for the field <typing usage> are
+	 * valid.
+	 */
+	private void checkTypingUsage() {
+		if (typingUsageList.getSelectedIndex() == 0) {
+			typingUsageControlGroup.setType(ControlGroupType.WARNING);
+			typingUsageHelpBlock.setText("Veuillez faire un choix.");
+			typingUsageHelpBlock.setVisible(true);
+		} else {
+			typingUsageControlGroup.setType(ControlGroupType.SUCCESS);
+			typingUsageHelpBlock.setText("");
+			typingUsageHelpBlock.setVisible(false);
+		}
+	}
+
+	/**
+	 * Check that all the given information are valid and send the form to the
+	 * server. Then display the information received by the server and refresh
+	 * the page.
+	 */
+	private void checkAndSendForm() {
+		String login = loginTextBox.getText();
+		String email = emailTextBox.getText();
+		String birthYear = birthYearTextBox.getText();
+		String gender = "Undefined";
+		if (maleButton.isToggled() && !femaleButton.isToggled()) {
+			gender = "Masculin";
+		} else if (!maleButton.isToggled() && femaleButton.isToggled()) {
+			gender = "Féminin";
+		}
+		String country = countryList.getValue(countryList.getSelectedIndex());
+		int computerExperienceIndex = computerExperienceList.getSelectedIndex();
+		int typingUsageIndex = typingUsageList.getSelectedIndex();
+		if (FieldVerifier.isValidLogin(login)
+				&& FieldVerifier.isValidEmail(email)
+				&& FieldVerifier.isValidBirthYear(birthYear)
+				&& FieldVerifier.isValidGender(gender)
+				&& FieldVerifier.isValidCountry(country)
+				&& FieldVerifier.isValidComputerExperience(
+						computerExperienceList.getValue(
+								computerExperienceIndex))
+				&& FieldVerifier.isValidTypingUsage(
+						typingUsageList.getValue(typingUsageIndex))) {
+			int birthYearValue = Integer.parseInt(birthYear);
+			registrationService.registerUser(login, email, birthYearValue,
+					gender, country, computerExperienceIndex, typingUsageIndex,
+					new AsyncCallback<Boolean>() {
+				@Override
+                public void onFailure(Throwable caught) {
+					Alert alert = new Alert(
+							"SignUp" + caught.getMessage(),
+							AlertType.WARNING,
+							true);
+					alert.setHeading("Échec de connexion");
+					alertPanel.add(alert);
+                }
+                @Override
+                public void onSuccess(Boolean registered) {
+                	if (registered) {
+                		new InformationPopup("Inscription validée.", "Vous " +
+                				"devriez recevoir votre mot de passe à " +
+                				"l'adresse indiquée.", AlertType.SUCCESS)
+                			.showPopup();
+                		clearForm();
+                		getOwner().selectTab(1);
+                	} else {
+                		new InformationPopup("Inscription refusée.",
+                				"Assurez-vous que tous les champs sont " +
+                				"renseignés et valides.", AlertType.ERROR)
+                			.showPopup();
+                	}
+                }
+			});
+		} else {
+			new InformationPopup("Informations manquantes", "Assurez-vous que" +
+					" tous les champs sont renseignés et valides.",
+					AlertType.WARNING).showPopup();
+		}
+	}
+
+	/**
+	 * Reset the form to its initial state.
+	 */
+	private void clearForm() {
+		loginTextBox.setText("");
+		emailTextBox.setText("");
+		birthYearTextBox.setText("");
+		maleButton.setActive(false);
+		femaleButton.setActive(false);
+		countryList.setSelectedIndex(0);
+		computerExperienceList.setSelectedIndex(0);
+		typingUsageList.setSelectedIndex(0);
+		loginControlGroup.setType(ControlGroupType.NONE);
+		emailControlGroup.setType(ControlGroupType.NONE);
+		birthYearControlGroup.setType(ControlGroupType.NONE);
+		genderControlGroup.setType(ControlGroupType.NONE);
+		countryControlGroup.setType(ControlGroupType.NONE);
+		computerExperienceControlGroup.setType(ControlGroupType.NONE);
+		typingUsageControlGroup.setType(ControlGroupType.NONE);
 	}
 }

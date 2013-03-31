@@ -30,7 +30,7 @@ public class User implements Serializable {
 	private String hashedPassword;
 	private String email;
 	@Index
-	private int age;
+	private int birthYear;
 	@Index
 	private String gender;
 	@Index
@@ -61,7 +61,7 @@ public class User implements Serializable {
 	 * @param password Password.
 	 * @param hashedPassword Hashed password to be stored in the data store.
 	 * @param email E-mail.
-	 * @param age Age.
+	 * @param birthYear Birth's year.
 	 * @param gender Gender among "Male" and "Female".
 	 * @param country Country.
 	 * @param computerExperience Computer experience level.
@@ -69,14 +69,14 @@ public class User implements Serializable {
 	 * @param registrationDate Registration date.
 	 */
 	public User(String login, String password, String hashedPassword,
-			String email, int age, String gender, String country,
+			String email, int birthYear, String gender, String country,
 			int computerExperience, int typingUsage, Date registrationDate) {
 		this.setActive(true);
 		this.setLogin(login);
 		this.setPassword(password);
 		this.setHashedPassword(hashedPassword);
 		this.setEmail(email);
-		this.setAge(age);
+		this.setBirthYear(birthYear);
 		this.setGender(gender);
 		this.setCountry(country);
 		this.setComputerExperience(computerExperience);
@@ -102,12 +102,12 @@ public class User implements Serializable {
 		this.email = email;
 	}
 
-	public int getAge() {
-		return age;
+	public int getBirthYear() {
+		return birthYear;
 	}
 
-	public void setAge(int age) {
-		this.age = age;
+	public void setBirthYear(int birthYear) {
+		this.birthYear = birthYear;
 	}
 
 	public String getGender() {

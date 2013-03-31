@@ -31,17 +31,17 @@ public class GroupTabPanel extends TabPanel implements HasHandlers {
 	 */
     public GroupTabPanel(boolean connectedOption, int activeIndex) {
     	simpleEventBus = new SimpleEventBus();
-    	Tab homePageTab = new HomePage();
+    	Tab homePageTab = new HomePage(this);
     	this.add(homePageTab);
-    	Tab loginPageTab = new LoginPage();
+    	Tab loginPageTab = new LoginPage(this);
     	this.add(loginPageTab);
-    	Tab registrationPageTab = new RegistrationPage();
+    	Tab registrationPageTab = new RegistrationPage(this);
     	this.add(registrationPageTab);
-    	Tab FAQPageTab = new FAQPage();
+    	Tab FAQPageTab = new FAQPage(this);
     	this.add(FAQPageTab);
-    	Tab aboutPageTab = new AboutPage();
+    	Tab aboutPageTab = new AboutPage(this);
     	this.add(aboutPageTab);
-    	Tab contactPageTab = new ContactPage();
+    	Tab contactPageTab = new ContactPage(this);
     	this.add(contactPageTab);
     	this.selectTab(activeIndex);
     }

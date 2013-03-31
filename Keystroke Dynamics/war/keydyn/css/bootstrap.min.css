@@ -719,12 +719,17 @@ button.close{padding:0;cursor:pointer;background:transparent;border:0;-webkit-ap
 
 /* Personnalisations Victor Hatinguais */
 
+// In order to make the registration form more beautiful.
 .control-group {
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
 
+// In order to make the registration form more beautiful.
 fieldset {
 	padding-right: 120px;
 	padding-left: 120px;
 }
+
+// In order to let the InformationPopup be over an active button (like Gender in the registration form)
+.btn-group>.btn:hover,.btn-group>.btn:focus,.btn-group>.btn:active,.btn-group>.btn.active{z-index:0;}

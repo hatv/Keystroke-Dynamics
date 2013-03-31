@@ -24,15 +24,16 @@ public class FieldVerifier {
 			return false;
 	}
 
-	public static boolean isValidAge(String age) {
-		if (age.matches("^[0-9]{1,2}$"))
+	public static boolean isValidBirthYear(String birthYear) {
+		if (birthYear.matches("^[0-9]{4}")
+				&& isValidBirthYear(Integer.parseInt(birthYear)))
 			return true;
 		else
 			return false;
 	}
 
-	public static boolean isValidAge(int age) {
-		if (age <= 99 && age >= 1)
+	public static boolean isValidBirthYear(int birthYear) {
+		if (birthYear <= 2015 && birthYear >= 1901)
 			return true;
 		else
 			return false;
@@ -46,8 +47,9 @@ public class FieldVerifier {
 	}
 
 	public static boolean isValidCountry(String country) {
-		String[] countries = {"Canada", "France", "U.S.A.", "Royaume-Uni",
-				"Espagne", "Belgique", "Suisse", "Autre"};
+		String[] countries = {"Canada", "France", "États-Unis", "Royaume-Uni",
+				"Belgique", "Suisse", "Autre pays d'Europe", "Pays d'Afrique",
+				"Pays d'Asie", "Autre pays"};
 		for (int i = 0 ; i < countries.length ; ++i) {
 			if (country.equals(countries[i])) {
 				return true;
@@ -56,7 +58,7 @@ public class FieldVerifier {
 		return false;
 	}
 
-	public static boolean isValidExperience(String computerExperience) {
+	public static boolean isValidComputerExperience(String computerExperience) {
 		String[] experienceTable = {"< 2 ans", "~ 4 ans", "~ 7 ans",
 				"~ 10 ans", "> 13 ans"};
 		for (int i = 0 ; i < experienceTable.length ; ++i) {
@@ -74,9 +76,10 @@ public class FieldVerifier {
 			return false;
 	}
 
-	public static boolean isValidUsage(String typingUsage) {
-		String[] usageTable = {"< 30 minutes", "~ 1 heure",
-				"~ 2 heures", "~ 4 heures", "> 5 heures"};
+	public static boolean isValidTypingUsage(String typingUsage) {
+		String[] usageTable = {"< 30 minutes par jour", "~ 1 heure par jour",
+				"~ 2 heures par jour", "~ 4 heures par jour",
+				"> 5 heures par jour"};
 		for (int i = 0 ; i < usageTable.length ; ++i) {
 			if (typingUsage.equals(usageTable[i])) {
 				return true;

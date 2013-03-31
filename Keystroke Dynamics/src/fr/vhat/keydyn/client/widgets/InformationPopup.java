@@ -2,11 +2,12 @@ package fr.vhat.keydyn.client.widgets;
 
 import java.math.BigDecimal;
 
+import com.github.gwtbootstrap.client.ui.AlertBlock;
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 
-public class ServiceFailurePopup extends PopupPanel {
+public class InformationPopup extends PopupPanel {
 
 	// Show timer for fade in effect
     protected final int SHOW_TIMER_DELAY = 5; // milliseconds
@@ -21,21 +22,30 @@ public class ServiceFailurePopup extends PopupPanel {
 
     /**
      * Constructor.
-     * @param message HTML message to display in the popup.
-     * @param timeout Delay before the popup automatically hide itself.
+     * @param title Header of the alert.
+     * @param message Message to display in the alert.
+     * @param type Type of the alert.
      */
-    public ServiceFailurePopup(String message) {
-    	this(message, 5000);
+    public InformationPopup(String title, String message, AlertType type) {
+    	this(title, message, type, 4000);
     }
 
     /**
      * Constructor.
-     * @param message HTML message to display in the popup.
+     * @param title Header of the alert.
+     * @param message Message to display in the alert.
+     * @param type Type of the alert.
      * @param timeout Delay before the popup automatically hide itself.
      */
-    public ServiceFailurePopup(String message, int timeout) {
+    public InformationPopup(String title, String message, AlertType type,
+    		int timeout) {
         super(true, false);
-        this.setWidget(new HTML(message));
+        AlertBlock alert = new AlertBlock();
+        alert.setType(type);
+        alert.setHeading(title);
+        alert.setText(message);
+        alert.setClose(false);
+        this.setWidget(alert);
         this.setGlassEnabled(true);
         this.center();
 
