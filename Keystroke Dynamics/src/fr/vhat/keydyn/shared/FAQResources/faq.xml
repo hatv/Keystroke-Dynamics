@@ -1,0 +1,118 @@
+<?xml version="1.0" ?>
+<faq>
+	<faq-item>
+		<question>
+			Qu'est-ce que la dynamique de frappe ?
+		</question>
+		<answer>
+			Vous vous en êtes déjà rendu compte : tout le monde n'a pas la même écriture, chacun ayant ses spécificités au niveau de la taille des caractères, de l'épaisseur des lettres, des espacements, etc. Il se trouve que de la même façon, chaque individu a une façon bien particulière de taper sur un clavier d'ordinateur : on appelle cela la dynamique de frappe qui constitue alors une sorte de caractéristique biométrique propre à l'individu permettant éventuellement de le reconnaître de la même façon qu'on pourrait le faire à partir d'une empreinte digitale ou d'un iris.
+		</answer>
+	</faq-item>
+	<faq-item>
+		<question>
+			Quel est le but de ce site ?
+		</question>
+		<answer>
+			L'objectif de ce site est de présenter à un public large les possibilités méconnues offertes par l'analyse de la dynamique de frappe, dans un premier temps via la mise en place d'un module d'authentification biométriquement sécurisé, puis par une tentative de reconnaissance complète d'un individu inconnu à partir de séquences frappées sur un clavier.
+		</answer>
+	</faq-item>
+	<faq-item>
+		<question>
+			Pourquoi m'inscrire ?
+		</question>
+		<answer>
+			La création d'un compte sur ce site ne vous engage à rien. Votre adresse de courriel ne sera jamais utilisée que pour vous renvoyer votre mot de passe sur votre demande dans le cas où vous l'auriez oublié et libre à vous d'utiliser une adresse de courriel temporaire. Une fois inscrit, vous pourrez au fil des connexions ou directement depuis la page d'entraînement, apprendre au système à vous connaître. Peu à peu, celui-ci s'habituera à votre dynamique de frappe et sera capable de la reconnaître de plus en plus facilement. Il vous sera alors possible d'explorer la page de test pour tenter d'usurper l'identité d'autres membres en saisissant leurs mots de passe. Une page de statistiques regroupe toutes les informations sur les tentatives échouées et réussies donnant une idée de la fiabilité du système.
+		</answer>
+	</faq-item>
+	<faq-item>
+		<question>
+			Pourquoi des renseignements personnels me sont-ils demandés lors de l'inscription ?
+		</question>
+		<answer>
+			Ces informations resteront strictement confidentielles et pourront éventuellement servir à développer de nouvelles fonctionnalités permettant par exemple de déterminer le sexe ou l'âge d'une personne à partir de sa dynamique de frappe. Il vous est demandé de renseigner ces informations le plus honnêtement possible afin de ne pas compromettre une éventuelle étude en ce sens.
+		</answer>
+	</faq-item>
+	<faq-item>
+		<question>
+			Pourquoi dois-je obligatoirement posséder Java sur mon ordinateur ?
+		</question>
+		<answer>
+			L'application d'authentification par analyse de la dynamique de frappe se base sur l'exploitation de mesures de temps entre la pression et le relachement des touches de votre clavier lors de la frappe. Pour accéder à de telles informations de façon précise, l'utilisation d'une Applet Java est largement recommandée. Sachez que ces informations temporelles, ainsi que des informations très générales sur votre système d'exploitation ou votre navigateur, sont les seules données recueillies par l'application. Si vous ne possédez pas Java, vous pouvez vous connecter au site depuis un autre ordinateur équipé de Java ou installer Java sur votre ordinateur personnel en suivant ces explications : LIEN. Notez que suivant les navigateurs, l'installation d'un plug-in peut également vous être proposée. Afin de profiter pleinement de l'expérience d'authentification par analyse de la dynamique de frappe, il vous est recommandé de choisir l'option "Toujours exécuter" ou "Toujours accepter" lors de la demande d'autorisation faite par Java.
+		</answer>
+	</faq-item>
+	<faq-item>
+		<question>
+			De quelle façon dois-je entraîner le système ?
+		</question>
+		<answer>
+			En vous connectant régulièrement à votre espace membre, le système apprendra à connaître vos habitudes de frappe. Il est cependant conseillé de passer par la page d'entraînement lors de vos premières connexions pour donner rapidement une idée de votre dynamique de frappe au système. Il est également recommandé d'espacer un peu vos frappes afin de ne pas bénéficier outre mesure de la rapidité de votre habitude immédiate. Vous pouvez, par exemple, entrer votre mot de passe à 5 reprises, puis patienter quelques minutes avant de recommencer. Passés les 30 enregistrements, le système est généralement proche de ses performances maximales ; de nouvelles frappes ne feront alors que le renforcer et l'adapter en cas d'évolution de vos habitudes de frappe.
+		</answer>
+	</faq-item>
+	<faq-item>
+		<question>
+			Comment fonctionne la page de test ?
+		</question>
+		<answer>
+			La page de test, disponible dans votre espace membre, vous permet en premier lieu de tester votre propre compte. En saisissant votre mot de passe, vous pourrez voir si le sytème vous reconnaît bien. De plus, les frappes saisies sur la page de test ne sont pas enregistrées dans votre profil et vous pouvez donc proposer à un ami ou un parent de taper votre mot de passe sur cette page pour vous assurer de la fiabilité du système. La page de test vous permettra également de sélectionner un utilisateur quelconque du site et d'obtenir son mot de passe. Vous n'aurez alors plus qu'à entrer ce mot de passe dans le champ prévu à cet effet pour tenter une authentification. En réitérant les essais et en exploitant les aides fournies par les niveaux de difficulté les plus faibles, vous devriez parvenir à vous approcher de la dynamique de frappe de cette personne et peut-être même à réussir une authentification.
+		</answer>
+	</faq-item>
+	<faq-item>
+		<question>
+			En quoi les informations fournies sur la page de test peuvent-elles m'aider à réussir une authentification ?
+		</question>
+		<answer>
+			Suivant le niveau de difficulté sélectionné, vous aurez accès à un certain nombre d'indicateurs :
+				- la distance est une mesure correspondant à l'écart entre votre dynamique de frappe et celle de l'utilisateur sélectionné : plus celle-ci est faible, plus vous vous rapprochez des habitudes de frappe de la personne cible ;
+				- le seuil est la valeur en-dessous de laquelle la distance doit passer pour réussir une authentification ;
+				- le graphique affiché en niveau de difficulté facile donne accès aux tendances de frappe de l'utilisateur cible, plus vos courbes se rapprochent des siennes, plus la distance sera faible ;
+				- l'histogramme qui s'ajoute en niveau de difficulté très facile donne une idée de l'importance de chaque paramètre, vous permettant de vous focaliser sur les paramètres les plus importants, ayant le maximum d'influence sur le critère de distance.
+		</answer>
+	</faq-item>
+	<faq-item>
+		<question>
+			Pourquoi le mot de passe est-il imposé ?
+		</question>
+		<answer>
+			Votre mot de passe étant divulgué à l'ensemble de la communauté à des fins de test, il m'a semblé important de fixer un mot de passe afin de m'assurer que certains utilisateurs ne choisissent pas l'un de leurs mots de passe habituel, s'exposant alors à des risques. Le système est d'autant plus performant que vous êtes habitués à taper la séquence de caractères constitutive de votre mot de passe. En choisissant des mots courants de la langue française, j'espère me rapprocher de l'habitude que vous pouvez avoir à taper votre mot de passe.
+		</answer>
+	</faq-item>
+	<faq-item>
+		<question>
+			Pourquoi dois-je patienter plusieurs secondes entre plusieurs tentatives de connexion à mon espace ?
+		</question>
+		<answer>
+			Les mots de passe de toute la communauté étant divulgués volontairement à tous les membres du site, j'ai souhaité m'assurer que les usagers ne puissent pas se connecter de façon "officielle" à l'espace membre d'un autre utilisateur. En fixant un délai proportionnel au nombre d'erreurs d'authentification entre chaque tentative, les dérives devraient largement limitées. La mise en place d'un système similaire en production serait également une mesure de sécurité supplémentaire. Notez que cette fonctionnalité n'est pas implémentée lorsque vous testez le système depuis votre compte afin de vous laisser le champ libre.
+		</answer>
+	</faq-item>
+	<faq-item>
+		<question>
+			Si une personne a réussi à imiter ma dynamique de frappe, est-ce que cela signifie que le système n'est pas fiable ?
+		</question>
+		<answer>
+			Il faut bien garder à l'esprit que ce site ne constitue qu'une preuve de concept, cherchant à prouver les performances d'un tel système d'authentification. Ainsi les mots de passe de tous les membres sont volontairement divugués pour permettre des tentatives d'usurpation d'identité. Dans une situation réelle, votre mot de passe devrait rester confidentiel et l'analyse de la dynamique de frappe ne serait qu'une barrière supplémentaire à franchir pour toute personne tentant d'accéder à votre espace. Avec un système d'authentification classique, le vol de votre mot de passe conduira immédiatement le voleur à votre compte ; avec un tel système d'authentification, il y a de bonnes chances que votre compte reste inaccessibles à toute personne mal intentionnée malgré la perte de votre mot de passe. De plus, il est important de rappeler que les tentatives d'usurpation proposées de façon "ludique" aux membres permettent d'accéder à de nombreuses aides facilitant le succès : distance, seuil et graphiques caractéristiques de l'utilisateur. Il est bien évident que ces informations ne seraient pas mises à disposition dans un contexte de production, ce qui rendrait la tâche beaucoup plus hardue.
+		</answer>
+	</faq-item>
+	<faq-item>
+		<question>
+			Y-a-t-il des moyens de rendre ce système encore plus sécuritaire ?
+		</question>
+		<answer>
+			Dans le cadre de ce projet, de nombreux aspects ont été simplifiés. Les algorithmes mis en place sont relativement simples et pourraient sans doute être complexifiés pour obtenir de meilleurs résultats. De plus, les mots de passe générés n'exploitent que des lettres minuscules dont la frappe est généralement très rapide (de l'ordre de quelques centaines de millisecondes par caractère) et donc plus difficiles à distinguer d'une personne à l'autre. L'utilisation de mots de passe complexes contenant des lettres majuscules, des chiffres et des caractères spéciaux pourraient largement améliorer les résultats car la frappe de tels caractères est très spécifique à chaque utilisateur. De nouveaux problèmes risqueraient d'apparaître : utilisateur se servant tour à tour d'un clavier avec et sans pavé numérique possédant un mot de passe contenant des chiffres ; le système est cependant capable de s'adapter à de telles situations.
+		</answer>
+	</faq-item>
+	<faq-item>
+		<question>
+			Est-ce que les politiques de sécurité d'un système d'authentification traditionnel peuvent s'appliquer à ce mode d'authentification ?
+		</question>
+		<answer>
+			Pour permettre aux utilisateurs de tester la fiabilité des autres comptes en essayant leurs mots de passe, ceux-ci ont du être stockés en clair dans la base de données. Cet usage est toutefois le seul nécessitant ce stockage. Le module d'authentification n'utilise pas cette donnée et se contente d'exploiter une signature du mot de passe, salé en base. Un accès à la base de données pourrait en revanche permettre d'obtenir la longueur du mot de passe mais cette information n'est que peu utile à partir d'un certain nombre de caractères.
+		</answer>
+	</faq-item>
+	<faq-item>
+		<question>
+			Quel avenir pour cette technologie ?
+		</question>
+		<answer>
+		</answer>
+	</faq-item>
+</faq>

@@ -5,3 +5,38 @@
 	width: 700px;
 	margin: auto;
 }
+
+/***
+ * F.A.Q. stack panel customization
+ **/
+.gwt-DecoratedStackPanel {
+    border-bottom: 1px solid #bbbbbb;
+}
+.gwt-DecoratedStackPanel .gwt-StackPanelContent {
+	border: 1px solid #bbbbbb;
+	border-bottom: 0px;
+	background: white;
+	padding: 7px 12px 10px 10px;
+	font-size: 0.9em;
+}
+.gwt-DecoratedStackPanel .gwt-StackPanelItem {
+    background-color: #e8effd;
+    padding: 5px;
+    border: 1px solid #bbbbbb;
+    /*-moz-border-radius: 15px 15px 0 0;
+    -webkit-border-radius: 15px 15px 0 0;
+    border-radius: 15px 15px 0 0;*/
+    cursor: pointer;
+    cursor: hand;
+}
+.cw-StackPanelHeader {
+	padding-left: 8px;
+	font-weight: bolder;
+	font-size: 0.9em;
+}
+.gwt-DecoratedStackPanel .gwt-StackPanelItem-selected {
+    background-color: #b1f0a4;
+}
+.justify {
+	text-align: justify;
+}
