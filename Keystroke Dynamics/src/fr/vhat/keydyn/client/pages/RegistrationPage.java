@@ -208,7 +208,7 @@ public class RegistrationPage extends Page {
 		Tooltip countryTooltip = new Tooltip("Pays dans lequel vous avez " + 
 					"passé  la majeure partie de votre vie.");
 		countryTooltip.setWidget(countryList);
-		countryTooltip.setTrigger(Trigger.FOCUS);
+		countryTooltip.setTrigger(Trigger.HOVER);
 		countryTooltip.setPlacement(Placement.RIGHT);
 		countryTooltip.reconfigure();
 
@@ -234,7 +234,7 @@ public class RegistrationPage extends Page {
 		Tooltip computerExperienceTooltip = new Tooltip("Années depuis " +
 				"lesquelles vous utilisez régulièrement l'informatique.");
 		computerExperienceTooltip.setWidget(computerExperienceList);
-		computerExperienceTooltip.setTrigger(Trigger.FOCUS);
+		computerExperienceTooltip.setTrigger(Trigger.HOVER);
 		computerExperienceTooltip.setPlacement(Placement.RIGHT);
 		computerExperienceTooltip.reconfigure();
 
@@ -260,7 +260,7 @@ public class RegistrationPage extends Page {
 		Tooltip typingUsageTooltip = new Tooltip("Nombre moyen d'heures " +
 				"passées quotidiennement à faire de la saisie sur un clavier.");
 		typingUsageTooltip.setWidget(typingUsageList);
-		typingUsageTooltip.setTrigger(Trigger.FOCUS);
+		typingUsageTooltip.setTrigger(Trigger.HOVER);
 		typingUsageTooltip.setPlacement(Placement.RIGHT);
 		typingUsageTooltip.reconfigure();
 
