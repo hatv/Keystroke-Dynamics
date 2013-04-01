@@ -101,13 +101,12 @@ public class RegistrationPage extends Page {
 		panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 
 		Paragraph registrationDirections = new Paragraph("Pour vous inscrire," +
-				"veuillez remplir le formulaire ci-dessous : vous recevrez " +
+				" veuillez remplir le formulaire ci-dessous : vous recevrez " +
 				"votre mot de passe par courriel dans les plus brefs délais. " +
 				"N'oubliez pas de vérifier votre boîte de courrier " +
 				"indésirable.");
+		registrationDirections.addStyleName("indent");
 		panel.add(registrationDirections);
-		panel.setCellHorizontalAlignment(
-				registrationDirections,HasHorizontalAlignment.ALIGN_JUSTIFY);
 
 		WellForm registrationForm = new WellForm();
 		registrationForm.setType(FormType.HORIZONTAL);

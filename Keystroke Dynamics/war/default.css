@@ -2,7 +2,7 @@
  * To set a fixed width to the application : not responsive
  **/
 .mainContainer {
-	width: 700px;
+	width: 800px;
 	margin: auto;
 }
 
@@ -11,6 +11,7 @@
  **/
 .gwt-DecoratedStackPanel {
     border-bottom: 1px solid #bbbbbb;
+    margin-bottom: 20px;
 }
 .gwt-DecoratedStackPanel .gwt-StackPanelContent {
 	border: 1px solid #bbbbbb;
@@ -39,4 +40,8 @@
 }
 .justify {
 	text-align: justify;
+}
+.indent, .justify p {
+	text-indent: 25px;
+	text-align: left;
 }

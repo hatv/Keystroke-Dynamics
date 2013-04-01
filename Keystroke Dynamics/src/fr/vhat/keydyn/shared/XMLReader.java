@@ -29,6 +29,16 @@ public class XMLReader {
 	}
 
 	/**
+	 * Return the image of the given index item.
+	 * @param index Index of the item image to return in the XML file.
+	 * @return Image name of the index item question.
+	 */
+	public String getImage(int index) {
+		return this.xml.getElementsByTagName("image").item(index)
+				.getFirstChild().getNodeValue().trim();
+	}
+
+	/**
 	 * Return the question of the given index item.
 	 * @param index Index of the item question to return in the XML file.
 	 * @return Question corresponding to the given index.
