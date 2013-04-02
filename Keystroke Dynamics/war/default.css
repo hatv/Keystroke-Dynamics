@@ -10,7 +10,14 @@
 }
 
 /***
- * F.A.Q. stack panel customization
+ * Regsitration form customization.
+ **/
+.registrationForm {
+	width: 450px;
+}
+
+/***
+ * F.A.Q. stack panel customization.
  **/
 .gwt-DecoratedStackPanel {
     border-bottom: 1px solid #bbbbbb;

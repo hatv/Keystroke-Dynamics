@@ -33,7 +33,8 @@ public class GroupTabPanel extends TabPanel implements HasHandlers {
     	simpleEventBus = new SimpleEventBus();
     	Tab homePageTab = new HomePage(this);
     	this.add(homePageTab);
-    	Tab loginPageTab = new LoginPage(this);
+    	LoginPage.init(this);
+    	Tab loginPageTab = LoginPage.getInstance();
     	this.add(loginPageTab);
     	Tab registrationPageTab = new RegistrationPage(this);
     	this.add(registrationPageTab);

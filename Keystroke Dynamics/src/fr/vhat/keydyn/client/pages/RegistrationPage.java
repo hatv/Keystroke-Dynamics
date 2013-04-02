@@ -110,6 +110,7 @@ public class RegistrationPage extends Page {
 		panel.add(registrationDirections);
 
 		WellForm registrationForm = new WellForm();
+		registrationForm.addStyleName("registrationForm");
 		registrationForm.setType(FormType.HORIZONTAL);
 		panel.add(registrationForm);
 		Fieldset fieldset = new Fieldset();

@@ -28,7 +28,6 @@ public class Application implements ChangeGroupRequestedEventHandler {
 
 	private GroupTabPanel notConnectedGroupTabPanel;
 	private GroupTabPanel connectedGroupTabPanel;
-	private String divId;
 	private int displayedGroupTabPanelIndex;
 	private FluidRow contentRow;
 
@@ -37,12 +36,10 @@ public class Application implements ChangeGroupRequestedEventHandler {
 	 * @param divId Id of the container of the application on the page.
 	 */
 	public Application(String divId) {
-		// Load the JSNI (JavaScript Native Interface) functions.
-		this.JSNI();
+
 		// Initialize the two GroupTabPanel.
 		this.setConnectedGroupTabPanel(new GroupTabPanel(true, 0));
 		this.setNotConnectedGroupTabPanel(new GroupTabPanel(false, 0));
-		this.setDivId(divId);
 
 		RootPanel.get().clear();
 		FluidContainer mainContainer = new FluidContainer();
@@ -79,14 +76,6 @@ public class Application implements ChangeGroupRequestedEventHandler {
 			GroupTabPanel connectedGroupTabPanel) {
 		connectedGroupTabPanel.addChangeGroupRequestedEventHandler(this);
 		this.connectedGroupTabPanel = connectedGroupTabPanel;
-	}
-
-	private String getDivId() {
-		return divId;
-	}
-
-	public void setDivId(String divId) {
-		this.divId = divId;
 	}
 
 	private int getDisplayedGroupTabPanelIndex() {
@@ -150,14 +139,4 @@ public class Application implements ChangeGroupRequestedEventHandler {
 		return false;
 		// TODO: loadHomePage();
 	}
-
-	/**
-	 * Define the JavaScript Native functions to be used in the web application.
-	 * Only define the common functions.
-	 */
-	private native void JSNI() /*-{
-		$wnd.requestFocus = function() {
-			$wnd.startFocus('KeyboardApplet');
-		}
-    }-*/;
 }
