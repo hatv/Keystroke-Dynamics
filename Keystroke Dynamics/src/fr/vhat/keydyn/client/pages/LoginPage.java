@@ -18,6 +18,9 @@ import fr.vhat.keydyn.client.widgets.Page;
  */
 public class LoginPage extends Page {
 
+	private AuthenticationModule authenticationModule;
+	private VerticalPanel panel;
+
 	/**
 	 * Constructor of the login page.
 	 */
@@ -37,7 +40,7 @@ public class LoginPage extends Page {
 	@Override
 	protected Widget getContent() {
 
-		VerticalPanel panel = new VerticalPanel();
+		panel = new VerticalPanel();
 		panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		panel.setWidth("800px");
 
@@ -47,7 +50,7 @@ public class LoginPage extends Page {
 		introduction.addStyleName("indent");
 		panel.add(introduction);
 
-		AuthenticationModule authenticationModule = new AuthenticationModule(2);
+		authenticationModule = new AuthenticationModule(2);
 		panel.add(authenticationModule);
 
 		return panel;
@@ -60,21 +63,31 @@ public class LoginPage extends Page {
 	 * appletCallbackChar:
 	 * 		Called from Keyboard Applet to send last typed character.
 	 */
-	public native void JSNI() /*-{
+	private native void JSNI() /*-{
 		$wnd.requestFocus = function() {
 			$wnd.startFocus('KeyboardApplet');
 		}
-		$wnd.appletLoaded = function(x) {
-			alert("loginPage");
+		$wnd.appletLoaded = function() {
+			@fr.vhat.keydyn.client.pages.LoginPage::appletLoaded()();
 		}
-		//$wnd.appletLoaded = function(x) {
-		//	@fr.vhat.keydyn.client.widgets.AuthenticationModule::appletLoaded(Ljava/lang/String;)(x);
-		//}
-    	//$wnd.appletCallback = function(x) {
-        //    @fr.vhat.keydyn.client.widgets.AuthenticationModule::appletCallback(Ljava/lang/String;)(x);
-    	//}
-    	//$wnd.appletCallbackChar = function(x) {
-        //    @fr.vhat.keydyn.client.widgets.AuthenticationModule::appletCallbackChar(Ljava/lang/String;)(x);
-    	//}
+    	$wnd.appletCallback = function(x) {
+            @fr.vhat.keydyn.client.pages.LoginPage::appletCallback(Ljava/lang/String;)(x);
+    	}
+    	$wnd.appletCallbackChar = function(x) {
+            @fr.vhat.keydyn.client.pages.LoginPage::appletCallbackChar(Ljava/lang/String;)(x);
+    	}
     }-*/;
+
+	private static void appletLoaded() {
+		System.out.println("appletLoaded");
+		//this.authenticationModule.displayAuthenticationForm();
+	}
+
+	private static void appletCallback(String string) {
+		System.out.println("callback " + string);
+	}
+
+	private static void appletCallbackChar(String string) {
+		System.out.println("callbackCHAR " + string);
+	}
 }

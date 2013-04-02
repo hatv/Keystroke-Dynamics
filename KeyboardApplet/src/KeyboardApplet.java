@@ -3,10 +3,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
-
-import netscape.javascript.JSObject;
 
 /**
  * Java Applet which access the keystrokes times directly from the OS data.
@@ -26,14 +25,27 @@ public class KeyboardApplet extends Applet implements KeyListener {
 	/**
 	 * Initialize the Applet.
 	 */
-	public void init() {
+	public void start() {
 		setBackground(Color.white);
 		addKeyListener(this);
 		try {
-			JSObject.getWindow(this).call("appletLoaded",
-					new String[]{"appletLoaded"});
+			// Only found solution that work with Firefox has been defined in
+			// callJSFunction.
+			callJSFunction("appletLoaded()");
+
+			/* Following tests don't work on Firefox but work fine on IE and
+			 * Chrome.
+			 */
+			// JSObject win = JSObject.getWindow(this);
+			// win.eval("functionName(\"param\")");
+			// win.eval("javascript:functionName(\"param\")");
+			// win.eval("window.functionName(\"param\")");
+			// win.eval("javascript:window.functionName(\"param\")");
+			// win.call("functionName", new String[]{"param"});
+			// win.call("functionName", new Object[]{"param"});
+
 		} catch (Exception e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
 
@@ -87,15 +99,10 @@ public class KeyboardApplet extends Applet implements KeyListener {
 	 * on the web page which display the Applet.
 	 * Send the entire word or passphrase or typing sequence to the JS.
 	 */
-	public void callJSString() {
-		try {
-			JSObject window = JSObject.getWindow(this);
-			window.call("appletCallback",
-					new String[] {string + ";" + pressed.toString() + ";"
-							+ released.toString()});
-		} catch (Exception e) {
-			//e.printStackTrace();
-		}
+	private void callJSString() {
+		String code = "appletCallback(\"" + string + ";" + pressed.toString()
+							+ ";" + released.toString() + "\")";
+		callJSFunction(code);
 	}
 
 	/**
@@ -103,13 +110,20 @@ public class KeyboardApplet extends Applet implements KeyListener {
 	 * on the web page which display the Applet.
 	 * Send the last typed character to the JS.
 	 */
-	public void callJSCharacter(String c) {
+	private void callJSCharacter(String c) {
+		String code = "appletCallbackChar(\"" + c + "\")";
+		callJSFunction(code);
+	}
+
+	/**
+	 * Function which call the JavaScript code of the page.
+	 * @param code Specific code to execute in the JavaScript world.
+	 */
+	private void callJSFunction(String code) {
 		try {
-			JSObject window = JSObject.getWindow(this);
-			window.call("appletCallbackChar",
-					new String[] {c});
+			getAppletContext().showDocument(new URL("javascript:" + code));
 		} catch (Exception e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
 
@@ -123,7 +137,9 @@ public class KeyboardApplet extends Applet implements KeyListener {
 			//g.drawString("typed    " + typed.toString(), 5, 30);
 			g.drawString("pressed  " + pressed.toString(), 5, 30);
 			g.drawString("released " + released.toString(), 5, 45);
+
 			this.callJSString();
+
 			first = 0;
 			characters.clear();
 			string = "";

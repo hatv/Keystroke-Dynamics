@@ -153,23 +153,11 @@ public class Application implements ChangeGroupRequestedEventHandler {
 
 	/**
 	 * Define the JavaScript Native functions to be used in the web application.
-	 * appletCallback:
-	 *  	Called from Keyboard Applet to send Keystroke Dynamics data.
-	 * appletCallbackChar:
-	 * 		Called from Keyboard Applet to send last typed character.
+	 * Only define the common functions.
 	 */
 	private native void JSNI() /*-{
 		$wnd.requestFocus = function() {
 			$wnd.startFocus('KeyboardApplet');
 		}
-		$wnd.appletLoaded = function(x) {
-			alert("titi");
-		}
-    	//$wnd.appletCallback = function(x) {
-        //   @fr.vhat.keydyn.client.KeyDyn::appletCallback(Ljava/lang/String;)(x);
-    	//}
-    	//$wnd.appletCallbackChar = function(x) {
-        //   @fr.vhat.keydyn.client.KeyDyn::appletCallbackChar(Ljava/lang/String;)(x);
-    	//}
     }-*/;
 }

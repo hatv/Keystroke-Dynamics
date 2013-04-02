@@ -23,6 +23,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class AuthenticationModule extends VerticalPanel {
 
+	private WellForm authenticationForm;
+
 	/**
 	 * Constructor.
 	 * @param mode Save data behavior : 0 means "never save data" (test),
@@ -36,8 +38,41 @@ public class AuthenticationModule extends VerticalPanel {
 
 		this.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 
+		this.authenticationForm = this.getAuthenticationForm(mode);
+
+		this.add(this.getApplet());
+
+		VerticalPanel alertPanel = new VerticalPanel();
+		this.add(alertPanel);
+	}
+
+	/**
+	 * Build the HTML object which contain the Java Applet.
+	 * @return HTML Applet object.
+	 */
+	private HTML getApplet() {
+		HTML applet = new HTML();
+		String installJava = "<a href=\"http://www.java.com/fr/download/help/" +
+				"download_options.xml\">Installer Java.</a>";
+		String testJava = "<a href=\"http://www.java.com/en/download/" +
+				"testjava.jsp\">Tester Java.</a>";
+		String HTML5Applet = new String("<object id=\"KeyboardApplet\" " +
+			"type=\"application/x-java-applet\" height=\"1\" width=\"1\">" +
+			"<param name=\"mayscript\" value=\"true\">" +
+			"<param name=\"scriptable\" value=\"true\">" +
+	        "<param name=\"codebase\" value=\"resources/\">" +
+	        "<param name=\"code\" value=\"KeyboardApplet.class\">" +
+	        "<!--  <param name=\"archive\" value=\"KeyboardApplet.jar\"> -->" +
+	        "Pour utiliser cette application d'authentification sécurisée, " +
+	        "vous devez installer Java et accepter l'Applet. " + installJava +
+	        " " + testJava + "</object>");
+	    applet.setHTML(HTML5Applet);
+	    return applet;
+	}
+
+	private WellForm getAuthenticationForm(int mode) {
+
 		WellForm authenticationForm = new WellForm();
-		this.add(authenticationForm);
 		authenticationForm.setType(FormType.HORIZONTAL);
 		Fieldset fieldset = new Fieldset();
 		authenticationForm.add(fieldset);
@@ -107,33 +142,13 @@ public class AuthenticationModule extends VerticalPanel {
 		}
 		authenticationForm.add(buttonsPanel);
 
-		this.add(this.getApplet());
-
-		VerticalPanel alertPanel = new VerticalPanel();
-		this.add(alertPanel);
+		return authenticationForm;
 	}
 
 	/**
-	 * Build the HTML object which contain the Java Applet.
-	 * @return HTML Applet object.
+	 * Display the authentication form once the Java Applet is ready.
 	 */
-	private HTML getApplet() {
-		HTML applet = new HTML();
-		String installJava = "<a href=\"http://www.java.com/fr/download/help/" +
-				"download_options.xml\">Installer Java.</a>";
-		String testJava = "<a href=\"http://www.java.com/en/download/" +
-				"testjava.jsp\">Tester Java.</a>";
-		String HTML5Applet = new String("<object id=\"KeyboardApplet\" " +
-			"type=\"application/x-java-applet\" height=\"1\" width=\"1\">" +
-			"<param name=\"mayscript\" value=\"yes\">" +
-			"<param name=\"scriptable\" value=\"true\">" +
-	        "<param name=\"codebase\" value=\"resources/\">" +
-	        "<param name=\"code\" value=\"KeyboardApplet.class\">" +
-	        "<!--  <param name=\"archive\" value=\"KeyboardApplet.jar\"> -->" +
-	        "Pour utiliser cette application d'authentification sécurisée, " +
-	        "vous devez installer Java et accepter l'Applet. " + installJava +
-	        " " + testJava + "</object>");
-	    applet.setHTML(HTML5Applet);
-	    return applet;
+	public void displayAuthenticationForm() {
+		this.insert(this.authenticationForm, 0);
 	}
 }
