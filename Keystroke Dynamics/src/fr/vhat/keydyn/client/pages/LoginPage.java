@@ -109,9 +109,11 @@ public class LoginPage extends Page {
 
 	private static void appletCallback(String string) {
 		System.out.println("callback " + string);
+		LoginPage.authenticationModule.clearPassword();
 	}
 
 	private static void appletCallbackChar(String string) {
 		System.out.println("callbackCHAR " + string);
+		LoginPage.authenticationModule.addCharacterToPassword();
 	}
 }

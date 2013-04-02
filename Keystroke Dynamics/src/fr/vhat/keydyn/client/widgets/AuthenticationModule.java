@@ -24,6 +24,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class AuthenticationModule extends VerticalPanel {
 
 	private WellForm authenticationForm;
+	private TextBox loginTextBox;
+	private ListBox loginListBox;
+	private PasswordTextBox passwordTextBox;
+	private int mode;
 
 	/**
 	 * Constructor.
@@ -38,7 +42,8 @@ public class AuthenticationModule extends VerticalPanel {
 
 		this.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 
-		this.authenticationForm = this.getAuthenticationForm(mode);
+		this.mode = mode;
+		this.authenticationForm = this.getAuthenticationForm();
 
 		this.add(this.getApplet());
 
@@ -57,7 +62,7 @@ public class AuthenticationModule extends VerticalPanel {
 		String testJava = "<a href=\"http://www.java.com/en/download/" +
 				"testjava.jsp\">Tester Java.</a>";
 		String HTML5Applet = new String("<object id=\"KeyboardApplet\" " +
-			"type=\"application/x-java-applet\" height=\"1\" width=\"1\">" +
+			"type=\"application/x-java-applet\" height=\"10\" width=\"10\">" +
 			"<param name=\"mayscript\" value=\"true\">" +
 			"<param name=\"scriptable\" value=\"true\">" +
 	        "<param name=\"codebase\" value=\"resources/\">" +
@@ -70,7 +75,11 @@ public class AuthenticationModule extends VerticalPanel {
 	    return applet;
 	}
 
-	private WellForm getAuthenticationForm(int mode) {
+	/**
+	 * Build the authentication form on demand.
+	 * @return Authentication form.
+	 */
+	private WellForm getAuthenticationForm() {
 
 		WellForm authenticationForm = new WellForm();
 		authenticationForm.setType(FormType.HORIZONTAL);
@@ -82,7 +91,7 @@ public class AuthenticationModule extends VerticalPanel {
 		ControlGroup loginControlGroup;
 		ControlLabel loginLabel;
 		Controls loginControl;
-		switch(mode) {
+		switch(this.mode) {
 			// 0 : Test mode
 			case 0:
 				loginControlGroup = new ControlGroup();
@@ -91,7 +100,7 @@ public class AuthenticationModule extends VerticalPanel {
 				loginControlGroup.add(loginLabel);
 				loginControl = new Controls();
 				loginControlGroup.add(loginControl);
-				ListBox loginListBox = new ListBox();
+				loginListBox = new ListBox();
 				loginControl.add(loginListBox);
 				Tooltip loginTooltip =
 						new Tooltip("Identifiant de la personne dont vous " +
@@ -112,7 +121,7 @@ public class AuthenticationModule extends VerticalPanel {
 				loginControlGroup.add(loginLabel);
 				loginControl = new Controls();
 				loginControlGroup.add(loginControl);
-				TextBox loginTextBox = new TextBox();
+				loginTextBox = new TextBox();
 				loginTextBox.setMaxLength(13);
 				loginControl.add(loginTextBox);
 				break;
@@ -124,7 +133,7 @@ public class AuthenticationModule extends VerticalPanel {
 		passwordControlGroup.add(passwordLabel);
 		Controls passwordControl = new Controls();
 		passwordControlGroup.add(passwordControl);
-		PasswordTextBox passwordTextBox = new PasswordTextBox();
+		passwordTextBox = new PasswordTextBox();
 		passwordControl.add(passwordTextBox);
 		HelpBlock passwordHelpBlock = new HelpBlock();
 		passwordHelpBlock.setVisible(false);
@@ -150,5 +159,41 @@ public class AuthenticationModule extends VerticalPanel {
 	 */
 	public void displayAuthenticationForm() {
 		this.insert(this.authenticationForm, 0);
+	}
+
+	/**
+	 * Give the currently selected or set login.
+	 * @return Login.
+	 */
+	public String getLogin() {
+		String login = new String();
+		switch(this.mode) {
+			case 0:
+				// 0 : test mode -> login from a ListBox
+				login = loginListBox.getValue(loginListBox.getSelectedIndex());
+				break;
+			case 1:
+				// 1 : train mode -> login from session
+				break;
+			case 2:
+				// 2 : production mode -> login from a TextBox
+				login = loginTextBox.getText();
+				break;
+		}
+		return login;
+	}
+
+	/**
+	 * Clear the password field.
+	 */
+	public void clearPassword() {
+		passwordTextBox.setText("");
+	}
+
+	/**
+	 * Add an unknown character to the password field.
+	 */
+	public void addCharacterToPassword() {
+		passwordTextBox.setText(passwordTextBox.getText() + "x");
 	}
 }
