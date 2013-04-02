@@ -196,4 +196,12 @@ public class AuthenticationModule extends VerticalPanel {
 	public void addCharacterToPassword() {
 		passwordTextBox.setText(passwordTextBox.getText() + "x");
 	}
+
+	/**
+	 * Give the password text box object in order to handle events on it.
+	 * @return Password text box.
+	 */
+	public PasswordTextBox getPasswordTextBox() {
+		return this.passwordTextBox;
+	}
 }

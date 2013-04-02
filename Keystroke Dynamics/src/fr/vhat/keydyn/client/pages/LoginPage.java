@@ -2,8 +2,12 @@ package fr.vhat.keydyn.client.pages;
 
 import com.github.gwtbootstrap.client.ui.Paragraph;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -40,10 +44,18 @@ public class LoginPage extends Page {
 		});
 	}
 
+	/**
+	 * Initialize the login page singleton.
+	 * @param owner GroupTabPanel owner of the page.
+	 */
 	public static void init(GroupTabPanel owner) {
 		LoginPage.owner = owner;
 	}
 
+	/**
+	 * Get the instance of the login page.
+	 * @return Page object.
+	 */
 	public static LoginPage getInstance() {
 		if (instance == null) {
 			instance = new LoginPage();
@@ -75,6 +87,27 @@ public class LoginPage extends Page {
 		panel.add(help);
 
 		authenticationModule = new AuthenticationModule(2);
+		authenticationModule.getPasswordTextBox().addFocusHandler(
+			new FocusHandler() {
+				@Override
+				public native void onFocus(FocusEvent event) /*-{
+				    $wnd.startFocus('KeyboardApplet');
+				}-*/;
+			});
+		authenticationModule.getPasswordTextBox().addFocusHandler(
+			new FocusHandler() {
+				@Override
+				public void onFocus(FocusEvent event) {
+				    System.out.println("focus !!");
+				}
+			});
+		authenticationModule.getPasswordTextBox().addBlurHandler(
+			new BlurHandler() {
+				@Override
+				public native void onBlur(BlurEvent event) /*-{
+				    $wnd.stopFocus();
+				}-*/;
+			});
 		panel.add(authenticationModule);
 
 		return panel;
@@ -84,12 +117,21 @@ public class LoginPage extends Page {
 	 * Define the JavaScript Native functions used with the Applet.
 	 * requestFocus:
 	 *  	Give focus to the Applet.
+	 * leaveFocus:
+	 *  	Free focus from the Applet.
+	 * appletLoaded:
+	 *  	Called when the Applet is loaded in the browser.
+	 * appletCallback:
+	 * 		Called from Keyboard Applet to send the keystroke sequence.
 	 * appletCallbackChar:
 	 * 		Called from Keyboard Applet to send last typed character.
 	 */
 	private native void JSNI() /*-{
 		$wnd.requestFocus = function() {
 			$wnd.startFocus('KeyboardApplet');
+		}
+		$wnd.leaveFocus = function() {
+			$wnd.stopFocus();
 		}
 		$wnd.appletLoaded = function() {
 			@fr.vhat.keydyn.client.pages.LoginPage::appletLoaded()();
@@ -102,16 +144,26 @@ public class LoginPage extends Page {
     	}
     }-*/;
 
+	/**
+	 * When the applet is loaded : display the authentication form.
+	 */
 	private static void appletLoaded() {
 		System.out.println("appletLoaded");
 		LoginPage.authenticationModule.displayAuthenticationForm();
 	}
 
+	/**
+	 * When an applet callback is thrown : clear the password field.
+	 */
 	private static void appletCallback(String string) {
 		System.out.println("callback " + string);
 		LoginPage.authenticationModule.clearPassword();
 	}
 
+	/**
+	 * When an applet callback is thrown for a character : add a character to
+	 * the password field.
+	 */
 	private static void appletCallbackChar(String string) {
 		System.out.println("callbackCHAR " + string);
 		LoginPage.authenticationModule.addCharacterToPassword();
