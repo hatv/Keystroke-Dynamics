@@ -38,3 +38,9 @@ legend {
 .text-node {
 	padding-bottom: 50px;
 }
+
+.buttonsPanel .btn
+{
+    margin-left: 5px;
+    margin-right: 5px;
+}

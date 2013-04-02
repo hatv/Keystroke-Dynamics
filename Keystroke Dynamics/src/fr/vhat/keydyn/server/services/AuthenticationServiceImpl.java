@@ -10,6 +10,7 @@ import fr.vhat.keydyn.shared.entities.User;
 
 import com.googlecode.objectify.ObjectifyService;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -34,7 +35,7 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 	 * @param login User's login.
 	 * @param password User's candidate password.
 	 * @return Authentication success.
-	 */
+	 *//*
 	@Override
 	public boolean authenticateUser(String login, String password) {
 		User u = DataStore.retrieveUser(login);
@@ -45,8 +46,7 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 				createSession(login);
 				log.info("User <" + login + "> succeed to connect.");
 				return true;
-			} else {
-				// TODO : remove the plain text passwords from the log  
+			} else {  
 				log.info("User <" + login + "> tried to connect with the " +
 						"password <" + password + "> which is wrong. His " +
 						"right password is <" + u.getPassword() + ">.");
@@ -57,7 +57,7 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 					" in the data store.");
 			return false;
 		}
-	}
+	}*/
 
 	/**
 	 * Authenticate an user from his login and the keystroke sequence of his
@@ -125,13 +125,15 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 				// Train mode or production mode with success
 					DataStore.saveKDData(user, keystrokeSequence, false, null);
 					result[1] = (float)1;
+					// TODO: Stats
 					//+ if(compteReady)
-					//		if result[0] == 1 -> ajouter un succes
-					// 		else if result[0] == 0 && saveData == 1 -> ajouter un echec
+					//		if result[0] == 1 -> ajouter un succes aux stats
+					// 		else if result[0] == 0 && saveData == 1 -> ajouter un echec aux stats
 				} else if (mode == 0) {
 				// Test mode
-					// compléter authenticationAttempts car on est en test -> succes ou echec
+					// compléter authenticationAttempts car on est en test -> succes ou echec aux stats
 				} else if (mode == 2 && result[0] == 0) {
+				// TODO: TempPassword functionality
 				// Production mode with fail
 					// if compte ready, store dans TempPassword avec des
 					// infos supplémentaires issues du javascript et de l'applet + IP
@@ -191,4 +193,33 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
         	return login;
         }
     }
+
+	/**
+	 * Give the list of the enough trained accounts.
+	 * @return Login list in a String table.
+	 */
+	@Override
+	public String[] getUsersLogin() {
+		List<User> userList = DataStore.getEnoughTrainedUsers();
+		int size = userList.size();
+		String[] result = new String[size];
+		for (int i = 0 ; i < size ; ++i) {
+			result[i] = userList.get(i).getLogin();
+		}
+		return result;
+	}
+
+	/**
+	 * Give the password of an user only if this user account is enough trained.
+	 * @return Password of the given user.
+	 */
+	@Override
+	public String getUserPassword(String login) {
+		User user = DataStore.retrieveUser(login);
+		if (user.isEnoughTrained()) {
+			return user.getPassword();
+		} else {
+			return null;
+		}
+	}
 }

@@ -1,6 +1,7 @@
 package fr.vhat.keydyn.server;
 
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 import com.googlecode.objectify.Key;
@@ -101,5 +102,14 @@ public class DataStore {
 	    					keystrokeSequence, typingDate, info);
 	    	ObjectifyService.ofy().save().entity(tempPassword).now();
 	    }
+	}
+
+	/**
+	 * Retrieve the users whose account is enough trained.
+	 * @return List of users enough trained.
+	 */
+	public static List<User> getEnoughTrainedUsers() {
+		return ObjectifyService.ofy().load().type(User.class)
+				.filter("isEnoughTrained", true).list();
 	}
 }

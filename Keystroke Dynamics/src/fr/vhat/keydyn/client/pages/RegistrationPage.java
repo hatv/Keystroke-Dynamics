@@ -97,6 +97,7 @@ public class RegistrationPage extends Page {
 	 * Build the form.
 	 */
 	private void generatePage() {
+
 		panel = new VerticalPanel();
 		panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 

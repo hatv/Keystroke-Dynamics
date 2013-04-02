@@ -43,12 +43,7 @@ public class Application implements ChangeGroupRequestedEventHandler {
 		this.setConnectedGroupTabPanel(new GroupTabPanel(true, 0));
 		this.setNotConnectedGroupTabPanel(new GroupTabPanel(false, 0));
 		this.setDivId(divId);
-		// Check whether the user is already connected or not.
-		if (this.isValidSession()) {
-			this.setDisplayedGroupTabPanelIndex(1);
-		} else {
-			this.setDisplayedGroupTabPanelIndex(0);
-		}
+
 		RootPanel.get().clear();
 		FluidContainer mainContainer = new FluidContainer();
 		mainContainer.setStyleName("mainContainer");
@@ -57,6 +52,13 @@ public class Application implements ChangeGroupRequestedEventHandler {
 		contentRow = new FluidRow();
 		mainContainer.add(contentRow);
 		RootPanel.get().add(mainContainer);
+
+		// Check whether the user is already connected or not.
+		if (this.isValidSession()) {
+			this.setDisplayedGroupTabPanelIndex(1);
+		} else {
+			this.setDisplayedGroupTabPanelIndex(0);
+		}
 	}
 
 	private GroupTabPanel getNotConnectedGroupTabPanel() {
@@ -94,9 +96,11 @@ public class Application implements ChangeGroupRequestedEventHandler {
 	private void setDisplayedGroupTabPanelIndex(
 			int displayedGroupTabPanelIndex) {
 		this.displayedGroupTabPanelIndex = displayedGroupTabPanelIndex;
+		this.show();
 	}
 
 	public void show() {
+		contentRow.clear();
 		GroupTabPanel displayedGroupTabPanel;
 		if (this.getDisplayedGroupTabPanelIndex() == 0) {
 			displayedGroupTabPanel = this.getNotConnectedGroupTabPanel();
@@ -119,7 +123,6 @@ public class Application implements ChangeGroupRequestedEventHandler {
 	@Override
 	public void onChangeGroupRequested(ChangeGroupRequestedEvent event) {
 		this.setDisplayedGroupTabPanelIndex(event.getGroupIndex());
-		this.show();
 	}
 
 	/**
@@ -136,14 +139,16 @@ public class Application implements ChangeGroupRequestedEventHandler {
 			}
 			@Override
 			public void onSuccess(String login) {
-				/*if (login != null)
-					loadUserPage(login);
-				else
-					loadHomePage();*/
+				if (login != null) {
+					// TODO: getConnectedGroupTabPanel().selectTab(/*memberArea(login)*/);
+					setDisplayedGroupTabPanelIndex(1);
+				} else {
+					getNotConnectedGroupTabPanel().selectTab(0);
+				}
 			}
 		});
 		return false;
-		//loadHomePage();
+		// TODO: loadHomePage();
 	}
 
 	/**
@@ -153,9 +158,12 @@ public class Application implements ChangeGroupRequestedEventHandler {
 	 * appletCallbackChar:
 	 * 		Called from Keyboard Applet to send last typed character.
 	 */
-	public native void JSNI() /*-{
+	private native void JSNI() /*-{
 		$wnd.requestFocus = function() {
 			$wnd.startFocus('KeyboardApplet');
+		}
+		$wnd.appletLoaded = function(x) {
+			alert("titi");
 		}
     	//$wnd.appletCallback = function(x) {
         //   @fr.vhat.keydyn.client.KeyDyn::appletCallback(Ljava/lang/String;)(x);

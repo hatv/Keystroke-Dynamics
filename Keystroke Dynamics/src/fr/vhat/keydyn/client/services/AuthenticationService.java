@@ -9,9 +9,11 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("authentication")
 public interface AuthenticationService extends RemoteService {
-	boolean authenticateUser(String login, String password);
+	//boolean authenticateUser(String login, String password);
 	Float[] authenticateUser(String login, int mode, String kdPassword,
 			boolean giveInfo);
 	void logout();
 	String validateSession();
+	String[] getUsersLogin();
+	String getUserPassword(String login);
 }

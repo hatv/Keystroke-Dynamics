@@ -27,8 +27,14 @@ public class KeyboardApplet extends Applet implements KeyListener {
 	 * Initialize the Applet.
 	 */
 	public void init() {
-		setBackground(Color.lightGray);
+		setBackground(Color.white);
 		addKeyListener(this);
+		try {
+			JSObject.getWindow(this).call("appletLoaded",
+					new String[]{"appletLoaded"});
+		} catch (Exception e) {
+			//e.printStackTrace();
+		}
 	}
 
 	/**
