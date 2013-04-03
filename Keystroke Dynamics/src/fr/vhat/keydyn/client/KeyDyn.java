@@ -842,7 +842,7 @@ public class KeyDyn implements EntryPoint {
 		// reach the next step
 
 		// TODO: A PasswordTextBox which display the password
-
+/*
 		HTML applet = new HTML();
 		String installJava = "<a href=\"http://www.java.com/en/download/help" +
 				"/windows_manual_download.xml\">Install Java now.</a>";
@@ -862,6 +862,9 @@ public class KeyDyn implements EntryPoint {
 	        testJava + "</object>");
 	    applet.setHTML(HTML5Applet);
 	    container.add(applet);
+*/
+		HTML test = new HTML("<input id=\"txtInput\" type=\"text\"/>");
+	    container.add(test);
 
 	    // TODO: l'applet doit libérer le focus une fois terminé
 	    HTML focusButton = new HTML();
@@ -907,7 +910,7 @@ public class KeyDyn implements EntryPoint {
 	 */
 	private void loadTestPage (final String login) {
 
-		this.testJSNI();
+		
 
 		RootPanel.get("content").clear();
 		RootPanel.get("errors").clear();
@@ -947,26 +950,6 @@ public class KeyDyn implements EntryPoint {
 
 		// TODO: A PasswordTextBox which display the password
 
-		HTML applet = new HTML();
-		String installJava = "<a href=\"http://www.java.com/en/download/help" +
-				"/windows_manual_download.xml\">Install Java now.</a>";
-		String testJava = "<a href=\"http://www.java.com/en/download/" +
-				"testjava.jsp\">Test Java.</a>";
-		// TODO hide applet + auto focus
-		String HTML5Applet = new String("<object id=\"KeyboardApplet\" " +
-			"type=\"application/x-java-applet\" height=\"100\" width=\"650\">" +
-			"<param name=\"mayscript\" value=\"yes\">" +
-			"<param name=\"scriptable\" value=\"true\">" +
-	        "<param name=\"codebase\" value=\"resources/\">" +
-	        "<param name=\"code\" value=\"KeyboardApplet.class\">" +
-	        "<!--  <param name=\"archive\" value=\"KeyboardApplet.jar\"> -->" +
-	        "This application is designed to securely authenticate users " +
-	        "according to their keystroke dynamics. In order to do that, " +
-	        "Java must be installed on your computer. " + installJava + " " +
-	        testJava + "</object>");
-	    applet.setHTML(HTML5Applet);
-	    container.add(applet);
-
 	    // TODO: l'applet doit libérer le focus une fois terminé
 	    /*HTML focusButton = new HTML();
 		focusButton.setHTML("<button " +
@@ -975,40 +958,8 @@ public class KeyDyn implements EntryPoint {
 	    container.add(focusButton);*/
 	    container.add(chartsPanel);
 
-	    HorizontalPanel testLoginPanel = new HorizontalPanel();
-	    Label testLoginLabel = new Label("Login");
-	    TextBox testLogin = new TextBox();
-	    testLogin.setText(login);
-	    testLoginPanel.add(testLoginLabel);
-	    testLoginPanel.add(testLogin);
-	    HorizontalPanel testPasswordPanel = new HorizontalPanel();
-	    Label testPasswordLabel = new Label("Password");
-	    PasswordTextBox testPassword = new PasswordTextBox();
-	    testPasswordPanel.add(testPasswordLabel);
-	    testPasswordPanel.add(testPassword);
-	    container.add(testLoginPanel);
-	    container.add(testPassword);
-
-	    testLogin.addFocusHandler(new FocusHandler() {
-			@Override
-			public native void onFocus(FocusEvent event) /*-{
-			    $wnd.stopFocus();
-			}-*/;
-		});
-
-	    testLogin.addBlurHandler(new BlurHandler() {
-			@Override
-			public native void onBlur(BlurEvent event) /*-{
-			    $wnd.startFocus('KeyboardApplet');
-			}-*/;
-		});
-
-	    testPassword.addFocusHandler(new FocusHandler() {
-			@Override
-			public native void onFocus(FocusEvent event) /*-{
-			    $wnd.startFocus('KeyboardApplet');
-			}-*/;
-		});
+	    HTML test = new HTML("<input id=\"txtInput\" type=\"text\"/>");
+	    container.add(test);
 
 		RootPanel.get("content").add(container);
 
@@ -1034,6 +985,8 @@ public class KeyDyn implements EntryPoint {
 				loadUserPage(login);
 			}
 		});
+		
+		this.testJSNI();
 	}
 
 	// Create a callback to be called when the visualization API has been

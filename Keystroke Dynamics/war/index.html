@@ -29,6 +29,54 @@
                 window.onclick = function() {};
             }
 		</script>
+		<script type="text/javascript">
+		    document.getElementById("txtInput").onkeydown = checkKeycode;
+document.getElementById("txtInput").onkeyup = checkKeycode2; 
+var pressTable = new Array();
+var releaseTable = new Array();
+var i = 0;
+var j = 0;
+var firsttime;
+function checkKeycode(e) {
+    //alert('test');
+    var keycode;
+    if (window.event) keycode = window.event.keyCode;
+    else if (e) keycode = e.which;
+    //alert(keycode);
+    if (keycode == 13) {
+        appletCallback(document.getElementById("txtInput").value + ";[" + pressTable.toString() + "];[" + releaseTable.toString() + "]");
+        pressTable = new Array();
+        releaseTable = new Array();
+        i = 0;
+        j = 0;
+    } else {
+        var d = new Date();
+        if (i === 0) {
+            firsttime = d.getTime();
+            pressTable[i] = 0;
+        } else {
+            pressTable[i] = d.getTime() - firsttime;
+        }
+        ++i;
+    }
+}
+function checkKeycode2(e) {
+    var keycode;
+    if (window.event) keycode = window.event.keyCode;
+    else if (e) keycode = e.which;
+    //alert(keycode);
+    if (keycode == 13) {
+        pressTable = new Array();
+        releaseTable = new Array();
+        i = 0;
+        j = 0;
+    } else {
+        var d = new Date();
+        releaseTable[j] = d.getTime() - firsttime;
+        ++j;
+    }
+}
+		</script>
 	</head>
 	<body>
 		<!-- If JavaScript is not enabled -->
