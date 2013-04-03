@@ -17,6 +17,7 @@ public abstract class Page extends Tab {
 	 * Constructor.
 	 * @param heading Title of the tab.
 	 * @param icon Icon to add to the tab.
+	 * @param owner GroupTabPanel containing this tab.
 	 */
 	protected Page(String heading, IconType icon, GroupTabPanel owner) {
 		this.setHeading(heading);

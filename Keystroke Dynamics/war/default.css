@@ -10,10 +10,17 @@
 }
 
 /***
- * Regsitration form customization.
+ * Registration form customization.
  **/
 .registrationForm {
 	width: 450px;
+}
+
+/***
+ * Authentication module.
+ **/
+.buttonsPanel {
+	margin: 5px;
 }
 
 /***

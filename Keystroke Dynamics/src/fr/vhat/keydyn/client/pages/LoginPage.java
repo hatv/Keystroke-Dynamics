@@ -2,8 +2,6 @@ package fr.vhat.keydyn.client.pages;
 
 import com.github.gwtbootstrap.client.ui.Paragraph;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -14,42 +12,50 @@ import com.google.gwt.user.client.ui.Widget;
 
 import fr.vhat.keydyn.client.widgets.AuthenticationModule;
 import fr.vhat.keydyn.client.widgets.GroupTabPanel;
-import fr.vhat.keydyn.client.widgets.Page;
+import fr.vhat.keydyn.client.widgets.PageAuthentication;
 
 /**
  * Represent the registration page.
  * @author Victor Hatinguais, www.victorhatinguais.fr
  */
-public class LoginPage extends Page {
+public class LoginPage extends PageAuthentication {
 
 	private static LoginPage instance;
 
+	private static boolean applet;
 	private static GroupTabPanel owner;
 	private static AuthenticationModule authenticationModule;
 	private VerticalPanel panel;
 
 	/**
 	 * Constructor of the login page.
+	 * @param applet True if we want to use a Java applet, false to use simple
+	 * JavaScript code.
 	 */
-	private LoginPage() {
+	private LoginPage(boolean applet) {
 
 		super("Connexion", IconType.SIGNIN, owner);
 
-		// Specific code to execute at tab loading : JSNI method.
-		this.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				JSNI();
-			}
-		});
+		// Specific code to execute at tab loading if we want to use the Java
+		// applet : JSNI method.
+		if (applet) {
+			this.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					JSNI();
+				}
+			});
+		}
 	}
 
 	/**
 	 * Initialize the login page singleton.
 	 * @param owner GroupTabPanel owner of the page.
+	 * @param applet True to use an applet, false to use JavaScript.
 	 */
-	public static void init(GroupTabPanel owner) {
+	public static void init(GroupTabPanel owner, boolean applet) {
 		LoginPage.owner = owner;
+		LoginPage.applet = applet;
 	}
 
 	/**
@@ -58,7 +64,7 @@ public class LoginPage extends Page {
 	 */
 	public static LoginPage getInstance() {
 		if (instance == null) {
-			instance = new LoginPage();
+			instance = new LoginPage(LoginPage.applet);
 		}
 		return instance;
 	}
@@ -86,7 +92,17 @@ public class LoginPage extends Page {
 		help.addStyleName("indent");
 		panel.add(help);
 
-		authenticationModule = new AuthenticationModule(2);
+		authenticationModule = new AuthenticationModule(2, LoginPage.applet);
+		addAppletHandlers();
+		panel.add(authenticationModule);
+
+		return panel;
+	}
+
+	/**
+	 * Add elements handlers in case of Java applet.
+	 */
+	private static void addAppletHandlers() {
 		authenticationModule.getPasswordTextBox().addFocusHandler(
 			new FocusHandler() {
 				@Override
@@ -94,23 +110,13 @@ public class LoginPage extends Page {
 				    $wnd.startFocus('KeyboardApplet');
 				}-*/;
 			});
-		authenticationModule.getPasswordTextBox().addFocusHandler(
+		authenticationModule.getLoginTextBox().addFocusHandler(
 			new FocusHandler() {
 				@Override
-				public void onFocus(FocusEvent event) {
-				    System.out.println("focus !!");
-				}
-			});
-		authenticationModule.getPasswordTextBox().addBlurHandler(
-			new BlurHandler() {
-				@Override
-				public native void onBlur(BlurEvent event) /*-{
+				public native void onFocus(FocusEvent event) /*-{
 				    $wnd.stopFocus();
 				}-*/;
 			});
-		panel.add(authenticationModule);
-
-		return panel;
 	}
 
 	/**
@@ -155,7 +161,7 @@ public class LoginPage extends Page {
 	/**
 	 * When an applet callback is thrown : clear the password field.
 	 */
-	private static void appletCallback(String string) {
+	protected static void appletCallback(String string) {
 		System.out.println("callback " + string);
 		LoginPage.authenticationModule.clearPassword();
 	}
@@ -164,7 +170,7 @@ public class LoginPage extends Page {
 	 * When an applet callback is thrown for a character : add a character to
 	 * the password field.
 	 */
-	private static void appletCallbackChar(String string) {
+	protected static void appletCallbackChar(String string) {
 		System.out.println("callbackCHAR " + string);
 		LoginPage.authenticationModule.addCharacterToPassword();
 	}

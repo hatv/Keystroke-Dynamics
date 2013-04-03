@@ -37,18 +37,34 @@ public class AuthenticationModule extends VerticalPanel {
 	 * unused as the session login is used, in production mode, there is a
 	 * field where to enter the login and in test mode, there is a ListBox
 	 * with multiple logins and a field to display the matching password.
+	 * @param applet True if we want to use a Java applet, false to use simple
+	 * JavaScript code.
 	 */
-	public AuthenticationModule(int mode) {
+	public AuthenticationModule(int mode, boolean applet) {
 
 		this.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 
 		this.mode = mode;
 		this.authenticationForm = this.getAuthenticationForm();
 
-		this.add(this.getApplet());
+		if (applet) {
+			this.add(this.getApplet());
+		} else {
+			this.displayAuthenticationForm();
+			// TODO : specific code
+		}
 
 		VerticalPanel alertPanel = new VerticalPanel();
 		this.add(alertPanel);
+	}
+
+	/**
+	 * By default, the authentication module use JavaScript rather than a Java
+	 * applet.
+	 * @param mode Mode to use : see the main constructor for more information.
+	 */
+	public AuthenticationModule(int mode) {
+		this(mode, false);
 	}
 
 	/**
@@ -140,13 +156,14 @@ public class AuthenticationModule extends VerticalPanel {
 		passwordControl.add(passwordHelpBlock);
 
 		HorizontalPanel buttonsPanel = new HorizontalPanel();
-		buttonsPanel.addStyleName("buttonsPanel");
 		Button submitButton = new Button("Valider");
 		submitButton.setType(ButtonType.SUCCESS);
+		submitButton.addStyleName("buttonsPanel");
 		buttonsPanel.add(submitButton);
 		if (mode == 2) {
 			Button forgotPasswordButton = new Button("Mot de passe oublié");
 			forgotPasswordButton.setType(ButtonType.INFO);
+			forgotPasswordButton.addStyleName("buttonsPanel");
 			buttonsPanel.add(forgotPasswordButton);
 		}
 		authenticationForm.add(buttonsPanel);
@@ -203,5 +220,13 @@ public class AuthenticationModule extends VerticalPanel {
 	 */
 	public PasswordTextBox getPasswordTextBox() {
 		return this.passwordTextBox;
+	}
+
+	/**
+	 * Give the login text box object in order to handle events on it.
+	 * @return Login text box.
+	 */
+	public TextBox getLoginTextBox() {
+		return this.loginTextBox;
 	}
 }
