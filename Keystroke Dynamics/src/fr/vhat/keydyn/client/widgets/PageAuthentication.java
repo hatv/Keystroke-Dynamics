@@ -24,11 +24,11 @@ public abstract class PageAuthentication extends Page {
 	 * Called at Java applet or JavaScript callback with the given string.
 	 * @param string Keystroke sequence.
 	 */
-	protected static void appletCallback(String string) {}
+	public abstract void callback(String string);
 
 	/**
 	 * Called at Java applet or JavaScript callback with the given character.
 	 * @param string Last type character.
 	 */
-	protected static void appletCallbackChar(String string) {}
+	public abstract void callbackChar(String string);
 }

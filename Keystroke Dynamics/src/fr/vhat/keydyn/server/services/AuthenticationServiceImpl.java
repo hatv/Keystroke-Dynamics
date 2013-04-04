@@ -5,6 +5,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import fr.vhat.keydyn.client.services.AuthenticationService;
 import fr.vhat.keydyn.server.DataStore;
 import fr.vhat.keydyn.server.Password;
+import fr.vhat.keydyn.shared.AuthenticationMode;
+import fr.vhat.keydyn.shared.AuthenticationReturn;
 import fr.vhat.keydyn.shared.KeystrokeSequence;
 import fr.vhat.keydyn.shared.entities.User;
 
@@ -30,68 +32,28 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 	}
 
 	/**
-	 * Authenticate an user from his login and password according to the
-	 * information stored in the data store.
-	 * @param login User's login.
-	 * @param password User's candidate password.
-	 * @return Authentication success.
-	 *//*
-	@Override
-	public boolean authenticateUser(String login, String password) {
-		User u = DataStore.retrieveUser(login);
-		if (u != null) {
-			// User u found in the data store
-			String hashedPassword = u.getHashedPassword();
-			if (Password.check(password, hashedPassword)) {
-				createSession(login);
-				log.info("User <" + login + "> succeed to connect.");
-				return true;
-			} else {  
-				log.info("User <" + login + "> tried to connect with the " +
-						"password <" + password + "> which is wrong. His " +
-						"right password is <" + u.getPassword() + ">.");
-				return false;
-			}
-		} else {
-			log.info("User <" + login + "> tried to connect but doesn't exist" +
-					" in the data store.");
-			return false;
-		}
-	}*/
-
-	/**
 	 * Authenticate an user from his login and the keystroke sequence of his
 	 * password according to the information stored in the data store.
 	 * @param login User's login.
-	 * @param mode Save data behavior : 0 means "never save data" (test),
-	 * 1 means "always save data" (train) and 2 means "save data only if
-	 * authenticated" (production). Furthermore, in train mode the login is
-	 * unused as the session login is used.
+	 * @param mode AuthenticationMode among test, train or production.
 	 * @param keystrokeSequence User's keystroke sequence password.
 	 * @param giveInfo True to get distance and threshold, false otherwise.
-	 * @return A Float table where the first element represents the success or
-	 * failure of the authentication (1, -1, -2 or -3), the second one tells if
-	 * the data have been saved or not in the data store (1 or -1) and then
-	 * follows the distance and the threshold if giveInfos was set to true.
+	 * @return AuthenticationReturn object giving requested information.
 	 */
 	@Override
-	public Float[] authenticateUser(String login, int mode,
-			String kdPassword, boolean giveInfo) {
-		if (mode == 1 || (mode == 0 && login.equals(""))) {
+	public AuthenticationReturn authenticateUser(String login,
+			AuthenticationMode mode, String kdPassword, boolean giveInfo) {
+
+		// Train mode or test mode with default login : get login from session
+		if (mode == AuthenticationMode.TRAIN_MODE
+				|| (mode == AuthenticationMode.TEST_MODE && login.equals(""))) {
 			login = (String)getThreadLocalRequest().getSession()
 					.getAttribute("login");
 		}
 		User user = DataStore.retrieveUser(login);
-		Float[] result;
-		if (giveInfo) {
-			result = new Float[4];
-			result[2] = (float)-1;
-			result[3] = (float)-1;
-		} else {
-			result = new Float[2];
-		}
-		result[0] = (float)-1;
-		result[1] = (float)-1;
+
+		AuthenticationReturn authenticationReturn = new AuthenticationReturn();
+
 		if (user != null) {
 			// User u found in the data store
 			KeystrokeSequence keystrokeSequence =
@@ -107,34 +69,39 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 				if (distance <= threshold) {
 					createSession(login);
 					log.info("User <" + login + "> succeed to connect with " +
-							"usage of his keystroke dynamics.");
+							"usage of his keystroke dynamics : distance = " +
+							distance + " and threshold was " + threshold);
 					// TODO: à ce moment, quand on load la memberAreaPage, on appelle getTempPW
 					// qui fait le ménage et éventuellement affiche une popup si des mots de passe
 					// sont proposés, l'utilisateur doit obligatoirement accepter ou refuser
-					result[0] = (float)1;
+					authenticationReturn.setAuthenticated(true);
 				} else {
 					log.info("User <" + login + "> tried to connect with the " +
 							"correct password but didn't succeed according " +
 							"to his keystroke dynamics.");
+					authenticationReturn.setAuthenticationErrorCode(-2);
 				}
 				if (giveInfo) {
-					result[2] = distance;
-					result[3] = threshold;
+					authenticationReturn.setDistance(distance);
+					authenticationReturn.setThreshold(threshold);
 				}
-				if (mode == 1 || (mode == 2 && result[0] == 1)) {
-				// Train mode or production mode with success
+				if ((mode == AuthenticationMode.TRAIN_MODE)
+					|| (mode == AuthenticationMode.PRODUCTION_MODE
+							&& authenticationReturn.isAuthenticated())) {
+					// Train mode or production mode with success
 					DataStore.saveKDData(user, keystrokeSequence, false, null);
-					result[1] = (float)1;
-					// TODO: Stats
-					//+ if(compteReady)
+					authenticationReturn.setSaved(true);
+					// TODO: Stats : ajouter les succès et échec dans table d'association
+					// + if(compteReady)
 					//		if result[0] == 1 -> ajouter un succes aux stats
 					// 		else if result[0] == 0 && saveData == 1 -> ajouter un echec aux stats
-				} else if (mode == 0) {
-				// Test mode
+				} else if (mode == AuthenticationMode.TEST_MODE) {
+					// Test mode
 					// compléter authenticationAttempts car on est en test -> succes ou echec aux stats
-				} else if (mode == 2 && result[0] == 0) {
-				// TODO: TempPassword functionality
-				// Production mode with fail
+				} else if (mode == AuthenticationMode.PRODUCTION_MODE
+						&& !authenticationReturn.isAuthenticated()) {
+					// TODO: TempPassword functionality
+					// Production mode with fail
 					// if compte ready, store dans TempPassword avec des
 					// infos supplémentaires issues du javascript et de l'applet + IP
 				}
@@ -143,14 +110,15 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 						"password <" + password + "> which is wrong. His " +
 						"right password is <" + user.getPassword() + ">. His " +
 						"keystroke dynamics will not be analyzed.");
-				result[0] = (float)-2;
+				authenticationReturn.setAuthenticationErrorCode(-3);
 			}
 		} else {
 			log.info("User <" + login + "> tried to connect but doesn't exist" +
 					" in the data store.");
-			result[0] = (float)-3;
+			authenticationReturn.setAuthenticationErrorCode(-4);
 		}
-		return result;
+
+		return authenticationReturn;
 	}
 
 	/**

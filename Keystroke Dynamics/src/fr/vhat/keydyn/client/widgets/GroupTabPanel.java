@@ -34,7 +34,7 @@ public class GroupTabPanel extends TabPanel implements HasHandlers {
     	Tab homePageTab = new HomePage(this);
     	this.add(homePageTab);
     	// Last init parameter must be true for an applet, false for JavaScript.
-    	LoginPage.init(this, true);
+    	LoginPage.init(this, false);
     	Tab loginPageTab = LoginPage.getInstance();
     	this.add(loginPageTab);
     	Tab registrationPageTab = new RegistrationPage(this);

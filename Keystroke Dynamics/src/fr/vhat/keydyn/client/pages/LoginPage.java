@@ -10,9 +10,12 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import fr.vhat.keydyn.client.Authentication;
 import fr.vhat.keydyn.client.widgets.AuthenticationModule;
 import fr.vhat.keydyn.client.widgets.GroupTabPanel;
 import fr.vhat.keydyn.client.widgets.PageAuthentication;
+import fr.vhat.keydyn.shared.AuthenticationMode;
+import fr.vhat.keydyn.shared.AuthenticationReturn;
 
 /**
  * Represent the registration page.
@@ -26,6 +29,7 @@ public class LoginPage extends PageAuthentication {
 	private static GroupTabPanel owner;
 	private static AuthenticationModule authenticationModule;
 	private VerticalPanel panel;
+	private static AuthenticationReturn authenticationReturn;
 
 	/**
 	 * Constructor of the login page.
@@ -92,7 +96,8 @@ public class LoginPage extends PageAuthentication {
 		help.addStyleName("indent");
 		panel.add(help);
 
-		authenticationModule = new AuthenticationModule(2, LoginPage.applet);
+		authenticationModule =
+				new AuthenticationModule(2, LoginPage.applet, this);
 		addAppletHandlers();
 		panel.add(authenticationModule);
 
@@ -143,10 +148,10 @@ public class LoginPage extends PageAuthentication {
 			@fr.vhat.keydyn.client.pages.LoginPage::appletLoaded()();
 		}
     	$wnd.appletCallback = function(x) {
-            @fr.vhat.keydyn.client.pages.LoginPage::appletCallback(Ljava/lang/String;)(x);
+            @fr.vhat.keydyn.client.pages.LoginPage::authenticationCallback(Ljava/lang/String;)(x);
     	}
     	$wnd.appletCallbackChar = function(x) {
-            @fr.vhat.keydyn.client.pages.LoginPage::appletCallbackChar(Ljava/lang/String;)(x);
+            @fr.vhat.keydyn.client.pages.LoginPage::authenticationCallbackChar(Ljava/lang/String;)(x);
     	}
     }-*/;
 
@@ -154,24 +159,59 @@ public class LoginPage extends PageAuthentication {
 	 * When the applet is loaded : display the authentication form.
 	 */
 	private static void appletLoaded() {
-		System.out.println("appletLoaded");
 		LoginPage.authenticationModule.displayAuthenticationForm();
 	}
 
 	/**
-	 * When an applet callback is thrown : clear the password field.
+	 * Implement the function of the parent in order to use polymorphism.
+	 * @param string Callback keystroke sequence.
 	 */
-	protected static void appletCallback(String string) {
-		System.out.println("callback " + string);
-		LoginPage.authenticationModule.clearPassword();
+	@Override
+	public void callback(String string) {
+		LoginPage.authenticationCallback(string);
 	}
 
 	/**
-	 * When an applet callback is thrown for a character : add a character to
-	 * the password field.
+	 * When an authentication callback is thrown : clear the password field and
+	 * send the keystroke sequence to the server.
+	 * @param string Callback keystroke sequence.
 	 */
-	protected static void appletCallbackChar(String string) {
-		System.out.println("callbackCHAR " + string);
-		LoginPage.authenticationModule.addCharacterToPassword();
+	private static void authenticationCallback(String string) {
+		if (LoginPage.applet) {
+			LoginPage.authenticationModule.clearPassword();
+		}
+		LoginPage.authenticationReturn = Authentication.authenticateUser(
+				LoginPage.authenticationModule.getLogin(),
+				AuthenticationMode.PRODUCTION_MODE, string, true);
+				// TODO: remplacer true par false dans la ligne ci-dessus
+		LoginPage.execReturn();
+	}
+
+	/**
+	 * Implement the function of the parent in order to use polymorphism.
+	 * @param string Callback character.
+	 */
+	@Override
+	public void callbackChar(String string) {
+		LoginPage.authenticationCallbackChar(string);
+	}
+
+	/**
+	 * When an authentication callback is thrown for a character : add a
+	 * character to the password field.
+	 */
+	private static void authenticationCallbackChar(String string) {
+		if (LoginPage.applet) {
+			LoginPage.authenticationModule.addCharacterToPassword();
+		}
+	}
+
+	/**
+	 * Function which is executed when the application receive an answer from
+	 * the server.
+	 */
+	private static void execReturn() {
+		// afficher des infos, notamment si de nouvelles data ont été saved
+    	System.out.println(LoginPage.authenticationReturn.toString());
 	}
 }
