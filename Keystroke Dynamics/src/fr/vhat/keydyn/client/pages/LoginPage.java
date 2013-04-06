@@ -1,22 +1,20 @@
 package fr.vhat.keydyn.client.pages;
 
 import com.github.gwtbootstrap.client.ui.Alert;
-import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.Paragraph;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
-import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import fr.vhat.keydyn.client.widgets.AuthenticationModule;
 import fr.vhat.keydyn.client.widgets.GroupTabPanel;
+import fr.vhat.keydyn.client.widgets.InformationPopup;
 import fr.vhat.keydyn.client.widgets.PageAuthentication;
 import fr.vhat.keydyn.shared.AuthenticationMode;
 import fr.vhat.keydyn.shared.AuthenticationReturn;
@@ -32,9 +30,8 @@ public class LoginPage extends PageAuthentication {
 	private static boolean applet;
 	private static GroupTabPanel owner;
 	private static AuthenticationModule authenticationModule;
-	private static VerticalPanel alertPanel;
 	private static AuthenticationReturn authenticationReturn;
-	private static Modal authenticationPopup;
+	private static InformationPopup authenticationPopup;
 
 	/**
 	 * Constructor of the login page.
@@ -109,9 +106,6 @@ public class LoginPage extends PageAuthentication {
 				new AuthenticationModule(2, LoginPage.applet, this);
 		addAppletHandlers();
 		panel.add(authenticationModule);
-
-		alertPanel = new VerticalPanel();
-		panel.add(alertPanel);
 
 		return panel;
 	}
@@ -196,15 +190,9 @@ public class LoginPage extends PageAuthentication {
 				LoginPage.authenticationModule.getLogin(),
 				AuthenticationMode.PRODUCTION_MODE, string, false);
 
-		authenticationPopup = new Modal(true, true);
-		authenticationPopup.setBackdrop(BackdropType.STATIC);
-		authenticationPopup.setCloseVisible(false);
-		authenticationPopup.setHideOthers(true);
-		authenticationPopup.setKeyboard(false);
-		authenticationPopup.setWidth(400);
-		authenticationPopup.setTitle("Vérification en cours");
-		authenticationPopup.add(new Paragraph("Veuillez patienter pendant " +
-				"que le serveur vérifie les informations fournies."));
+		authenticationPopup = new InformationPopup("Vérification en cours",
+				new Paragraph("Veuillez patienter pendant " +
+						"que le serveur vérifie les informations fournies."));
 		authenticationPopup.show();
 	}
 
@@ -238,20 +226,6 @@ public class LoginPage extends PageAuthentication {
 		Alert alert = new Alert(authenticationReturn.toString(), alertType,
 				false);
 		authenticationPopup.add(alert);
-		hidePopupWithDelay(2500);
-	}
-
-	/**
-	 * Hide the popup after a given delay.
-	 * @param delay Delay in milliseconds
-	 */
-	private void hidePopupWithDelay(int delay) {
-		Timer hideTimer = new Timer() {
-			@Override
-			public void run() {
-				authenticationPopup.hide();
-			}
-		};
-		hideTimer.schedule(delay);
+		authenticationPopup.hidePopupWithDelay(2500);
 	}
 }
