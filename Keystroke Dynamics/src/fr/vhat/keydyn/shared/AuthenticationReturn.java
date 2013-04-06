@@ -80,7 +80,7 @@ public class AuthenticationReturn implements Serializable {
     	if (this.isAuthenticated) {
     		finalString += "ACCEPTÉE.";
     	} else {
-    		finalString += "REJETÉE.";
+    		finalString += "REJETÉE." + newline;
     		finalString += " Raison : " + errorInformation;
     	}
 

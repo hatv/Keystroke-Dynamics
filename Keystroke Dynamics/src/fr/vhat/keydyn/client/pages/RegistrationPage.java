@@ -40,7 +40,6 @@ import fr.vhat.keydyn.client.services.RegistrationService;
 import fr.vhat.keydyn.client.services.RegistrationServiceAsync;
 import fr.vhat.keydyn.client.widgets.GroupTabPanel;
 import fr.vhat.keydyn.client.widgets.Page;
-import fr.vhat.keydyn.client.widgets.InformationPopup;
 import fr.vhat.keydyn.shared.FieldVerifier;
 
 /**
@@ -558,24 +557,27 @@ public class RegistrationPage extends Page {
                 @Override
                 public void onSuccess(Boolean registered) {
                 	if (registered) {
-                		new InformationPopup("Inscription validée.", "Vous " +
-                				"devriez recevoir votre mot de passe à " +
-                				"l'adresse indiquée.", AlertType.SUCCESS)
-                			.showPopup();
+                		// TODO
+                		//new InformationPopup("Inscription validée.", "Vous " +
+                		//		"devriez recevoir votre mot de passe à " +
+                		//		"l'adresse indiquée.", AlertType.SUCCESS)
+                		//	.showPopup();
                 		clearForm();
                 		getOwner().selectTab(1);
                 	} else {
-                		new InformationPopup("Inscription refusée.",
-                				"Assurez-vous que tous les champs sont " +
-                				"renseignés et valides.", AlertType.ERROR)
-                			.showPopup();
+                		// TODO
+                		//new InformationPopup("Inscription refusée.",
+                		//		"Assurez-vous que tous les champs sont " +
+                		//		"renseignés et valides.", AlertType.ERROR)
+                		//	.showPopup();
                 	}
                 }
 			});
 		} else {
-			new InformationPopup("Informations manquantes", "Assurez-vous que" +
-					" tous les champs sont renseignés et valides.",
-					AlertType.WARNING).showPopup();
+			// TODO
+			//new InformationPopup("Informations manquantes", "Assurez-vous que" +
+			//		" tous les champs sont renseignés et valides.",
+			//		AlertType.WARNING).showPopup();
 		}
 	}
 

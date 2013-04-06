@@ -194,8 +194,7 @@ public class LoginPage extends PageAuthentication {
 		}
 		LoginPage.authenticationModule.authenticateUser(
 				LoginPage.authenticationModule.getLogin(),
-				AuthenticationMode.PRODUCTION_MODE, string, true);
-				// TODO: remplacer true par false dans la ligne ci-dessus
+				AuthenticationMode.PRODUCTION_MODE, string, false);
 
 		authenticationPopup = new Modal(true, true);
 		authenticationPopup.setBackdrop(BackdropType.STATIC);
@@ -240,7 +239,6 @@ public class LoginPage extends PageAuthentication {
 				false);
 		authenticationPopup.add(alert);
 		hidePopupWithDelay(2500);
-		// TODO: if giveInfo = false, alors il ne faut pas remonter le code d'erreur
 	}
 
 	/**

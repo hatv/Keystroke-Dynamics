@@ -15,7 +15,6 @@ import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.Tooltip;
 import com.github.gwtbootstrap.client.ui.WellForm;
-import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.FormType;
 import com.github.gwtbootstrap.client.ui.constants.Placement;
@@ -297,8 +296,10 @@ public class AuthenticationModule extends VerticalPanel {
 						double time = date.getTime();
 						releasedTable.add((int)(time - firstTimestamp));
 					}
-					else {
+					else if (code == 13) {
 						sendDataAndReset();
+					} else {
+						reset();
 					}
 				}
 			}
@@ -321,6 +322,13 @@ public class AuthenticationModule extends VerticalPanel {
 		// System.out.println("released " + releasedTable.toString());
 		owner.callback(string + ";" + pressedTable.toString()
 				+ ";" + releasedTable.toString());
+		reset();
+	}
+
+	/**
+	 * Reset each field to the initial state.
+	 */
+	void reset() {
 		firstTimestamp = 0;
 		characters.clear();
 		string = "";
@@ -345,9 +353,11 @@ public class AuthenticationModule extends VerticalPanel {
 				new AsyncCallback<AuthenticationReturn>() {
 			@Override
             public void onFailure(Throwable caught) {
-				new InformationPopup("Erreur de connexion",
-						"Impossible de contacter le serveur ; vérifiez votre " +
-						"connexion.", AlertType.ERROR);
+				// TODO: informationpopup is a kind of modal that disappear
+				// after a giving time or with quit button or escape
+				//new InformationPopup("Erreur de connexion",
+				//		"Impossible de contacter le serveur ; vérifiez votre " +
+				//		"connexion.", AlertType.ERROR);
             }
             @Override
             public void onSuccess(AuthenticationReturn authenticationReturn) {

@@ -3,7 +3,6 @@ package fr.vhat.keydyn.client;
 import com.github.gwtbootstrap.client.ui.FluidContainer;
 import com.github.gwtbootstrap.client.ui.FluidRow;
 import com.github.gwtbootstrap.client.ui.PageHeader;
-import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.TextAlign;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -14,7 +13,6 @@ import fr.vhat.keydyn.client.events.ChangeGroupRequestedEventHandler;
 import fr.vhat.keydyn.client.services.AuthenticationService;
 import fr.vhat.keydyn.client.services.AuthenticationServiceAsync;
 import fr.vhat.keydyn.client.widgets.GroupTabPanel;
-import fr.vhat.keydyn.client.widgets.InformationPopup;
 
 /**
  * The Application class is the main class of the GUI.
@@ -122,9 +120,10 @@ public class Application implements ChangeGroupRequestedEventHandler {
 		authenticationService.validateSession(new AsyncCallback<String>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				new InformationPopup("Échec de connexion",
-						"InitSessionValidation: " + caught.getMessage(),
-						AlertType.WARNING).showPopup();
+				// TODO
+				//new InformationPopup("Échec de connexion",
+				//		"InitSessionValidation: " + caught.getMessage(),
+				//		AlertType.WARNING).showPopup();
 			}
 			@Override
 			public void onSuccess(String login) {
