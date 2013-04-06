@@ -39,6 +39,7 @@ import com.google.gwt.user.client.ui.Widget;
 import fr.vhat.keydyn.client.services.RegistrationService;
 import fr.vhat.keydyn.client.services.RegistrationServiceAsync;
 import fr.vhat.keydyn.client.widgets.GroupTabPanel;
+import fr.vhat.keydyn.client.widgets.InformationPopup;
 import fr.vhat.keydyn.client.widgets.Page;
 import fr.vhat.keydyn.shared.FieldVerifier;
 
@@ -557,27 +558,41 @@ public class RegistrationPage extends Page {
                 @Override
                 public void onSuccess(Boolean registered) {
                 	if (registered) {
-                		// TODO
-                		//new InformationPopup("Inscription validée.", "Vous " +
-                		//		"devriez recevoir votre mot de passe à " +
-                		//		"l'adresse indiquée.", AlertType.SUCCESS)
-                		//	.showPopup();
+                		InformationPopup popup = new InformationPopup(
+        						"Inscription", true);
+        				popup.setAlertType(AlertType.SUCCESS);
+        				popup.setAlertTitle("Inscription validée.");
+        				popup.setAlertContent("Vous devriez recevoir votre " +
+        						"mot de passe par mail dans les prochaines " +
+        						"minutes. Pensez à vérifier vos courriers " +
+        						"indésirables.");
+        				popup.showAlert();
+        				popup.show();
+        				popup.hideWithDelay(6000);
                 		clearForm();
                 		getOwner().selectTab(1);
                 	} else {
-                		// TODO
-                		//new InformationPopup("Inscription refusée.",
-                		//		"Assurez-vous que tous les champs sont " +
-                		//		"renseignés et valides.", AlertType.ERROR)
-                		//	.showPopup();
+                		InformationPopup popup = new InformationPopup(
+        						"Inscription", true);
+        				popup.setAlertType(AlertType.ERROR);
+        				popup.setAlertTitle("Inscription refusée.");
+        				popup.setAlertContent("Assurez vous que tous les " +
+        						"champs sont bien renseignés et valides.");
+        				popup.showAlert();
+        				popup.show();
+        				popup.hideWithDelay(3000);
                 	}
                 }
 			});
 		} else {
-			// TODO
-			//new InformationPopup("Informations manquantes", "Assurez-vous que" +
-			//		" tous les champs sont renseignés et valides.",
-			//		AlertType.WARNING).showPopup();
+			InformationPopup popup = new InformationPopup("Inscription", true);
+			popup.setAlertType(AlertType.ERROR);
+			popup.setAlertTitle("Informations manquantes.");
+			popup.setAlertContent("Assurez vous que tous les " +
+					"champs sont bien renseignés et valides.");
+			popup.showAlert();
+			popup.show();
+			popup.hideWithDelay(3000);
 		}
 	}
 
