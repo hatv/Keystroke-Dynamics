@@ -119,7 +119,10 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 		}
 
 		if (!giveInfo) {
-			authenticationReturn.setAuthenticationErrorCode(-1);
+			authenticationReturn.setSaved(false);
+			if (authenticationReturn.getAuthenticationErrorCode() != 0) {
+				authenticationReturn.setAuthenticationErrorCode(-1);
+			}
 		}
 
 		return authenticationReturn;

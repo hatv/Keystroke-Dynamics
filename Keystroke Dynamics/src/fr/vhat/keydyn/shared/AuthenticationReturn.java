@@ -61,9 +61,9 @@ public class AuthenticationReturn implements Serializable {
 	 * Build a string from the information of the object.
 	 * @return Built string to display.
 	 */
-	public String toString() {
+	public String getStringContent() {
 
-		String newline = "\n";
+		String newline = "<br />";
 
 		String errorInformation = new String();
 		if (this.getAuthenticationErrorCode() == -1) {
@@ -76,12 +76,9 @@ public class AuthenticationReturn implements Serializable {
     		errorInformation = "Cet utilisateur n'existe pas.";
     	}
 
-		String finalString = new String("Authentification : ");
-    	if (this.isAuthenticated) {
-    		finalString += "ACCEPTÉE.";
-    	} else {
-    		finalString += "REJETÉE." + newline;
-    		finalString += " Raison : " + errorInformation;
+		String finalString = new String();
+    	if (!this.isAuthenticated && this.authenticationErrorCode != -1) {
+    		finalString += newline + "Raison : " + errorInformation;
     	}
 
     	if (this.hasInfo) {
@@ -95,6 +92,20 @@ public class AuthenticationReturn implements Serializable {
     		finalString += newline + "Les données ont été enregistrées.";
     	}
 
+    	return finalString;
+	}
+
+	/**
+	 * Build a string from the information of the object.
+	 * @return Built string to display as a title.
+	 */
+	public String getStringTitle() {
+		String finalString = new String("Authentification : ");
+    	if (this.isAuthenticated) {
+    		finalString += "ACCEPTÉE.";
+    	} else {
+    		finalString += "REJETÉE.";
+    	}
     	return finalString;
 	}
 

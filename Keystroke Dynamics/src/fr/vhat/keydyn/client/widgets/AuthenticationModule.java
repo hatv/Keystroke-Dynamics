@@ -46,7 +46,7 @@ public class AuthenticationModule extends VerticalPanel {
 	private ListBox loginListBox;
 	private Button submitButton;
 	private PasswordTextBox passwordTextBox;
-	private int mode;
+	private AuthenticationMode authenticationMode;
 
 	// JavaScript parameters
 	private double firstTimestamp = 0;
@@ -61,23 +61,20 @@ public class AuthenticationModule extends VerticalPanel {
 
 	/**
 	 * Constructor.
-	 * @param mode Save data behavior : 0 means "never save data" (test),
-	 * 1 means "always save data" (train) and 2 means "save data only if
-	 * authenticated" (production). Furthermore, in train mode the login is
-	 * unused as the session login is used, in production mode, there is a
-	 * field where to enter the login and in test mode, there is a ListBox
-	 * with multiple logins and a field to display the matching password.
+	 * @param authenticationMode Mode among the several AuthenticationMode
+	 * available.
 	 * @param applet True if we want to use a Java applet, false to use simple
 	 * JavaScript code.
+	 * @param legend LEgend to display above the module.
 	 * @param owner Owner page of the authentication module.
 	 */
-	public AuthenticationModule(
-			int mode, boolean applet, PageAuthentication owner) {
+	public AuthenticationModule(AuthenticationMode authenticationMode,
+			boolean applet, String legend, PageAuthentication owner) {
 
 		this.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 
-		this.mode = mode;
-		this.authenticationForm = this.getAuthenticationForm();
+		this.authenticationMode = authenticationMode;
+		this.authenticationForm = this.getAuthenticationForm(legend);
 		this.owner = owner;
 
 		if (applet) {
@@ -94,10 +91,14 @@ public class AuthenticationModule extends VerticalPanel {
 	/**
 	 * By default, the authentication module use JavaScript rather than a Java
 	 * applet.
-	 * @param mode Mode to use : see the main constructor for more information.
+	 * @param authenticationMode Mode to use : see the main constructor for
+	 * more information.
+	 * @param legend Legend to display above the module.
+	 * @param owner Owner page of the authentication module.
 	 */
-	public AuthenticationModule(int mode, PageAuthentication owner) {
-		this(mode, false, owner);
+	public AuthenticationModule(AuthenticationMode authenticationMode,
+			String legend, PageAuthentication owner) {
+		this(authenticationMode, false, legend, owner);
 	}
 
 	/**
@@ -126,54 +127,48 @@ public class AuthenticationModule extends VerticalPanel {
 
 	/**
 	 * Build the authentication form on demand.
+	 * @param legend Legend to display above the module.
 	 * @return Authentication form.
 	 */
-	private WellForm getAuthenticationForm() {
+	private WellForm getAuthenticationForm(String legend) {
 
 		WellForm authenticationForm = new WellForm();
 		authenticationForm.setType(FormType.HORIZONTAL);
 		Fieldset fieldset = new Fieldset();
 		authenticationForm.add(fieldset);
-		Legend authenticationLegend = new Legend("Module d'authentification");
+		Legend authenticationLegend = new Legend(legend);
 		fieldset.add(authenticationLegend);
 
 		ControlGroup loginControlGroup;
 		ControlLabel loginLabel;
 		Controls loginControl;
-		switch(this.mode) {
-			// 0 : Test mode
-			case 0:
-				loginControlGroup = new ControlGroup();
-				fieldset.add(loginControlGroup);
-				loginLabel = new ControlLabel("Identifiant");
-				loginControlGroup.add(loginLabel);
-				loginControl = new Controls();
-				loginControlGroup.add(loginControl);
-				loginListBox = new ListBox();
-				loginControl.add(loginListBox);
-				Tooltip loginTooltip =
-						new Tooltip("Identifiant de la personne dont vous " +
-								"voulez tenter d'usurper l'identité.");
-				loginTooltip.setWidget(loginListBox);
-				loginTooltip.setTrigger(Trigger.HOVER);
-				loginTooltip.setPlacement(Placement.RIGHT);
-				loginTooltip.reconfigure();
-				break;
-			// 1 : Train mode
-			case 1:
-				break;
-			// 2 : Production mode
-			case 2:
-				loginControlGroup = new ControlGroup();
-				fieldset.add(loginControlGroup);
-				loginLabel = new ControlLabel("Identifiant");
-				loginControlGroup.add(loginLabel);
-				loginControl = new Controls();
-				loginControlGroup.add(loginControl);
-				loginTextBox = new TextBox();
-				loginTextBox.setMaxLength(13);
-				loginControl.add(loginTextBox);
-				break;
+		if (this.authenticationMode == AuthenticationMode.TEST_MODE) {
+			loginControlGroup = new ControlGroup();
+			fieldset.add(loginControlGroup);
+			loginLabel = new ControlLabel("Identifiant");
+			loginControlGroup.add(loginLabel);
+			loginControl = new Controls();
+			loginControlGroup.add(loginControl);
+			loginListBox = new ListBox();
+			loginControl.add(loginListBox);
+			Tooltip loginTooltip =
+					new Tooltip("Identifiant de la personne dont vous " +
+							"voulez tenter d'usurper l'identité.");
+			loginTooltip.setWidget(loginListBox);
+			loginTooltip.setTrigger(Trigger.HOVER);
+			loginTooltip.setPlacement(Placement.RIGHT);
+			loginTooltip.reconfigure();
+		} else if (
+				this.authenticationMode == AuthenticationMode.PRODUCTION_MODE) {
+			loginControlGroup = new ControlGroup();
+			fieldset.add(loginControlGroup);
+			loginLabel = new ControlLabel("Identifiant");
+			loginControlGroup.add(loginLabel);
+			loginControl = new Controls();
+			loginControlGroup.add(loginControl);
+			loginTextBox = new TextBox();
+			loginTextBox.setMaxLength(13);
+			loginControl.add(loginTextBox);
 		}
 
 		ControlGroup passwordControlGroup = new ControlGroup();
@@ -193,7 +188,7 @@ public class AuthenticationModule extends VerticalPanel {
 		submitButton.setType(ButtonType.SUCCESS);
 		submitButton.addStyleName("buttonsPanel");
 		buttonsPanel.add(submitButton);
-		if (mode == 2) {
+		if (authenticationMode == AuthenticationMode.PRODUCTION_MODE) {
 			Button forgotPasswordButton = new Button("Mot de passe oublié");
 			forgotPasswordButton.setType(ButtonType.INFO);
 			forgotPasswordButton.addStyleName("buttonsPanel");
@@ -217,18 +212,13 @@ public class AuthenticationModule extends VerticalPanel {
 	 */
 	public String getLogin() {
 		String login = new String();
-		switch(this.mode) {
-			case 0:
-				// 0 : test mode -> login from a ListBox
-				login = loginListBox.getValue(loginListBox.getSelectedIndex());
-				break;
-			case 1:
-				// 1 : train mode -> login from session
-				break;
-			case 2:
-				// 2 : production mode -> login from a TextBox
-				login = loginTextBox.getText();
-				break;
+		if (this.authenticationMode == AuthenticationMode.TEST_MODE) {
+			login = loginListBox.getValue(loginListBox.getSelectedIndex());
+		} else if (this.authenticationMode == AuthenticationMode.TRAIN_MODE) {
+			login = "";
+		} else if (
+				this.authenticationMode == AuthenticationMode.PRODUCTION_MODE) {
+			login = loginTextBox.getText();
 		}
 		return login;
 	}
@@ -353,11 +343,7 @@ public class AuthenticationModule extends VerticalPanel {
 				new AsyncCallback<AuthenticationReturn>() {
 			@Override
             public void onFailure(Throwable caught) {
-				// TODO: informationpopup is a kind of modal that disappear
-				// after a giving time or with quit button or escape
-				//new InformationPopup("Erreur de connexion",
-				//		"Impossible de contacter le serveur ; vérifiez votre " +
-				//		"connexion.", AlertType.ERROR);
+				owner.execReturn(null);
             }
             @Override
             public void onSuccess(AuthenticationReturn authenticationReturn) {

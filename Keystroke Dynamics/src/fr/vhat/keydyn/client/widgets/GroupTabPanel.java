@@ -15,6 +15,7 @@ import fr.vhat.keydyn.client.pages.FAQPage;
 import fr.vhat.keydyn.client.pages.HomePage;
 import fr.vhat.keydyn.client.pages.LoginPage;
 import fr.vhat.keydyn.client.pages.RegistrationPage;
+import fr.vhat.keydyn.client.pages.TrainingPage;
 
 /**
  * The GroupTabPanel class represents a customized TabPanel from which we can
@@ -29,23 +30,29 @@ public class GroupTabPanel extends TabPanel implements HasHandlers {
 	 * Constructor.
 	 * @param connectedOption True if it is a connected groupTabPanel.
 	 */
-    public GroupTabPanel(boolean connectedOption, int activeIndex) {
+    public GroupTabPanel(boolean connectedOption) {
     	simpleEventBus = new SimpleEventBus();
-    	Tab homePageTab = new HomePage(this);
-    	this.add(homePageTab);
-    	// Last init parameter must be true for an applet, false for JavaScript.
-    	LoginPage.init(this, false);
-    	Tab loginPageTab = LoginPage.getInstance();
-    	this.add(loginPageTab);
-    	Tab registrationPageTab = new RegistrationPage(this);
-    	this.add(registrationPageTab);
-    	Tab FAQPageTab = new FAQPage(this);
-    	this.add(FAQPageTab);
-    	Tab aboutPageTab = new AboutPage(this);
-    	this.add(aboutPageTab);
-    	Tab contactPageTab = new ContactPage(this);
-    	this.add(contactPageTab);
-    	this.selectTab(activeIndex);
+    	if (!connectedOption) {
+	    	Tab homePageTab = new HomePage(this);
+	    	this.add(homePageTab);
+	    	// Init parameter must be true for an applet, false for JavaScript.
+	    	LoginPage.init(this, false);
+	    	Tab loginPageTab = LoginPage.getInstance();
+	    	this.add(loginPageTab);
+	    	Tab registrationPageTab = new RegistrationPage(this);
+	    	this.add(registrationPageTab);
+	    	Tab FAQPageTab = new FAQPage(this);
+	    	this.add(FAQPageTab);
+	    	Tab aboutPageTab = new AboutPage(this);
+	    	this.add(aboutPageTab);
+	    	Tab contactPageTab = new ContactPage(this);
+	    	this.add(contactPageTab);
+    	} else {
+    		// Init parameter must be true for an applet, false for JavaScript.
+	    	TrainingPage.init(this, false);
+	    	Tab trainingPageTab = TrainingPage.getInstance();
+	    	this.add(trainingPageTab);
+    	}
     }
 
     @Override
@@ -59,8 +66,9 @@ public class GroupTabPanel extends TabPanel implements HasHandlers {
         		ChangeGroupRequestedEvent.TYPE, handler);
     }
 
-    public void changeGroupRequested() {
-    	ChangeGroupRequestedEvent event = new ChangeGroupRequestedEvent(0);
+    public void changeGroupRequested(int groupIndex) {
+    	ChangeGroupRequestedEvent event =
+    			new ChangeGroupRequestedEvent(groupIndex);
     	fireEvent(event);
     }
 }

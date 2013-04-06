@@ -1,9 +1,11 @@
 package fr.vhat.keydyn.client.widgets;
 
+import com.github.gwtbootstrap.client.ui.AlertBlock;
 import com.github.gwtbootstrap.client.ui.Modal;
+import com.github.gwtbootstrap.client.ui.Paragraph;
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Build and display a popup with a layer on the screen.
@@ -11,37 +13,42 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class InformationPopup extends Modal {
 
+	private AlertBlock alert;
+	private Paragraph paragraph;
+
 	/**
-	 * Constructor.
-	 * @param closable If true, the popup is closable with a button and ESC.
+	 * Constructor of a popup.
 	 * @param title Title of the popup.
-	 * @param content Content of the popup.
+	 * @param closable If true, the popup is closable with a button and ESC.
 	 */
-	public InformationPopup(String title, Widget content, boolean closable) {
+	public InformationPopup(String title, boolean closable) {
+
 		super(true, true);
+
 		this.setBackdrop(BackdropType.STATIC);
 		this.setCloseVisible(closable);
 		this.setHideOthers(true);
 		this.setKeyboard(closable);
-		this.setWidth(400);
+		this.setWidth(500);
 		this.setTitle(title);
-		this.add(content);
+
+		paragraph = new Paragraph();
+		alert = new AlertBlock(false);
 	}
 
 	/**
-	 * Constructor : not closable.
+	 * Constructor of a not closable popup.
 	 * @param title Title of the popup.
-	 * @param content Content of the popup.
 	 */
-	public InformationPopup(String title, Widget content) {
-		this(title, content, false);
+	public InformationPopup(String title) {
+		this(title, false);
 	}
 
 	/**
 	 * Hide the popup after a given delay.
 	 * @param delay Delay in milliseconds
 	 */
-	public void hidePopupWithDelay(int delay) {
+	public void hideWithDelay(int delay) {
 		Timer hideTimer = new Timer() {
 			@Override
 			public void run() {
@@ -49,5 +56,72 @@ public class InformationPopup extends Modal {
 			}
 		};
 		hideTimer.schedule(delay);
+	}
+
+	/**
+	 * Default value is 4 seconds.
+	 */
+	public void hideWithDelay() {
+		this.hideWithDelay(4000);
+	}
+
+	/**
+	 * Set the type of the embedded alert.
+	 * @param alertType AlertType of the embedded alert.
+	 */
+	public void setAlertType(AlertType alertType) {
+		this.alert.setType(alertType);
+	}
+
+	/**
+	 * Set the content of the embedded alert.
+	 * @param content HTML content of the embedded alert.
+	 */
+	public void setAlertContent(String content) {
+		this.alert.setHTML(content);
+	}
+
+	/**
+	 * Set the title of the embedded alert.
+	 * @param title Title of the embedded alert.
+	 */
+	public void setAlertTitle(String title) {
+		this.alert.setHeading(title);
+	}
+
+	/**
+	 * Set the content of the embedded paragraph.
+	 * @param content HTML content of the embedded paragraph.
+	 */
+	public void setParagraphContent(String content) {
+		this.paragraph.setText(content);
+	}
+
+	/**
+	 * Show the alert.
+	 */
+	public void showAlert() {
+		this.add(alert);
+	}
+
+	/**
+	 * Hide the alert.
+	 */
+	public void hideAlert() {
+		this.remove(alert);
+	}
+
+	/**
+	 * Show the paragraph.
+	 */
+	public void showParagraph() {
+		this.insert(paragraph, 0);
+	}
+
+	/**
+	 * Hide the paragraph.
+	 */
+	public void hideParagraph() {
+		this.remove(paragraph);
 	}
 }

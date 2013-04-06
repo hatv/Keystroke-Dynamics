@@ -3,6 +3,7 @@ package fr.vhat.keydyn.client;
 import com.github.gwtbootstrap.client.ui.FluidContainer;
 import com.github.gwtbootstrap.client.ui.FluidRow;
 import com.github.gwtbootstrap.client.ui.PageHeader;
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.TextAlign;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -13,6 +14,7 @@ import fr.vhat.keydyn.client.events.ChangeGroupRequestedEventHandler;
 import fr.vhat.keydyn.client.services.AuthenticationService;
 import fr.vhat.keydyn.client.services.AuthenticationServiceAsync;
 import fr.vhat.keydyn.client.widgets.GroupTabPanel;
+import fr.vhat.keydyn.client.widgets.InformationPopup;
 
 /**
  * The Application class is the main class of the GUI.
@@ -36,8 +38,8 @@ public class Application implements ChangeGroupRequestedEventHandler {
 	public Application(String divId) {
 
 		// Initialize the two GroupTabPanel.
-		this.setConnectedGroupTabPanel(new GroupTabPanel(true, 0));
-		this.setNotConnectedGroupTabPanel(new GroupTabPanel(false, 0));
+		this.setConnectedGroupTabPanel(new GroupTabPanel(true));
+		this.setNotConnectedGroupTabPanel(new GroupTabPanel(false));
 
 		RootPanel.get().clear();
 		FluidContainer mainContainer = new FluidContainer();
@@ -49,11 +51,7 @@ public class Application implements ChangeGroupRequestedEventHandler {
 		RootPanel.get().add(mainContainer);
 
 		// Check whether the user is already connected or not.
-		if (this.isValidSession()) {
-			this.setDisplayedGroupTabPanelIndex(1);
-		} else {
-			this.setDisplayedGroupTabPanelIndex(0);
-		}
+		this.checkSession();
 	}
 
 	private GroupTabPanel getNotConnectedGroupTabPanel() {
@@ -97,6 +95,10 @@ public class Application implements ChangeGroupRequestedEventHandler {
 		contentRow.add(displayedGroupTabPanel);
 	}
 
+	/**
+	 * Build the header of the page.
+	 * @return Header row to display at the top of the page.
+	 */
 	private FluidRow getHeaderRow() {
 		PageHeader title = new PageHeader();
 		title.setText("Analyse de la Dynamique de Frappe");
@@ -109,33 +111,36 @@ public class Application implements ChangeGroupRequestedEventHandler {
 
 	@Override
 	public void onChangeGroupRequested(ChangeGroupRequestedEvent event) {
-		this.setDisplayedGroupTabPanelIndex(event.getGroupIndex());
+		this.checkSession();
 	}
 
 	/**
-	 * Check whether a session is opened with the server.
-	 * @return Session validity.
+	 * Check whether a session is opened with the server and load the
+	 * appropriate tabs.
 	 */
-	public boolean isValidSession() {
+	public void checkSession() {
 		authenticationService.validateSession(new AsyncCallback<String>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO
-				//new InformationPopup("Échec de connexion",
-				//		"InitSessionValidation: " + caught.getMessage(),
-				//		AlertType.WARNING).showPopup();
+				InformationPopup popup = new InformationPopup(
+						"Vérification de session", true);
+				popup.setAlertType(AlertType.WARNING);
+				popup.setAlertTitle("Échec de connexion au serveur.");
+				popup.setAlertContent("Vérifiez votre connexion internet.");
+				popup.showAlert();
+				popup.show();
+				popup.hideWithDelay();
 			}
 			@Override
 			public void onSuccess(String login) {
 				if (login != null) {
-					// TODO: getConnectedGroupTabPanel().selectTab(/*memberArea(login)*/);
 					setDisplayedGroupTabPanelIndex(1);
+					connectedGroupTabPanel.selectTab(0);
 				} else {
-					getNotConnectedGroupTabPanel().selectTab(0);
+					setDisplayedGroupTabPanelIndex(0);
+					notConnectedGroupTabPanel.selectTab(0);
 				}
 			}
 		});
-		return false;
-		// TODO: loadHomePage();
 	}
 }
