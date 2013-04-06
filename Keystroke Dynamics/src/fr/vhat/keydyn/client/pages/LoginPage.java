@@ -1,16 +1,20 @@
 package fr.vhat.keydyn.client.pages;
 
+import com.github.gwtbootstrap.client.ui.Alert;
+import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.Paragraph;
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
+import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import fr.vhat.keydyn.client.Authentication;
 import fr.vhat.keydyn.client.widgets.AuthenticationModule;
 import fr.vhat.keydyn.client.widgets.GroupTabPanel;
 import fr.vhat.keydyn.client.widgets.PageAuthentication;
@@ -28,8 +32,9 @@ public class LoginPage extends PageAuthentication {
 	private static boolean applet;
 	private static GroupTabPanel owner;
 	private static AuthenticationModule authenticationModule;
-	private VerticalPanel panel;
+	private static VerticalPanel alertPanel;
 	private static AuthenticationReturn authenticationReturn;
+	private static Modal authenticationPopup;
 
 	/**
 	 * Constructor of the login page.
@@ -76,16 +81,20 @@ public class LoginPage extends PageAuthentication {
 	@Override
 	protected Widget getContent() {
 
-		panel = new VerticalPanel();
+		VerticalPanel panel = new VerticalPanel();
 		panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		panel.setWidth("800px");
 
 		Paragraph introduction = new Paragraph();
-		introduction.setText("Vous pouvez vous authentifier de façon " +
-				"sécurisée grâce au module d'authentification ci-dessous." +
-				" Si celui-ci n'apparaît pas, vérifiez votre installation" +
-				" de Java et assurez-vous d'avoir accepté l'exécution de " +
-				"l'Applet.");
+		String introductionText = new String("Vous pouvez vous authentifier " +
+				"de façon sécurisée grâce au module d'authentification " +
+				"ci-dessous.");
+		if (LoginPage.applet) {
+			introductionText += " Si celui-ci n'apparaît pas, vérifiez votre" +
+					" installation de Java et assurez-vous d'avoir accepté " +
+					"l'exécution de l'Applet.";
+		}
+		introduction.setText(introductionText);
 		introduction.addStyleName("indent");
 		panel.add(introduction);
 		
@@ -100,6 +109,9 @@ public class LoginPage extends PageAuthentication {
 				new AuthenticationModule(2, LoginPage.applet, this);
 		addAppletHandlers();
 		panel.add(authenticationModule);
+
+		alertPanel = new VerticalPanel();
+		panel.add(alertPanel);
 
 		return panel;
 	}
@@ -180,11 +192,21 @@ public class LoginPage extends PageAuthentication {
 		if (LoginPage.applet) {
 			LoginPage.authenticationModule.clearPassword();
 		}
-		LoginPage.authenticationReturn = Authentication.authenticateUser(
+		LoginPage.authenticationModule.authenticateUser(
 				LoginPage.authenticationModule.getLogin(),
 				AuthenticationMode.PRODUCTION_MODE, string, true);
 				// TODO: remplacer true par false dans la ligne ci-dessus
-		LoginPage.execReturn();
+
+		authenticationPopup = new Modal(true, true);
+		authenticationPopup.setBackdrop(BackdropType.STATIC);
+		authenticationPopup.setCloseVisible(false);
+		authenticationPopup.setHideOthers(true);
+		authenticationPopup.setKeyboard(false);
+		authenticationPopup.setWidth(400);
+		authenticationPopup.setTitle("Vérification en cours");
+		authenticationPopup.add(new Paragraph("Veuillez patienter pendant " +
+				"que le serveur vérifie les informations fournies."));
+		authenticationPopup.show();
 	}
 
 	/**
@@ -210,8 +232,28 @@ public class LoginPage extends PageAuthentication {
 	 * Function which is executed when the application receive an answer from
 	 * the server.
 	 */
-	private static void execReturn() {
-		// afficher des infos, notamment si de nouvelles data ont été saved
-    	System.out.println(LoginPage.authenticationReturn.toString());
+	public void execReturn(AuthenticationReturn authenticationReturn) {
+		AlertType alertType = (authenticationReturn.isAuthenticated())
+				?AlertType.SUCCESS
+						:AlertType.ERROR;
+		Alert alert = new Alert(authenticationReturn.toString(), alertType,
+				false);
+		authenticationPopup.add(alert);
+		hidePopupWithDelay(2500);
+		// TODO: if giveInfo = false, alors il ne faut pas remonter le code d'erreur
+	}
+
+	/**
+	 * Hide the popup after a given delay.
+	 * @param delay Delay in milliseconds
+	 */
+	private void hidePopupWithDelay(int delay) {
+		Timer hideTimer = new Timer() {
+			@Override
+			public void run() {
+				authenticationPopup.hide();
+			}
+		};
+		hideTimer.schedule(delay);
 	}
 }

@@ -85,10 +85,13 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 					authenticationReturn.setDistance(distance);
 					authenticationReturn.setThreshold(threshold);
 				}
+// TEST à enlever 1 ligne ci dessous
+//DataStore.saveKDData(user, keystrokeSequence, false, null);
 				if ((mode == AuthenticationMode.TRAIN_MODE)
 					|| (mode == AuthenticationMode.PRODUCTION_MODE
 							&& authenticationReturn.isAuthenticated())) {
 					// Train mode or production mode with success
+//TEST a remettre une ligne ci dessous 
 					DataStore.saveKDData(user, keystrokeSequence, false, null);
 					authenticationReturn.setSaved(true);
 					// TODO: Stats : ajouter les succès et échec dans table d'association

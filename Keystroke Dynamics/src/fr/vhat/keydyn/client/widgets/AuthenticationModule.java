@@ -15,10 +15,12 @@ import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.Tooltip;
 import com.github.gwtbootstrap.client.ui.WellForm;
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.FormType;
 import com.github.gwtbootstrap.client.ui.constants.Placement;
 import com.github.gwtbootstrap.client.ui.constants.Trigger;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsDate;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -26,10 +28,16 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+
+import fr.vhat.keydyn.client.services.AuthenticationService;
+import fr.vhat.keydyn.client.services.AuthenticationServiceAsync;
+import fr.vhat.keydyn.shared.AuthenticationMode;
+import fr.vhat.keydyn.shared.AuthenticationReturn;
 
 public class AuthenticationModule extends VerticalPanel {
 
@@ -47,6 +55,10 @@ public class AuthenticationModule extends VerticalPanel {
 	private List<Integer> pressedTable = new LinkedList<Integer>();
 	private List<Character> characters = new LinkedList<Character>();
 	private String string = new String();
+
+	// Services creation for RPC communication between client and server sides.
+	private static AuthenticationServiceAsync authenticationService =
+			GWT.create(AuthenticationService.class);
 
 	/**
 	 * Constructor.
@@ -315,5 +327,32 @@ public class AuthenticationModule extends VerticalPanel {
 		pressedTable.clear();
 		releasedTable.clear();
 		passwordTextBox.setText("");
+	}
+
+	/**
+	 * Authentication function : send data to the server in order to check the
+	 * validity of the authentication.
+	 * @param login Login of the user.
+	 * @param mode Mode (0 : test, 1 : train, 2 : production).
+	 * @param kdData Keystroke Dynamics data.
+	 * @param giveInfo True if the server has to return information.
+	 * @return AuthenticationReturn object containing the requested information.
+	 */
+	public void authenticateUser(String login,
+			AuthenticationMode mode, String kdData, boolean giveInfo) {
+
+		authenticationService.authenticateUser(login, mode, kdData, giveInfo,
+				new AsyncCallback<AuthenticationReturn>() {
+			@Override
+            public void onFailure(Throwable caught) {
+				new InformationPopup("Erreur de connexion",
+						"Impossible de contacter le serveur ; vérifiez votre " +
+						"connexion.", AlertType.ERROR);
+            }
+            @Override
+            public void onSuccess(AuthenticationReturn authenticationReturn) {
+            	owner.execReturn(authenticationReturn);
+            }
+		});
 	}
 }

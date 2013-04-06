@@ -2,6 +2,8 @@ package fr.vhat.keydyn.client.widgets;
 
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 
+import fr.vhat.keydyn.shared.AuthenticationReturn;
+
 /**
  * Abstract class from which inherit the pages of the application that contain
  * an AuthenticationModule : they must implement the callback methods.
@@ -31,4 +33,9 @@ public abstract class PageAuthentication extends Page {
 	 * @param string Last type character.
 	 */
 	public abstract void callbackChar(String string);
+
+	/**
+	 * Called on server response after an authentication trial.
+	 */
+	public abstract void execReturn(AuthenticationReturn authenticationReturn);
 }
