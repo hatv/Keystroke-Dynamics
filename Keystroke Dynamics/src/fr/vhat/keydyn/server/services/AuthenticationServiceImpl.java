@@ -44,6 +44,13 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 	public AuthenticationReturn authenticateUser(String login,
 			AuthenticationMode mode, String kdPassword, boolean giveInfo) {
 
+		AuthenticationReturn authenticationReturn = new AuthenticationReturn();
+
+		if (kdPassword.equals(";[];[]")) {
+			authenticationReturn.setAuthenticationErrorCode(-3);
+			return authenticationReturn;
+		}
+
 		// Train mode or test mode with default login : get login from session
 		if (mode == AuthenticationMode.TRAIN_MODE
 				|| (mode == AuthenticationMode.TEST_MODE && login.equals(""))) {
@@ -51,8 +58,6 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 					.getAttribute("login");
 		}
 		User user = DataStore.retrieveUser(login);
-
-		AuthenticationReturn authenticationReturn = new AuthenticationReturn();
 
 		if (user != null) {
 			// User u found in the data store
@@ -170,14 +175,17 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
     }
 
 	/**
-	 * Give the list of the enough trained accounts.
+	 * Give the list of the enough trained accounts, plus the session login.
 	 * @return Login list in a String table.
 	 */
 	@Override
 	public String[] getUsersLogin() {
 		List<User> userList = DataStore.getEnoughTrainedUsers();
 		int size = userList.size();
-		String[] result = new String[size];
+		String[] result = new String[size + 1];
+		// Get session login.
+		result[0] = (String)getThreadLocalRequest().getSession()
+				.getAttribute("login");
 		for (int i = 0 ; i < size ; ++i) {
 			result[i] = userList.get(i).getLogin();
 		}

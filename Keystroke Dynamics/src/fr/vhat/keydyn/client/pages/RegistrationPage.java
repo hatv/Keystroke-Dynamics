@@ -1,6 +1,5 @@
 package fr.vhat.keydyn.client.pages;
 
-import com.github.gwtbootstrap.client.ui.Alert;
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ButtonGroup;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
@@ -520,6 +519,7 @@ public class RegistrationPage extends Page {
 	 * the page.
 	 */
 	private void checkAndSendForm() {
+
 		String login = loginTextBox.getText();
 		String email = emailTextBox.getText();
 		String birthYear = birthYearTextBox.getText();
@@ -532,6 +532,7 @@ public class RegistrationPage extends Page {
 		String country = countryList.getValue(countryList.getSelectedIndex());
 		int computerExperienceIndex = computerExperienceList.getSelectedIndex();
 		int typingUsageIndex = typingUsageList.getSelectedIndex();
+
 		if (FieldVerifier.isValidLogin(login)
 				&& FieldVerifier.isValidEmail(email)
 				&& FieldVerifier.isValidBirthYear(birthYear)
@@ -543,18 +544,23 @@ public class RegistrationPage extends Page {
 				&& FieldVerifier.isValidTypingUsage(
 						typingUsageList.getValue(typingUsageIndex))) {
 			int birthYearValue = Integer.parseInt(birthYear);
+
 			registrationService.registerUser(login, email, birthYearValue,
 					gender, country, computerExperienceIndex, typingUsageIndex,
 					new AsyncCallback<Boolean>() {
+
 				@Override
                 public void onFailure(Throwable caught) {
-					Alert alert = new Alert(
-							"SignUp" + caught.getMessage(),
-							AlertType.WARNING,
-							true);
-					alert.setHeading("Échec de connexion");
-					alertPanel.add(alert);
+					InformationPopup popup = new InformationPopup(
+							"Inscription", true);
+					popup.setAlertType(AlertType.WARNING);
+					popup.setAlertTitle("Échec de connexion au serveur.");
+					popup.setAlertContent("Vérifiez votre connexion internet.");
+					popup.showAlert();
+					popup.show();
+					popup.hideWithDelay();
                 }
+
                 @Override
                 public void onSuccess(Boolean registered) {
                 	if (registered) {

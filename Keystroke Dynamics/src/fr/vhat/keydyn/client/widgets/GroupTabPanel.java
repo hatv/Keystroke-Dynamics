@@ -15,6 +15,7 @@ import fr.vhat.keydyn.client.pages.FAQPage;
 import fr.vhat.keydyn.client.pages.HomePage;
 import fr.vhat.keydyn.client.pages.LoginPage;
 import fr.vhat.keydyn.client.pages.RegistrationPage;
+import fr.vhat.keydyn.client.pages.TestPage;
 import fr.vhat.keydyn.client.pages.TrainingPage;
 
 /**
@@ -52,6 +53,10 @@ public class GroupTabPanel extends TabPanel implements HasHandlers {
 	    	TrainingPage.init(this, false);
 	    	Tab trainingPageTab = TrainingPage.getInstance();
 	    	this.add(trainingPageTab);
+	    	// Init parameter must be true for an applet, false for JavaScript.
+	    	TestPage.init(this, false);
+	    	Tab testPageTab = TestPage.getInstance();
+	    	this.add(testPageTab);
     	}
     }
 

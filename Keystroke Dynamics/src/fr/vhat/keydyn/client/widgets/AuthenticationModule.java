@@ -15,6 +15,7 @@ import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.Tooltip;
 import com.github.gwtbootstrap.client.ui.WellForm;
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.FormType;
 import com.github.gwtbootstrap.client.ui.constants.Placement;
@@ -65,7 +66,7 @@ public class AuthenticationModule extends VerticalPanel {
 	 * available.
 	 * @param applet True if we want to use a Java applet, false to use simple
 	 * JavaScript code.
-	 * @param legend LEgend to display above the module.
+	 * @param legend Legend to display above the module.
 	 * @param owner Owner page of the authentication module.
 	 */
 	public AuthenticationModule(AuthenticationMode authenticationMode,
@@ -155,6 +156,7 @@ public class AuthenticationModule extends VerticalPanel {
 					new Tooltip("Identifiant de la personne dont vous " +
 							"voulez tenter d'usurper l'identité.");
 			loginTooltip.setWidget(loginListBox);
+			this.fillLoginListBox();
 			loginTooltip.setTrigger(Trigger.HOVER);
 			loginTooltip.setPlacement(Placement.RIGHT);
 			loginTooltip.reconfigure();
@@ -348,6 +350,33 @@ public class AuthenticationModule extends VerticalPanel {
             @Override
             public void onSuccess(AuthenticationReturn authenticationReturn) {
             	owner.execReturn(authenticationReturn);
+            }
+		});
+	}
+
+	/**
+	 * In test mode, this function is aimed to fill the list box containing the
+	 * available login (enough trained) to test.
+	 */
+	private void fillLoginListBox() {
+
+		authenticationService.getUsersLogin(new AsyncCallback<String[]>() {
+			@Override
+            public void onFailure(Throwable caught) {
+				InformationPopup popup = new InformationPopup(
+						"Récupération des utilisateurs", true);
+				popup.setAlertType(AlertType.WARNING);
+				popup.setAlertTitle("Échec de connexion au serveur.");
+				popup.setAlertContent("Vérifiez votre connexion internet.");
+				popup.showAlert();
+				popup.show();
+				popup.hideWithDelay();
+            }
+            @Override
+            public void onSuccess(String[] logins) {
+            	for (String login : logins) {
+            		loginListBox.addItem(login);
+            	}
             }
 		});
 	}

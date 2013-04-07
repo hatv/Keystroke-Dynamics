@@ -19,27 +19,27 @@ import fr.vhat.keydyn.shared.AuthenticationMode;
 import fr.vhat.keydyn.shared.AuthenticationReturn;
 
 /**
- * Represent the training page.
+ * Represent the test page.
  * @author Victor Hatinguais, www.victorhatinguais.fr
  */
-public class TrainingPage extends PageAuthentication {
+public class TestPage extends PageAuthentication {
 
-	private static TrainingPage instance;
+	private static TestPage instance;
 
 	private static boolean applet;
 	private static GroupTabPanel owner;
-	private static AuthenticationModule trainingModule;
-	private static AuthenticationReturn trainingReturn;
-	private static InformationPopup trainingPopup;
+	private static AuthenticationModule testModule;
+	private static AuthenticationReturn testReturn;
+	private static InformationPopup testPopup;
 
 	/**
-	 * Constructor of the training page.
+	 * Constructor of the test page.
 	 * @param applet True if we want to use a Java applet, false to use simple
 	 * JavaScript code.
 	 */
-	private TrainingPage(boolean applet) {
+	private TestPage(boolean applet) {
 
-		super("Entraînement", IconType.BOOK, owner);
+		super("Test", IconType.BEAKER, owner);
 
 		// Specific code to execute at tab loading if we want to use the Java
 		// applet : JSNI method.
@@ -54,22 +54,22 @@ public class TrainingPage extends PageAuthentication {
 	}
 
 	/**
-	 * Initialize the training page singleton.
+	 * Initialize the test page singleton.
 	 * @param owner GroupTabPanel owner of the page.
 	 * @param applet True to use an applet, false to use JavaScript.
 	 */
 	public static void init(GroupTabPanel owner, boolean applet) {
-		TrainingPage.owner = owner;
-		TrainingPage.applet = applet;
+		TestPage.owner = owner;
+		TestPage.applet = applet;
 	}
 
 	/**
-	 * Get the instance of the training page.
+	 * Get the instance of the test page.
 	 * @return Page object.
 	 */
-	public static TrainingPage getInstance() {
+	public static TestPage getInstance() {
 		if (instance == null) {
-			instance = new TrainingPage(TrainingPage.applet);
+			instance = new TestPage(TestPage.applet);
 		}
 		return instance;
 	}
@@ -83,10 +83,11 @@ public class TrainingPage extends PageAuthentication {
 
 		Paragraph introduction = new Paragraph();
 		String introductionText = new String("À l'aide du module ci-dessous," +
-				"vous pouvez entraîner le système. Toutes les frappes " +
-				"comportant le bon mot de passe seront automatiquement " +
-				"enregistrées dans le système d'apprentissage.");
-		if (TrainingPage.applet) {
+				"vous pouvez tester les performances du système. Laissez " +
+				"votre identifiant ou sélectionnez en un autre, puis tentez " +
+				"de saisir le mot de passe pour voir si vous pourriez accéder" +
+				"au compte de la personne.");
+		if (TestPage.applet) {
 			introductionText += " Si le module n'apparaît pas, vérifiez votre" +
 					" installation de Java et assurez-vous d'avoir accepté " +
 					"l'exécution de l'Applet.";
@@ -102,13 +103,13 @@ public class TrainingPage extends PageAuthentication {
 		help.addStyleName("indent");
 		panel.add(help);
 
-		trainingModule =
-				new AuthenticationModule(AuthenticationMode.TRAIN_MODE,
-						TrainingPage.applet, "Module d'entraînement", this);
-		if (TrainingPage.applet) {
+		testModule =
+				new AuthenticationModule(AuthenticationMode.TEST_MODE,
+						TestPage.applet, "Module de test", this);
+		if (TestPage.applet) {
 			addAppletHandlers();
 		}
-		panel.add(trainingModule);
+		panel.add(testModule);
 
 		return panel;
 	}
@@ -117,7 +118,7 @@ public class TrainingPage extends PageAuthentication {
 	 * Add elements handlers in case of Java applet.
 	 */
 	private static void addAppletHandlers() {
-		trainingModule.getPasswordTextBox().addFocusHandler(
+		testModule.getPasswordTextBox().addFocusHandler(
 			new FocusHandler() {
 				@Override
 				public native void onFocus(FocusEvent event) /*-{
@@ -147,13 +148,13 @@ public class TrainingPage extends PageAuthentication {
 			$wnd.stopFocus();
 		}
 		$wnd.appletLoaded = function() {
-			@fr.vhat.keydyn.client.pages.TrainingPage::appletLoaded()();
+			@fr.vhat.keydyn.client.pages.TestPage::appletLoaded()();
 		}
     	$wnd.appletCallback = function(x) {
-            @fr.vhat.keydyn.client.pages.TrainingPage::authenticationCallback(Ljava/lang/String;)(x);
+            @fr.vhat.keydyn.client.pages.TestPage::authenticationCallback(Ljava/lang/String;)(x);
     	}
     	$wnd.appletCallbackChar = function(x) {
-            @fr.vhat.keydyn.client.pages.TrainingPage::authenticationCallbackChar(Ljava/lang/String;)(x);
+            @fr.vhat.keydyn.client.pages.TestPage::authenticationCallbackChar(Ljava/lang/String;)(x);
     	}
     }-*/;
 
@@ -161,7 +162,7 @@ public class TrainingPage extends PageAuthentication {
 	 * When the applet is loaded : display the authentication form.
 	 */
 	private static void appletLoaded() {
-		TrainingPage.trainingModule.displayAuthenticationForm();
+		TestPage.testModule.displayAuthenticationForm();
 	}
 
 	/**
@@ -170,7 +171,7 @@ public class TrainingPage extends PageAuthentication {
 	 */
 	@Override
 	public void callback(String string) {
-		TrainingPage.authenticationCallback(string);
+		TestPage.authenticationCallback(string);
 	}
 
 	/**
@@ -179,19 +180,19 @@ public class TrainingPage extends PageAuthentication {
 	 * @param string Callback keystroke sequence.
 	 */
 	private static void authenticationCallback(String string) {
-		if (TrainingPage.applet) {
-			TrainingPage.trainingModule.clearPassword();
+		if (TestPage.applet) {
+			TestPage.testModule.clearPassword();
 		}
-		TrainingPage.trainingModule.authenticateUser("",
-				AuthenticationMode.TRAIN_MODE, string, true);
+		TestPage.testModule.authenticateUser(TestPage.testModule.getLogin(),
+				AuthenticationMode.TEST_MODE, string, true);
 
-		trainingPopup =
+		testPopup =
 				new InformationPopup("Vérification en cours", true);
-		trainingPopup.setParagraphContent(
+		testPopup.setParagraphContent(
 				"Veuillez patienter pendant que le serveur vérifie les " +
 				"informations fournies.");
-		trainingPopup.showParagraph();
-		trainingPopup.show();
+		testPopup.showParagraph();
+		testPopup.show();
 	}
 
 	/**
@@ -200,7 +201,7 @@ public class TrainingPage extends PageAuthentication {
 	 */
 	@Override
 	public void callbackChar(String string) {
-		TrainingPage.authenticationCallbackChar(string);
+		TestPage.authenticationCallbackChar(string);
 	}
 
 	/**
@@ -208,8 +209,8 @@ public class TrainingPage extends PageAuthentication {
 	 * character to the password field.
 	 */
 	private static void authenticationCallbackChar(String string) {
-		if (TrainingPage.applet) {
-			TrainingPage.trainingModule.addCharacterToPassword();
+		if (TestPage.applet) {
+			TestPage.testModule.addCharacterToPassword();
 		}
 	}
 
@@ -219,21 +220,21 @@ public class TrainingPage extends PageAuthentication {
 	 */
 	public void execReturn(AuthenticationReturn authenticationReturn) {
 		if (authenticationReturn == null) {
-			trainingPopup.setAlertTitle("Échec de connexion au serveur.");
-			trainingPopup.setAlertContent(
+			testPopup.setAlertTitle("Échec de connexion au serveur.");
+			testPopup.setAlertContent(
 					"Vérifiez votre connexion internet.");
-			trainingPopup.setAlertType(AlertType.WARNING);
+			testPopup.setAlertType(AlertType.WARNING);
 		} else {
 			AlertType alertType = (authenticationReturn.isAuthenticated())
 					?AlertType.SUCCESS
 							:AlertType.ERROR;
-			trainingPopup.setAlertTitle(
+			testPopup.setAlertTitle(
 					authenticationReturn.getStringTitle());
-			trainingPopup.setAlertContent(
+			testPopup.setAlertContent(
 					authenticationReturn.getStringContent());
-			trainingPopup.setAlertType(alertType);
+			testPopup.setAlertType(alertType);
 		}
-		trainingPopup.showAlert();
-		trainingPopup.hideWithDelay(3000);
+		testPopup.showAlert();
+		testPopup.hideWithDelay(3000);
 	}
 }
