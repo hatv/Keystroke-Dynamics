@@ -358,7 +358,7 @@ public class AuthenticationModule extends VerticalPanel {
 	 * In test mode, this function is aimed to fill the list box containing the
 	 * available login (enough trained) to test.
 	 */
-	private void fillLoginListBox() {
+	public void fillLoginListBox() {
 
 		authenticationService.getUsersLogin(new AsyncCallback<String[]>() {
 			@Override
@@ -374,6 +374,7 @@ public class AuthenticationModule extends VerticalPanel {
             }
             @Override
             public void onSuccess(String[] logins) {
+            	loginListBox.clear();
             	for (String login : logins) {
             		loginListBox.addItem(login);
             	}

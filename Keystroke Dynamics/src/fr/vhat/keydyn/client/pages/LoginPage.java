@@ -239,7 +239,7 @@ public class LoginPage extends PageAuthentication {
 			authenticationPopup.setAlertType(AlertType.WARNING);
 		} else {
 			AlertType alertType;
-			if(authenticationReturn.isAuthenticated()) {
+			if (authenticationReturn.isAuthenticated()) {
 				alertType = AlertType.SUCCESS;
 				owner.changeGroupRequested(1);
 			} else {

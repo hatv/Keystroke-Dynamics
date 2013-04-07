@@ -97,7 +97,7 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 					DataStore.saveKDData(user, keystrokeSequence, false, null);
 					authenticationReturn.setSaved(true);
 					// TODO: Stats : ajouter les succès et échec dans table d'association
-					// + if(compteReady)
+					// + if (compteReady)
 					//		if result[0] == 1 -> ajouter un succes aux stats
 					// 		else if result[0] == 0 && saveData == 1 -> ajouter un echec aux stats
 				} else if (mode == AuthenticationMode.TEST_MODE) {

@@ -23,7 +23,9 @@ public abstract class Page extends Tab {
 		this.setHeading(heading);
 		this.setIcon(icon);
 		this.setOwner(owner);
-		this.add(this.getContent());
+		if (this.getContent() != null) {
+			this.add(this.getContent());
+		}
 	}
 
 	/**

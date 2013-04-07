@@ -51,6 +51,13 @@ public class TestPage extends PageAuthentication {
 				}
 			});
 		}
+
+		this.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				testModule.fillLoginListBox();
+			}
+		});
 	}
 
 	/**
