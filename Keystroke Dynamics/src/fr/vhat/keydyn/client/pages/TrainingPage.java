@@ -119,6 +119,12 @@ public class TrainingPage extends PageAuthentication {
 		}
 		panel.add(trainingModule);
 
+		Paragraph progressBar = new Paragraph();
+		progressBar.setText("La fiabilité du système augmente au fur et à " +
+				"mesure que vous l'entraînez :");
+		progressBar.addStyleName("indent");
+		panel.add(progressBar);
+
 		trainingBar = new TrainingProgressBar();
 		panel.add(trainingBar);
 
