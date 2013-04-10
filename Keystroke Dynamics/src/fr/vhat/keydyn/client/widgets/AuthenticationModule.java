@@ -39,6 +39,11 @@ import fr.vhat.keydyn.client.services.AuthenticationServiceAsync;
 import fr.vhat.keydyn.shared.AuthenticationMode;
 import fr.vhat.keydyn.shared.AuthenticationReturn;
 
+/**
+ * Authentication module is a form which can authenticate an user according to
+ * his keystroke dynamics.
+ * @author Victor Hatinguais, www.victorhatinguais.fr
+ */
 public class AuthenticationModule extends VerticalPanel {
 
 	private PageAuthentication owner;

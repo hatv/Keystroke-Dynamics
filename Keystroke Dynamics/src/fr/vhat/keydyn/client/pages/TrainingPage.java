@@ -15,6 +15,7 @@ import fr.vhat.keydyn.client.widgets.AuthenticationModule;
 import fr.vhat.keydyn.client.widgets.GroupTabPanel;
 import fr.vhat.keydyn.client.widgets.InformationPopup;
 import fr.vhat.keydyn.client.widgets.PageAuthentication;
+import fr.vhat.keydyn.client.widgets.TrainingProgressBar;
 import fr.vhat.keydyn.shared.AuthenticationMode;
 import fr.vhat.keydyn.shared.AuthenticationReturn;
 
@@ -31,6 +32,7 @@ public class TrainingPage extends PageAuthentication {
 	private static AuthenticationModule trainingModule;
 	private static AuthenticationReturn trainingReturn;
 	private static InformationPopup trainingPopup;
+	private static TrainingProgressBar trainingBar;
 
 	/**
 	 * Constructor of the training page.
@@ -51,6 +53,13 @@ public class TrainingPage extends PageAuthentication {
 				}
 			});
 		}
+
+		this.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				trainingBar.refresh();
+			}
+		});
 	}
 
 	/**
@@ -109,6 +118,9 @@ public class TrainingPage extends PageAuthentication {
 			addAppletHandlers();
 		}
 		panel.add(trainingModule);
+
+		trainingBar = new TrainingProgressBar();
+		panel.add(trainingBar);
 
 		return panel;
 	}
@@ -192,6 +204,8 @@ public class TrainingPage extends PageAuthentication {
 				"informations fournies.");
 		trainingPopup.showParagraph();
 		trainingPopup.show();
+
+		trainingBar.refresh();
 	}
 
 	/**
