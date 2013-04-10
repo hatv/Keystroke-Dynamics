@@ -45,6 +45,8 @@ public class User implements Serializable {
 	// Enrollment
 	@Index
 	private boolean isEnoughTrained;
+	@Index
+	private int trainingValue;
 	// Computation
 	@Serialize
 	private StatisticsUnit means;
@@ -82,7 +84,7 @@ public class User implements Serializable {
 		this.setComputerExperience(computerExperience);
 		this.setTypingUsage(typingUsage);
 		this.setRegistrationDate(registrationDate);
-		this.setEnoughTrained(false);
+		this.setTrainingValue(0);
 		this.setThreshold((float)0);
 	}
 	
@@ -130,16 +132,16 @@ public class User implements Serializable {
 		return computerExperience;
 	}
 
-	public void setComputerExperience(int computerExperience2) {
-		this.computerExperience = computerExperience2;
+	public void setComputerExperience(int computerExperience) {
+		this.computerExperience = computerExperience;
 	}
 
 	public int getTypingUsage() {
 		return typingUsage;
 	}
 
-	public void setTypingUsage(int computerUsage) {
-		this.typingUsage = computerUsage;
+	public void setTypingUsage(int typingUsage) {
+		this.typingUsage = typingUsage;
 	}
 
 	public Long getId() {
@@ -178,11 +180,26 @@ public class User implements Serializable {
 	}
 
 	public boolean isEnoughTrained() {
-		return isEnoughTrained();
+		return this.isEnoughTrained;
 	}
 
-	public void setEnoughTrained(boolean isEnoughTrained) {
-		this.isEnoughTrained = isEnoughTrained;
+	public void setEnoughTrained() {
+		this.isEnoughTrained = true;
+	}
+
+	public int getTrainingValue() {
+		return this.trainingValue;
+	}
+
+	public void setTrainingValue(int trainingValue) {
+		if (trainingValue >= 0) {
+			this.trainingValue = trainingValue;
+		} else {
+			this.trainingValue = 0;
+		}
+		if (this.trainingValue >= User.getMaxTrainingValue()) {
+			this.setEnoughTrained();
+		}
 	}
 
 	public boolean isActive() {
@@ -249,5 +266,14 @@ public class User implements Serializable {
 	 */
 	public void addKDPasswordKey(Key<KDPassword> kdPasswordKey) {
 		kdPasswordKeys.add(kdPasswordKey);
+	}
+
+	/**
+	 * Return the max training value : value above which the system is viewed as
+	 * reliable.
+	 * @return Max training value.
+	 */
+	public static int getMaxTrainingValue() {
+		return 10;
 	}
 }

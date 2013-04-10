@@ -19,4 +19,5 @@ public interface DataTransmissionServiceAsync {
 	void getDistance(KeystrokeSequence keystrokeSequence,
 			AsyncCallback<Float> callback);
 	void getThreshold(AsyncCallback<Float> callback);
+	void getTrainingPercent(AsyncCallback<Integer> callback);
 }

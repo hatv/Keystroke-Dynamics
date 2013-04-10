@@ -222,4 +222,28 @@ public class DataTransmissionServiceImpl extends RemoteServiceServlet implements
 			return null;
 		}
 	}
+
+	/**
+	 * Retrieve the training percentage of the given account.
+	 * @return Percentage.
+	 */
+	public Integer getTrainingPercent () {
+		String sessionLogin = (String)getThreadLocalRequest().getSession()
+        		.getAttribute("login");
+		if (sessionLogin != null) {
+			User u = DataStore.retrieveUser(sessionLogin);
+			if (u != null) {
+				return (u.getTrainingValue() * 100)
+							/ User.getMaxTrainingValue();
+			} else {
+				log.warning("User <" + sessionLogin + "> tried to get " +
+						"training percent but this user doesn't exist.");
+				return null;
+			}
+		} else {
+			log.info("An user tried to get training percent but was not" +
+					" logged.");
+			return null;
+		}
+	}
 }

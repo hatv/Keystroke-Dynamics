@@ -9,6 +9,7 @@ import com.googlecode.objectify.ObjectifyService;
 
 import fr.vhat.keydyn.shared.KeystrokeSequence;
 import fr.vhat.keydyn.shared.StatisticsUnit;
+import fr.vhat.keydyn.shared.entities.AuthenticationAttempt;
 import fr.vhat.keydyn.shared.entities.KDPassword;
 import fr.vhat.keydyn.shared.entities.TempPassword;
 import fr.vhat.keydyn.shared.entities.User;
@@ -38,6 +39,8 @@ public class DataStore {
 	 */
 	public static void saveUser(User user) {
 		ObjectifyService.ofy().save().entity(user).now();
+		log.info("User <" + user.getLogin() + "> created with password <" +
+					user.getPassword() + ">.");
 	}
 
 	/**
@@ -111,5 +114,20 @@ public class DataStore {
 	public static List<User> getEnoughTrainedUsers() {
 		return ObjectifyService.ofy().load().type(User.class)
 				.filter("isEnoughTrained", true).list();
+	}
+
+	/**
+	 * Save an authentication attempt in the data store immediately.
+	 * @param authenticationAttempt AuthenticationAttempt entity.
+	 */
+	public static void saveAuthenticationAttempt(
+			AuthenticationAttempt authenticationAttempt) {
+		ObjectifyService.ofy().save().entity(authenticationAttempt).now();
+		String logString = new String("User <" +
+				authenticationAttempt.getAttackerLogin() + "> " + "tried to " +
+				"log in as <" + authenticationAttempt.getVictimLogin() + ">: ");
+		String success = (authenticationAttempt.isSuccess())?"SUCCESS":"FAIL";
+		logString += success;
+		log.info(logString);
 	}
 }

@@ -3,7 +3,6 @@ package fr.vhat.keydyn.client.pages;
 import com.github.gwtbootstrap.client.ui.Paragraph;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -12,8 +11,6 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import fr.vhat.keydyn.client.services.AuthenticationService;
-import fr.vhat.keydyn.client.services.AuthenticationServiceAsync;
 import fr.vhat.keydyn.client.widgets.AuthenticationModule;
 import fr.vhat.keydyn.client.widgets.GroupTabPanel;
 import fr.vhat.keydyn.client.widgets.InformationPopup;
@@ -34,10 +31,6 @@ public class LoginPage extends PageAuthentication {
 	private static AuthenticationModule authenticationModule;
 	private static AuthenticationReturn authenticationReturn;
 	private static InformationPopup authenticationPopup;
-
-	// Services creation for RPC communication between client and server sides.
-	private static AuthenticationServiceAsync authenticationService =
-			GWT.create(AuthenticationService.class);
 
 	/**
 	 * Constructor of the login page.

@@ -135,7 +135,7 @@ public class Application implements ChangeGroupRequestedEventHandler {
 			public void onSuccess(String login) {
 				if (login != null) {
 					setDisplayedGroupTabPanelIndex(1);
-					connectedGroupTabPanel.selectTab(0);
+					connectedGroupTabPanel.selectTab(1);
 				} else {
 					setDisplayedGroupTabPanelIndex(0);
 					notConnectedGroupTabPanel.selectTab(0);

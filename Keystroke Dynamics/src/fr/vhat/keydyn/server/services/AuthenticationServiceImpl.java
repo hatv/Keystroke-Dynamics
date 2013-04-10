@@ -8,10 +8,12 @@ import fr.vhat.keydyn.server.Password;
 import fr.vhat.keydyn.shared.AuthenticationMode;
 import fr.vhat.keydyn.shared.AuthenticationReturn;
 import fr.vhat.keydyn.shared.KeystrokeSequence;
+import fr.vhat.keydyn.shared.entities.AuthenticationAttempt;
 import fr.vhat.keydyn.shared.entities.User;
 
 import com.googlecode.objectify.ObjectifyService;
 
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -29,6 +31,7 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 
 	static {
 		ObjectifyService.register(User.class);
+		ObjectifyService.register(AuthenticationAttempt.class);
 	}
 
 	/**
@@ -60,36 +63,73 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 		User user = DataStore.retrieveUser(login);
 
 		if (user != null) {
-			// User u found in the data store
+
+			// User found in the data store
 			KeystrokeSequence keystrokeSequence =
 					new KeystrokeSequence(kdPassword);
 			String password = keystrokeSequence.getPhrase();
 			String hashedPassword = user.getHashedPassword();
+
 			if (Password.check(password, hashedPassword)) {
+
 				Float distance =
 						DataTransmissionServiceImpl.getUserDistance(
 								keystrokeSequence, login);
 				Float threshold =
 						DataTransmissionServiceImpl.getUserThreshold(login);
+
 				if (distance <= threshold) {
 					createSession(login);
 					log.info("User <" + login + "> succeed to connect with " +
 							"usage of his keystroke dynamics : distance = " +
 							distance + " and threshold was " + threshold);
+
+					// Log that the current user succeed to connect
+					// except in test mode.
+					if (mode != AuthenticationMode.TEST_MODE) {
+						user.setTrainingValue(user.getTrainingValue() + 1);
+						AuthenticationAttempt authenticationAttempt =
+								new AuthenticationAttempt(login, login,
+										keystrokeSequence, 0,
+										user.getKDPasswordNumber(), new Date(),
+										true);
+						DataStore.saveAuthenticationAttempt(
+								authenticationAttempt);
+					}
 					// TODO: à ce moment, quand on load la memberAreaPage, on appelle getTempPW
 					// qui fait le ménage et éventuellement affiche une popup si des mots de passe
 					// sont proposés, l'utilisateur doit obligatoirement accepter ou refuser
+					// et ses nouvelles tentatives comptent éventuellement comme des échecs
 					authenticationReturn.setAuthenticated(true);
+
+				//} else if (distance <= threshold + marge) {
+					// alors si on est en prod, on compte un échec mais on le connecte quand même
+
 				} else {
 					log.info("User <" + login + "> tried to connect with the " +
 							"correct password but didn't succeed according " +
 							"to his keystroke dynamics.");
 					authenticationReturn.setAuthenticationErrorCode(-2);
+
+					// Log that the current user failed to connect
+					// only in train mode.
+					if (mode == AuthenticationMode.TRAIN_MODE) {
+						user.setTrainingValue(user.getTrainingValue() - 4);
+						AuthenticationAttempt authenticationAttempt =
+								new AuthenticationAttempt(login, login,
+										keystrokeSequence, 0,
+										user.getKDPasswordNumber(), new Date(),
+										false);
+						DataStore.saveAuthenticationAttempt(
+								authenticationAttempt);
+					}
 				}
+
 				if (giveInfo) {
 					authenticationReturn.setDistance(distance);
 					authenticationReturn.setThreshold(threshold);
 				}
+
 				if ((mode == AuthenticationMode.TRAIN_MODE)
 					|| (mode == AuthenticationMode.PRODUCTION_MODE
 							&& authenticationReturn.isAuthenticated())) {
@@ -187,7 +227,7 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 		result[0] = (String)getThreadLocalRequest().getSession()
 				.getAttribute("login");
 		for (int i = 0 ; i < size ; ++i) {
-			result[i] = userList.get(i).getLogin();
+			result[i+1] = userList.get(i).getLogin();
 		}
 		return result;
 	}

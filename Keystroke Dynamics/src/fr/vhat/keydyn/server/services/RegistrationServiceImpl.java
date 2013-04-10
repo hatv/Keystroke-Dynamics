@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 public class RegistrationServiceImpl extends RemoteServiceServlet implements
 		RegistrationService {
 
+	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger(
 			RegistrationServiceImpl.class.getName());
 	
@@ -61,8 +62,6 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements
 	        		birthYear, gender, country, computerExperience, typingUsage,
 	        		date);
 	        DataStore.saveUser(user);
-			log.info("User <" + login + "> created with password <" + password
-					+ ">.");
 
 			Mail.sendWelcomeMail(email, login, password);
 			return true;
