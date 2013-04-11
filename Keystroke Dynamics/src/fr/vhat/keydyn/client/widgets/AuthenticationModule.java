@@ -9,6 +9,7 @@ import com.github.gwtbootstrap.client.ui.ControlLabel;
 import com.github.gwtbootstrap.client.ui.Controls;
 import com.github.gwtbootstrap.client.ui.Fieldset;
 import com.github.gwtbootstrap.client.ui.HelpBlock;
+import com.github.gwtbootstrap.client.ui.Label;
 import com.github.gwtbootstrap.client.ui.Legend;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.PasswordTextBox;
@@ -18,10 +19,13 @@ import com.github.gwtbootstrap.client.ui.WellForm;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.FormType;
+import com.github.gwtbootstrap.client.ui.constants.LabelType;
 import com.github.gwtbootstrap.client.ui.constants.Placement;
 import com.github.gwtbootstrap.client.ui.constants.Trigger;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsDate;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
@@ -50,6 +54,7 @@ public class AuthenticationModule extends VerticalPanel {
 	private WellForm authenticationForm;
 	private TextBox loginTextBox;
 	private ListBox loginListBox;
+	private Label plainPassword;
 	private Button submitButton;
 	private PasswordTextBox passwordTextBox;
 	private AuthenticationMode authenticationMode;
@@ -165,6 +170,28 @@ public class AuthenticationModule extends VerticalPanel {
 			loginTooltip.setTrigger(Trigger.HOVER);
 			loginTooltip.setPlacement(Placement.RIGHT);
 			loginTooltip.reconfigure();
+
+			ControlGroup plainPasswordControlGroup = new ControlGroup();
+			fieldset.add(plainPasswordControlGroup);
+			ControlLabel plainPasswordLabel = new ControlLabel("Mot de passe");
+			plainPasswordControlGroup.add(plainPasswordLabel);
+			Controls plainPasswordControl = new Controls();
+			plainPasswordControlGroup.add(plainPasswordControl);
+			plainPassword = new Label(LabelType.INFO, "Votre mot de passe");
+			plainPasswordControl.add(plainPassword);
+			Tooltip plainPasswordTooltip =
+					new Tooltip("Ceci est le mot de passe de l'utilisateur.");
+			plainPasswordTooltip.setWidget(plainPassword);
+			plainPasswordTooltip.setTrigger(Trigger.HOVER);
+			plainPasswordTooltip.setPlacement(Placement.RIGHT);
+			plainPasswordTooltip.reconfigure();
+
+			loginListBox.addChangeHandler(new ChangeHandler() {
+				@Override
+				public void onChange(ChangeEvent event) {
+					refreshPlainPassword();
+				}
+			});
 		} else if (
 				this.authenticationMode == AuthenticationMode.PRODUCTION_MODE) {
 			loginControlGroup = new ControlGroup();
@@ -385,5 +412,33 @@ public class AuthenticationModule extends VerticalPanel {
             	}
             }
 		});
+	}
+
+	/**
+	 * Retrieve the password of the selected user in the user list.
+	 */
+	void refreshPlainPassword() {
+		String login =
+				this.loginListBox.getItemText(
+						this.loginListBox.getSelectedIndex());
+		authenticationService.getUserPassword(
+				login, new AsyncCallback<String>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						InformationPopup popup = new InformationPopup(
+								"Récupération du mot de passe", true);
+						popup.setAlertType(AlertType.WARNING);
+						popup.setAlertTitle("Échec de connexion au serveur.");
+						popup.setAlertContent(
+								"Vérifiez votre connexion internet.");
+						popup.showAlert();
+						popup.show();
+						popup.hideWithDelay();
+					}
+					@Override
+					public void onSuccess(String password) {
+						plainPassword.setText(password);
+					}
+				});
 	}
 }

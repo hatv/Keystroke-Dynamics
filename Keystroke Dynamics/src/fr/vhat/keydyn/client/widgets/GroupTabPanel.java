@@ -28,16 +28,21 @@ import fr.vhat.keydyn.client.pages.TrainingPage;
 public class GroupTabPanel extends TabPanel implements HasHandlers {
 
 	private SimpleEventBus simpleEventBus;
+	private boolean connected;
+
+	private StatisticsPage statisticsTab;
+	private TrainingPage trainingTab;
 
 	/**
 	 * Constructor.
-	 * @param connectedOption True if it is a connected groupTabPanel.
+	 * @param connected True if it is a connected groupTabPanel.
 	 */
-    public GroupTabPanel(boolean connectedOption) {
+    public GroupTabPanel(boolean connected) {
 
     	simpleEventBus = new SimpleEventBus();
+    	this.connected = connected;
 
-    	if (!connectedOption) {
+    	if (!connected) {
 
 	    	Tab homePageTab = new HomePage(this);
 	    	this.add(homePageTab);
@@ -61,13 +66,13 @@ public class GroupTabPanel extends TabPanel implements HasHandlers {
 
     	} else {
 
-    		Tab statisticsTab = new StatisticsPage(this);
+    		statisticsTab = new StatisticsPage(this);
     		this.add(statisticsTab);
 
     		// Init parameter must be true for an applet, false for JavaScript.
 	    	TrainingPage.init(this, false);
-	    	Tab trainingPageTab = TrainingPage.getInstance();
-	    	this.add(trainingPageTab);
+	    	trainingTab = TrainingPage.getInstance();
+	    	this.add(trainingTab);
 
 	    	// Init parameter must be true for an applet, false for JavaScript.
 	    	TestPage.init(this, false);
@@ -94,5 +99,17 @@ public class GroupTabPanel extends TabPanel implements HasHandlers {
     	ChangeGroupRequestedEvent event =
     			new ChangeGroupRequestedEvent(groupIndex);
     	fireEvent(event);
+    }
+
+    public void selectTab(int index) {
+    	super.selectTab(index);
+    	this.refreshTabs();
+    }
+
+    public void refreshTabs() {
+    	if (this.connected) {
+    		trainingTab.refresh();
+    		statisticsTab.refresh();
+    	}
     }
 }

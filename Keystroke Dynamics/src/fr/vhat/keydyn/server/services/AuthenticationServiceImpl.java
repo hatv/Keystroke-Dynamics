@@ -79,23 +79,19 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 						DataTransmissionServiceImpl.getUserThreshold(login);
 
 				if (distance <= threshold) {
-					createSession(login);
-					log.info("User <" + login + "> succeed to connect with " +
-							"usage of his keystroke dynamics : distance = " +
-							distance + " and threshold was " + threshold);
+					if (mode == AuthenticationMode.PRODUCTION_MODE) {
+						createSession(login);
+						log.info("User <" + login + "> succeed to connect with "
+								+ "usage of his keystroke dynamics : distance "
+								+ "= " + distance + " and threshold was "
+								+ threshold);
+					}
 
-					// Log that the current user succeed to connect
-					// except in test mode.
+					// Succeed to connect : +1 to the training value
 					if (mode != AuthenticationMode.TEST_MODE) {
 						user.setTrainingValue(user.getTrainingValue() + 1);
-						AuthenticationAttempt authenticationAttempt =
-								new AuthenticationAttempt(login, login,
-										keystrokeSequence, 0,
-										user.getKDPasswordNumber(), new Date(),
-										true);
-						DataStore.saveAuthenticationAttempt(
-								authenticationAttempt);
 					}
+
 					// TODO: à ce moment, quand on load la memberAreaPage, on appelle getTempPW
 					// qui fait le ménage et éventuellement affiche une popup si des mots de passe
 					// sont proposés, l'utilisateur doit obligatoirement accepter ou refuser
@@ -111,17 +107,9 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 							"to his keystroke dynamics.");
 					authenticationReturn.setAuthenticationErrorCode(-2);
 
-					// Log that the current user failed to connect
-					// only in train mode.
+					// Failed to log in : -4 to the training value
 					if (mode == AuthenticationMode.TRAIN_MODE) {
 						user.setTrainingValue(user.getTrainingValue() - 4);
-						AuthenticationAttempt authenticationAttempt =
-								new AuthenticationAttempt(login, login,
-										keystrokeSequence, 0,
-										user.getKDPasswordNumber(), new Date(),
-										false);
-						DataStore.saveAuthenticationAttempt(
-								authenticationAttempt);
 					}
 				}
 
@@ -130,6 +118,8 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 					authenticationReturn.setThreshold(threshold);
 				}
 
+				String attackerLogin = (String)getThreadLocalRequest()
+						.getSession().getAttribute("login");
 				if ((mode == AuthenticationMode.TRAIN_MODE)
 					|| (mode == AuthenticationMode.PRODUCTION_MODE
 							&& authenticationReturn.isAuthenticated())) {
@@ -140,15 +130,50 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 					// + if (compteReady)
 					//		if result[0] == 1 -> ajouter un succes aux stats
 					// 		else if result[0] == 0 && saveData == 1 -> ajouter un echec aux stats
+
+					// If his account is enough trained, log for stats
+					if (user.isEnoughTrained()) {
+						AuthenticationAttempt authenticationAttempt =
+							new AuthenticationAttempt(
+									attackerLogin,
+									login,
+									keystrokeSequence, 0,
+									user.getKDPasswordNumber(), new Date(),
+									authenticationReturn.isAuthenticated());
+						DataStore.saveAuthenticationAttempt(
+							authenticationAttempt);
+					}
 				} else if (mode == AuthenticationMode.TEST_MODE) {
-					// Test mode
-					// compléter authenticationAttempts car on est en test -> succes ou echec aux stats
+					// Authentication Attempt except on his own account
+					if (!attackerLogin.equals(login)
+							&& user.isEnoughTrained()) {
+						AuthenticationAttempt authenticationAttempt =
+							new AuthenticationAttempt(
+									attackerLogin,
+									login,
+									keystrokeSequence, 0,
+									user.getKDPasswordNumber(), new Date(),
+									authenticationReturn.isAuthenticated());
+						DataStore.saveAuthenticationAttempt(
+							authenticationAttempt);
+					}
 				} else if (mode == AuthenticationMode.PRODUCTION_MODE
-						&& !authenticationReturn.isAuthenticated()) {
+						&& authenticationReturn.isAuthenticated()) {
 					// TODO: TempPassword functionality
 					// Production mode with fail
 					// if compte ready, store dans TempPassword avec des
 					// infos supplémentaires issues du javascript et de l'applet + IP
+					// Authentication Attempt
+					if (user.isEnoughTrained()) {
+						AuthenticationAttempt authenticationAttempt =
+							new AuthenticationAttempt(
+									login, login,
+									keystrokeSequence, 0,
+									user.getKDPasswordNumber(), new Date(),
+									true);
+						DataStore.saveAuthenticationAttempt(
+							authenticationAttempt);
+					}
 				}
 			} else {
 				log.info("User <" + login + "> tried to connect with the " +
@@ -223,9 +248,7 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 		List<User> userList = DataStore.getEnoughTrainedUsers();
 		int size = userList.size();
 		String[] result = new String[size + 1];
-		// Get session login.
-		result[0] = (String)getThreadLocalRequest().getSession()
-				.getAttribute("login");
+		result[0] = "";
 		for (int i = 0 ; i < size ; ++i) {
 			result[i+1] = userList.get(i).getLogin();
 		}
@@ -238,6 +261,11 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 	 */
 	@Override
 	public String getUserPassword(String login) {
+		String sessionLogin = (String)getThreadLocalRequest().getSession()
+        		.getAttribute("login");
+		if (login.equals("") || login.equals(sessionLogin)) {
+			return "Votre mot de passe";
+		}
 		User user = DataStore.retrieveUser(login);
 		if (user.isEnoughTrained()) {
 			return user.getPassword();

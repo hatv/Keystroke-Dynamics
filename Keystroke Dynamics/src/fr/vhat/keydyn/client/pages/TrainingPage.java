@@ -210,8 +210,6 @@ public class TrainingPage extends PageAuthentication {
 				"informations fournies.");
 		trainingPopup.showParagraph();
 		trainingPopup.show();
-
-		trainingBar.refresh();
 	}
 
 	/**
@@ -255,5 +253,11 @@ public class TrainingPage extends PageAuthentication {
 		}
 		trainingPopup.showAlert();
 		trainingPopup.hideWithDelay(3000);
+
+		trainingBar.refresh();
+	}
+
+	public void refresh() {
+		trainingBar.refresh();
 	}
 }

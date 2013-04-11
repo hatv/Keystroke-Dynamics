@@ -50,9 +50,18 @@ public class StatisticsPage extends Page {
 		introduction.addStyleName("indent");
 		panel.add(introduction);
 
+		Paragraph progressBarParagraph = new Paragraph();
+		progressBarParagraph.setText("Niveau de fiabilité du système :");
+		progressBarParagraph.addStyleName("indent");
+		panel.add(progressBarParagraph);
+
 		trainingBar = new TrainingProgressBar();
 		panel.add(trainingBar);
 
 		return panel;
+	}
+
+	public void refresh() {
+		trainingBar.refresh();
 	}
 }
