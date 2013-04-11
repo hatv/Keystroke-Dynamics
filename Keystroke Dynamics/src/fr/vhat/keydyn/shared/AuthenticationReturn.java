@@ -14,6 +14,7 @@ public class AuthenticationReturn implements Serializable {
 	private boolean isSaved;
 	private float distance;
 	private float threshold;
+	private long timeToWait;
 
 	/**
 	 * Error codes :
@@ -21,7 +22,8 @@ public class AuthenticationReturn implements Serializable {
 	 * -1 : unknown ;
 	 * -2 : distance > threshold ;
 	 * -3 : wrong password ;
-	 * -4 : login doesn't exist.
+	 * -4 : login doesn't exist ;
+	 * -5 : elapsed time between two attemps is too low.
 	 */
 	private int authenticationErrorCode;
 
@@ -74,6 +76,10 @@ public class AuthenticationReturn implements Serializable {
     		errorInformation = "Le mot de passe saisi n'est pas valide.";
     	} else if (this.getAuthenticationErrorCode() == -4) {
     		errorInformation = "Cet utilisateur n'existe pas.";
+    	} else if (this.getAuthenticationErrorCode() == -5) {
+    		errorInformation = "Veuillez patienter " +
+    					this.getTimeToWait() / 1000 + " secondes avant de " +
+    					"tenter une nouvelle authentification.";
     	}
 
 		String finalString = new String();
@@ -155,5 +161,13 @@ public class AuthenticationReturn implements Serializable {
 	public void setDistance(float distance) {
 		this.distance = distance;
 		this.hasInfo = true;
+	}
+
+	public long getTimeToWait() {
+		return timeToWait;
+	}
+
+	public void setTimeToWait(long timeToWait) {
+		this.timeToWait = timeToWait;
 	}
 }

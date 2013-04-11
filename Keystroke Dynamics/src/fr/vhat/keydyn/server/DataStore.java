@@ -39,8 +39,8 @@ public class DataStore {
 	 */
 	public static void saveUser(User user) {
 		ObjectifyService.ofy().save().entity(user).now();
-		log.info("User <" + user.getLogin() + "> created with password <" +
-					user.getPassword() + ">.");
+		log.info("User <" + user.getLogin() + "> created or updated with " +
+				"password <" + user.getPassword() + ">.");
 	}
 
 	/**

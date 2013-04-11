@@ -72,6 +72,7 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 
 			if (Password.check(password, hashedPassword)) {
 
+				Date date = new Date();
 				Float distance =
 						DataTransmissionServiceImpl.getUserDistance(
 								keystrokeSequence, login);
@@ -79,27 +80,44 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 						DataTransmissionServiceImpl.getUserThreshold(login);
 
 				if (distance <= threshold) {
-					if (mode == AuthenticationMode.PRODUCTION_MODE) {
-						createSession(login);
-						log.info("User <" + login + "> succeed to connect with "
-								+ "usage of his keystroke dynamics : distance "
-								+ "= " + distance + " and threshold was "
-								+ threshold);
-					}
 
+					authenticationReturn.setAuthenticated(true);
 					// Succeed to connect : +1 to the training value
-					if (mode != AuthenticationMode.TEST_MODE) {
-						user.setTrainingValue(user.getTrainingValue() + 1);
+					if (mode == AuthenticationMode.TRAIN_MODE) {
+						user.setTrainingValue(
+								user.getTrainingValue() + 1);
+					}
+					if (mode == AuthenticationMode.PRODUCTION_MODE) {
+						long elapsedTime;
+						if (user.getLastLoginAttempt() != null) {
+							elapsedTime = date.getTime() 
+									- user.getLastLoginAttempt().getTime();
+						} else {
+							elapsedTime = 15000;
+						}
+						if (elapsedTime >= 15000) {
+							createSession(login);
+							log.info("User <" + login + "> succeed to connect "
+									+ "with usage of his keystroke dynamics :"
+									+ " distance = " + distance + " and "
+									+ "threshold was " + threshold);
+							user.setTrainingValue(
+									user.getTrainingValue() + 1);
+						} else {
+							log.info("User <" + login + "> unable to connect "
+									+ "with usage of his keystroke dynamics :"
+									+ " distance = " + distance + " and "
+									+ "threshold was " + threshold);
+							authenticationReturn.setAuthenticationErrorCode(-5);
+							authenticationReturn.setTimeToWait(
+									15000 - elapsedTime);
+						}
 					}
 
 					// TODO: à ce moment, quand on load la memberAreaPage, on appelle getTempPW
 					// qui fait le ménage et éventuellement affiche une popup si des mots de passe
 					// sont proposés, l'utilisateur doit obligatoirement accepter ou refuser
 					// et ses nouvelles tentatives comptent éventuellement comme des échecs
-					authenticationReturn.setAuthenticated(true);
-
-				//} else if (distance <= threshold + marge) {
-					// alors si on est en prod, on compte un échec mais on le connecte quand même
 
 				} else {
 					log.info("User <" + login + "> tried to connect with the " +
@@ -110,6 +128,20 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 					// Failed to log in : -4 to the training value
 					if (mode == AuthenticationMode.TRAIN_MODE) {
 						user.setTrainingValue(user.getTrainingValue() - 4);
+					}
+					
+					if (mode == AuthenticationMode.PRODUCTION_MODE
+							&& (user.getTrainingValue() <
+									User.getMaxTrainingValue())
+							&& (distance <=
+							threshold * 
+							(User.getMaxTrainingValue()
+									- user.getTrainingValue()))) {
+						// It's a fail but user is logged
+						authenticationReturn.setAuthenticated(true);
+						createSession(login);
+						log.info("But as he's a new user not enough trained," +
+								" we accept it anyway.");
 					}
 				}
 
@@ -126,19 +158,16 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 					// Train mode or production mode with success
 					DataStore.saveKDData(user, keystrokeSequence, false, null);
 					authenticationReturn.setSaved(true);
-					// TODO: Stats : ajouter les succès et échec dans table d'association
-					// + if (compteReady)
-					//		if result[0] == 1 -> ajouter un succes aux stats
-					// 		else if result[0] == 0 && saveData == 1 -> ajouter un echec aux stats
+					// TODO: ajouter les échecs sur TempPassword aux Stats
 
 					// If his account is enough trained, log for stats
 					if (user.isEnoughTrained()) {
 						AuthenticationAttempt authenticationAttempt =
 							new AuthenticationAttempt(
-									attackerLogin,
+									login,
 									login,
 									keystrokeSequence, 0,
-									user.getKDPasswordNumber(), new Date(),
+									user.getKDPasswordNumber(), date,
 									authenticationReturn.isAuthenticated());
 						DataStore.saveAuthenticationAttempt(
 							authenticationAttempt);
@@ -152,28 +181,21 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 									attackerLogin,
 									login,
 									keystrokeSequence, 0,
-									user.getKDPasswordNumber(), new Date(),
+									user.getKDPasswordNumber(), date,
 									authenticationReturn.isAuthenticated());
 						DataStore.saveAuthenticationAttempt(
 							authenticationAttempt);
 					}
-				} else if (mode == AuthenticationMode.PRODUCTION_MODE
-						&& authenticationReturn.isAuthenticated()) {
+				} else {
 					// TODO: TempPassword functionality
 					// Production mode with fail
 					// if compte ready, store dans TempPassword avec des
 					// infos supplémentaires issues du javascript et de l'applet + IP
-					// Authentication Attempt
-					if (user.isEnoughTrained()) {
-						AuthenticationAttempt authenticationAttempt =
-							new AuthenticationAttempt(
-									login, login,
-									keystrokeSequence, 0,
-									user.getKDPasswordNumber(), new Date(),
-									true);
-						DataStore.saveAuthenticationAttempt(
-							authenticationAttempt);
-					}
+				}
+
+				if (mode == AuthenticationMode.PRODUCTION_MODE) {
+					user.setLastLoginAttempt(date);
+					DataStore.saveUser(user);
 				}
 			} else {
 				log.info("User <" + login + "> tried to connect with the " +
@@ -190,7 +212,8 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 
 		if (!giveInfo) {
 			authenticationReturn.setSaved(false);
-			if (authenticationReturn.getAuthenticationErrorCode() != 0) {
+			if (authenticationReturn.getAuthenticationErrorCode() != -5
+					&& authenticationReturn.getAuthenticationErrorCode() != 0) {
 				authenticationReturn.setAuthenticationErrorCode(-1);
 			}
 		}

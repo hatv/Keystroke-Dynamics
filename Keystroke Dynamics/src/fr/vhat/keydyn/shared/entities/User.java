@@ -53,6 +53,7 @@ public class User implements Serializable {
 	@Serialize
 	private StatisticsUnit sd;
 	private Float threshold;
+	private Date lastLoginAttempt;
 
 	@SuppressWarnings("unused")
 	private User() {}
@@ -232,6 +233,14 @@ public class User implements Serializable {
 
 	public void setThreshold(Float threshold) {
 		this.threshold = threshold;
+	}
+
+	public Date getLastLoginAttempt() {
+		return lastLoginAttempt;
+	}
+
+	public void setLastLoginAttempt(Date lastLoginAttempt) {
+		this.lastLoginAttempt = lastLoginAttempt;
 	}
 
 	public List<Key<KDPassword>> getKDPasswordKeys() {
