@@ -9,9 +9,9 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Victor/git/Keystroke-Dynamics/Keystroke Dynamics/war/WEB-INF/lib/objectify-4.0rc1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Victor/git/Keystroke-Dynamics/Keystroke Dynamics/war/WEB-INF/lib/gwt-visualization.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Victor/git/Keystroke-Dynamics/Keystroke Dynamics/war/WEB-INF/lib/gwt-bootstrap-2.2.1.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Victor/git/Keystroke-Dynamics/Keystroke Dynamics/war/WEB-INF/lib/guava-14.0.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/guava-14.0.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-bootstrap-2.2.1.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-visualization.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/objectify-4.0rc1.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
