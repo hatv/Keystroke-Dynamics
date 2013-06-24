@@ -12,6 +12,7 @@ import fr.vhat.keydyn.shared.TimeSequence;
  * Charts management class.
  * @author Victor Hatinguais, www.victorhatinguais.fr
  */
+@SuppressWarnings("deprecation") // Will use an other drawing library
 public class MemberAreaCharts {
 
 	/**

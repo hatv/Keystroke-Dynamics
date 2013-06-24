@@ -30,7 +30,7 @@ public class DataStore {
 	 */
 	public static User retrieveUser(String login) {
 		return ObjectifyService.ofy().load().type(User.class)
-				.filter("login", login).first().get();
+				.filter("login", login).first().now();
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class DataStore {
 	 */
 	public static KDPassword retrievePassword(Key<KDPassword> key) {
 		return ObjectifyService.ofy().load().type(KDPassword.class)
-				.id(key.getId()).get();
+				.id(key.getId()).now();
 	}
 
 	/**
