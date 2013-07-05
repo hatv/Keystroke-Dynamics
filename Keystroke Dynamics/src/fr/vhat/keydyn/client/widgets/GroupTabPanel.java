@@ -15,6 +15,7 @@ import fr.vhat.keydyn.client.pages.FAQPage;
 import fr.vhat.keydyn.client.pages.HomePage;
 import fr.vhat.keydyn.client.pages.LoginPage;
 import fr.vhat.keydyn.client.pages.LogoutPage;
+import fr.vhat.keydyn.client.pages.RecognitionPage;
 import fr.vhat.keydyn.client.pages.RegistrationPage;
 import fr.vhat.keydyn.client.pages.StatisticsPage;
 import fr.vhat.keydyn.client.pages.TestPage;
@@ -42,6 +43,10 @@ public class GroupTabPanel extends TabPanel implements HasHandlers {
     	simpleEventBus = new SimpleEventBus();
     	this.connected = connected;
 
+    	Tab FAQPageTab = new FAQPage(this);
+    	Tab aboutPageTab = new AboutPage(this);
+    	Tab contactPageTab = new ContactPage(this);
+
     	if (!connected) {
 
 	    	Tab homePageTab = new HomePage(this);
@@ -55,13 +60,13 @@ public class GroupTabPanel extends TabPanel implements HasHandlers {
 	    	Tab registrationPageTab = new RegistrationPage(this);
 	    	this.add(registrationPageTab);
 
-	    	Tab FAQPageTab = new FAQPage(this);
+	    	// Tab FAQPageTab = new FAQPage(this);
 	    	this.add(FAQPageTab);
 
-	    	Tab aboutPageTab = new AboutPage(this);
+	    	// Tab aboutPageTab = new AboutPage(this);
 	    	this.add(aboutPageTab);
 
-	    	Tab contactPageTab = new ContactPage(this);
+	    	// Tab contactPageTab = new ContactPage(this);
 	    	this.add(contactPageTab);
 
     	} else {
@@ -78,6 +83,12 @@ public class GroupTabPanel extends TabPanel implements HasHandlers {
 	    	TestPage.init(this, false);
 	    	Tab testPageTab = TestPage.getInstance();
 	    	this.add(testPageTab);
+
+	    	RecognitionPage.init(this);
+	    	Tab recognitionPageTab = RecognitionPage.getInstance();
+	    	this.add(recognitionPageTab);
+
+	    	this.add(FAQPageTab);
 
 	    	Tab logoutTab = new LogoutPage(this);
 	    	this.add(logoutTab);

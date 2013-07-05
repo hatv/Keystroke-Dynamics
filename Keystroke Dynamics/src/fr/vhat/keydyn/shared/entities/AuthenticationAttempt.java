@@ -92,7 +92,8 @@ public class AuthenticationAttempt implements Serializable {
 		return victimDataNumberWhileAttack;
 	}
 
-	public void setVictimDataNumberWhileAttack(int victimDataNumberWhileAttack) {
+	public void setVictimDataNumberWhileAttack(
+			int victimDataNumberWhileAttack) {
 		this.victimDataNumberWhileAttack = victimDataNumberWhileAttack;
 	}
 

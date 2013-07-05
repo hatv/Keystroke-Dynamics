@@ -365,7 +365,7 @@ public class AuthenticationModule extends VerticalPanel {
 	 * Authentication function : send data to the server in order to check the
 	 * validity of the authentication.
 	 * @param login Login of the user.
-	 * @param mode Mode (0 : test, 1 : train, 2 : production).
+	 * @param mode Authentication mode.
 	 * @param kdData Keystroke Dynamics data.
 	 * @param giveInfo True if the server has to return information.
 	 * @return AuthenticationReturn object containing the requested information.

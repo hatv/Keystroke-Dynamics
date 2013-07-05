@@ -24,6 +24,16 @@
     <servlet-name>authenticationServlet</servlet-name>
     <url-pattern>/keydyn/authentication</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>recognitionServlet</servlet-name>
+    <servlet-class>fr.vhat.keydyn.server.services.RecognitionServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>recognitionServlet</servlet-name>
+    <url-pattern>/keydyn/recognition</url-pattern>
+  </servlet-mapping>
   
   <servlet>
     <servlet-name>transmissionServlet</servlet-name>
