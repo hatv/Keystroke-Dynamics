@@ -88,8 +88,10 @@ public class AuthenticationReturn implements Serializable {
     	}
 
     	if (this.hasInfo) {
-    		String distance = Float.toString(this.getDistance());
-    		String threshold = Float.toString(this.getThreshold());
+    		String distance = Double.toString(
+    				Math.floor(this.getDistance()*100.0)/100);
+    		String threshold = Double.toString(
+    				Math.floor(this.getThreshold()*100.0)/100);
     		finalString += newline + "Distance : " + distance
     				+ " (Seuil : " + threshold + ").";
     	}
