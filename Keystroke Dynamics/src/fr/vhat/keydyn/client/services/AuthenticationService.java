@@ -18,4 +18,5 @@ public interface AuthenticationService extends RemoteService {
 	String validateSession();
 	String[] getUsersLogin();
 	String getUserPassword(String login);
+	int getUserStrokesNumber();
 }

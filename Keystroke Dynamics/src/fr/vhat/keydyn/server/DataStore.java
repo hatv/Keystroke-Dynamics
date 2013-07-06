@@ -130,4 +130,11 @@ public class DataStore {
 		logString += success;
 		log.info(logString);
 	}
+
+	public static int getUserStrokesNumber(String login) {
+		List<KDPassword> strokesList =
+			ObjectifyService.ofy().load().type(KDPassword.class)
+				.filter("author", login).list();
+		return strokesList.size();
+	}
 }

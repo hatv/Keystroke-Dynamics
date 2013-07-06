@@ -1,14 +1,20 @@
 package fr.vhat.keydyn.client.pages;
 
 import com.github.gwtbootstrap.client.ui.Paragraph;
+import com.github.gwtbootstrap.client.ui.constants.AlertType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import fr.vhat.keydyn.client.services.AuthenticationService;
+import fr.vhat.keydyn.client.services.AuthenticationServiceAsync;
 import fr.vhat.keydyn.client.widgets.GroupTabPanel;
+import fr.vhat.keydyn.client.widgets.InformationPopup;
 import fr.vhat.keydyn.client.widgets.Page;
 import fr.vhat.keydyn.client.widgets.TrainingProgressBar;
 
@@ -18,7 +24,12 @@ import fr.vhat.keydyn.client.widgets.TrainingProgressBar;
  */
 public class StatisticsPage extends Page {
 
+	// Services creation for RPC communication between client and server sides.
+	private static AuthenticationServiceAsync authenticationService =
+			GWT.create(AuthenticationService.class);
+
 	private TrainingProgressBar trainingBar;
+	private Paragraph numberOfStrokesRegisteredParagraph;
 
 	/**
 	 * Constructor of the statistics page.
@@ -50,6 +61,10 @@ public class StatisticsPage extends Page {
 		introduction.addStyleName("indent");
 		panel.add(introduction);
 
+		numberOfStrokesRegisteredParagraph = new Paragraph();
+		numberOfStrokesRegisteredParagraph.addStyleName("indent");
+		panel.add(numberOfStrokesRegisteredParagraph);
+
 		Paragraph progressBarParagraph = new Paragraph();
 		progressBarParagraph.setText("Niveau de fiabilité du système :");
 		progressBarParagraph.addStyleName("indent");
@@ -62,6 +77,30 @@ public class StatisticsPage extends Page {
 	}
 
 	public void refresh() {
+
 		trainingBar.refresh();
+
+		authenticationService.getUserStrokesNumber(
+				new AsyncCallback<Integer>() {
+
+			@Override
+			public void onSuccess(Integer keystrokes) {
+				numberOfStrokesRegisteredParagraph.setText(
+					"Nombre de frappes de votre mot de passe enregistrées : "
+							+ keystrokes);
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				InformationPopup popup = new InformationPopup(
+						"Frappes enregistrées", true);
+				popup.setAlertType(AlertType.WARNING);
+				popup.setAlertTitle("Échec de connexion au serveur.");
+				popup.setAlertContent("Vérifiez votre connexion internet.");
+				popup.showAlert();
+				popup.show();
+				popup.hideWithDelay();
+			}
+		});
 	}
 }

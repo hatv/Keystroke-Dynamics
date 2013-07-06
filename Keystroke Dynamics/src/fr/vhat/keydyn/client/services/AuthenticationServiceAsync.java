@@ -17,4 +17,5 @@ public interface AuthenticationServiceAsync {
 	void validateSession(AsyncCallback<String> callback);
 	void getUsersLogin(AsyncCallback<String[]> callback);
 	void getUserPassword(String login, AsyncCallback<String> callback);
+	void getUserStrokesNumber(AsyncCallback<Integer> callback);
 }

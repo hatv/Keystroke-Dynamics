@@ -254,7 +254,7 @@ public class TrainingPage extends PageAuthentication {
 		trainingPopup.showAlert();
 		trainingPopup.hideWithDelay(3000);
 
-		trainingBar.refresh();
+		TrainingPage.owner.refreshTabs();
 	}
 
 	public void refresh() {

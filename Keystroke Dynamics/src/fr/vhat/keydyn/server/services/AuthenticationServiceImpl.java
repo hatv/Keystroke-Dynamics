@@ -296,4 +296,16 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 			return null;
 		}
 	}
+
+	/**
+	 * Get the number of keystroke dynamics data registered in the system for
+	 * this user's password.
+	 * @return Number of keystroke data stored in the system.
+	 */
+	@Override
+	public int getUserStrokesNumber() {
+		String sessionLogin = (String)getThreadLocalRequest().getSession()
+        		.getAttribute("login");
+		return DataStore.getUserStrokesNumber(sessionLogin);
+	}
 }
