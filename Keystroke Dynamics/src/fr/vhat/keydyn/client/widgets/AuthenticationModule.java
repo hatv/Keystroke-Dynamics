@@ -222,12 +222,12 @@ public class AuthenticationModule extends VerticalPanel {
 		submitButton.setType(ButtonType.SUCCESS);
 		submitButton.addStyleName("buttonsPanel");
 		buttonsPanel.add(submitButton);
-		if (authenticationMode == AuthenticationMode.PRODUCTION_MODE) {
+		/*if (authenticationMode == AuthenticationMode.PRODUCTION_MODE) {
 			Button forgotPasswordButton = new Button("Mot de passe oublié");
 			forgotPasswordButton.setType(ButtonType.INFO);
 			forgotPasswordButton.addStyleName("buttonsPanel");
 			buttonsPanel.add(forgotPasswordButton);
-		}
+		}*/
 		authenticationForm.add(buttonsPanel);
 
 		return authenticationForm;
