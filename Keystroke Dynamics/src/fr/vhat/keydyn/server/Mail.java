@@ -66,10 +66,33 @@ public class Mail {
 				"Nouvel inscrit", message);
 		log.info("An email is being sent to welcome a new user: <" + toUser +
 				" ; " + toEmail + ">.");
-		message = "Merci pour votre inscription " + toUser + " . Votre mot de" +
-			"passe est : " + password + "\nVous pouvez maintenant accéder à " +
-			"votre espace membre et commencer à entraîner le système afin " +
-			"qu'il vous reconnaisse.";
+		message = "Bonjour " + toUser + ".\n\nVous recevez ce message " +
+			"car vous vous êtes récemment inscrit sur notre site " +
+			"d'analyse de la dynamique de frappe.\n\n Votre mot de " +
+			"passe est : " + password + "\n\nVous pouvez dès à présent " +
+			"accéder à votre espace membre et commencer à entraîner le " +
+			"système afin qu'il vous reconnaisse.\n\n" +
+			"Pour un test rapide, suivez la procédure suivante :\n" +
+			"1. Connectez-vous à l'aide de votre identifiant et de " +
+			"votre mot de passe.\n" +
+			"2. Entrainez le système en tapant de nombreuses fois " +
+			"votre mot de passe sur la page approppriée. Le minimum est " +
+			"de remplir la barre de fiabilité qui s'affiche mais vous " +
+			"pouvez donner au système encore plus d'informations pour " +
+			"accroître ses performances.\n" +
+			"3. Rendez-vous sur la page de test. En sélectionnant votre " +
+			"identifiant, vous devriez pouvoir vous authentifier. Si vous " +
+			"tendez le clavier à un proche, en revanche, son " +
+			"authentification devrait échouer.\n\n" +
+			"Pour que le système fonctionne au mieux, votre frappe doit " +
+			"être naturelle et la plus régulière possible. Ne vous forcez " +
+			"pas à aller vite ou à adapter un rythme particulier : le " +
+			"système s'adaptera automatiquement à d'éventuelles variations." +
+			"Si vous sentez au cours d'une saisie que celle-ci s'éloigne de " +
+			"façon importante de votre habitude, vous pouvez l'annuler en " +
+			"pressant la touche Retour Arrière de votre clavier.\n\n" +
+			"En vous souhaitant une bonne visite,\n" +
+			"Key Dyn";
 		return sendMail("key-dyn@victorhatinguais.fr", toEmail, toUser,
 				"key-dyn@victorhatinguais.fr",
 				"Keystroke Dynamics Registration", message);

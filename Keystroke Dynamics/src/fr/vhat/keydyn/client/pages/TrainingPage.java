@@ -94,7 +94,12 @@ public class TrainingPage extends PageAuthentication {
 		String introductionText = new String("À l'aide du module ci-dessous," +
 				"vous pouvez entraîner le système. Toutes les frappes " +
 				"comportant le bon mot de passe seront automatiquement " +
-				"enregistrées dans le système d'apprentissage.");
+				"enregistrées dans le système d'apprentissage. " +
+				"Il est donc très IMPORTANT que seul le propriétaire " +
+				"de CE compte n'utilise le module ci-dessous, sans " +
+				"quoi le système sera mal calibré. Pour réaliser des " +
+				"tests avec votre entourage, rendez-vous sur la page " +
+				"approppriée.");
 		if (TrainingPage.applet) {
 			introductionText += " Si le module n'apparaît pas, vérifiez votre" +
 					" installation de Java et assurez-vous d'avoir accepté " +
