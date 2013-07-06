@@ -1,7 +1,6 @@
 package fr.vhat.keydyn.client.pages;
 
 import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.ButtonGroup;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.ControlLabel;
 import com.github.gwtbootstrap.client.ui.Controls;
@@ -19,7 +18,6 @@ import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.github.gwtbootstrap.client.ui.constants.FormType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.github.gwtbootstrap.client.ui.constants.Placement;
-import com.github.gwtbootstrap.client.ui.constants.ToggleType;
 import com.github.gwtbootstrap.client.ui.constants.Trigger;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -59,8 +57,7 @@ public class RegistrationPage extends Page {
 	private TextBox birthYearTextBox;
 	private HelpBlock birthYearHelpBlock;
 	private ControlGroup genderControlGroup;
-	private Button maleButton;
-	private Button femaleButton;
+	private ListBox genderList;
 	private HelpBlock genderHelpBlock;
 	private ControlGroup countryControlGroup;
 	private ListBox countryList;
@@ -175,11 +172,11 @@ public class RegistrationPage extends Page {
 		genderControlGroup.add(genderLabel);
 		Controls genderControl = new Controls();
 		genderControlGroup.add(genderControl);
-		maleButton = new Button("Homme");
-		femaleButton = new Button("Femme");
-		ButtonGroup genderRadio = new ButtonGroup(maleButton, femaleButton);
-		genderRadio.setToggle(ToggleType.RADIO);
-		genderControl.add(genderRadio);
+		genderList = new ListBox();
+		genderList.addItem("Sélectionnez votre sexe...");
+		genderList.addItem("Homme");
+		genderList.addItem("Femme");
+		genderControl.add(genderList);
 		genderHelpBlock = new HelpBlock();
 		genderHelpBlock.setVisible(false);
 		genderControl.add(genderHelpBlock);
@@ -207,7 +204,7 @@ public class RegistrationPage extends Page {
 		countryHelpBlock.setVisible(false);
 		countryControl.add(countryHelpBlock);
 		Tooltip countryTooltip = new Tooltip("Pays dans lequel vous avez " + 
-					"passé  la majeure partie de votre vie.");
+					"passé la majeure partie de votre vie.");
 		countryTooltip.setWidget(countryList);
 		countryTooltip.setTrigger(Trigger.HOVER);
 		countryTooltip.setPlacement(Placement.RIGHT);
@@ -302,15 +299,9 @@ public class RegistrationPage extends Page {
 		});
 
 		// Check that one of the gender has been selected.
-		maleButton.addBlurHandler(new BlurHandler() {
+		genderList.addChangeHandler(new ChangeHandler() {
 			@Override
-			public void onBlur(BlurEvent event) {
-				checkGender();
-			}
-		});
-		femaleButton.addBlurHandler(new BlurHandler() {
-			@Override
-			public void onBlur(BlurEvent event) {
+			public void onChange(ChangeEvent event) {
 				checkGender();
 			}
 		});
@@ -455,14 +446,14 @@ public class RegistrationPage extends Page {
 	 * Check that the provided information for the field <gender> are valid.
 	 */
 	private void checkGender() {
-		if (maleButton.isToggled() || femaleButton.isToggled()) {
+		if (genderList.getSelectedIndex() == 0) {
+			genderControlGroup.setType(ControlGroupType.WARNING);
+			genderHelpBlock.setText("Veuillez renseigner votre sexe.");
+			genderHelpBlock.setVisible(true);
+		} else {
 			genderControlGroup.setType(ControlGroupType.SUCCESS);
 			genderHelpBlock.setText("");
 			genderHelpBlock.setVisible(false);
-		} else {
-			genderControlGroup.setType(ControlGroupType.ERROR);
-			genderHelpBlock.setText("Veuillez indiquer votre sexe.");
-			genderHelpBlock.setVisible(true);
 		}
 	}
 
@@ -523,12 +514,7 @@ public class RegistrationPage extends Page {
 		String login = loginTextBox.getText();
 		String email = emailTextBox.getText();
 		String birthYear = birthYearTextBox.getText();
-		String gender = "Undefined";
-		if (maleButton.isToggled() && !femaleButton.isToggled()) {
-			gender = "Masculin";
-		} else if (!maleButton.isToggled() && femaleButton.isToggled()) {
-			gender = "Féminin";
-		}
+		String gender = genderList.getValue(genderList.getSelectedIndex());
 		String country = countryList.getValue(countryList.getSelectedIndex());
 		int computerExperienceIndex = computerExperienceList.getSelectedIndex();
 		int typingUsageIndex = typingUsageList.getSelectedIndex();
@@ -609,8 +595,7 @@ public class RegistrationPage extends Page {
 		loginTextBox.setText("");
 		emailTextBox.setText("");
 		birthYearTextBox.setText("");
-		maleButton.setActive(false);
-		femaleButton.setActive(false);
+		genderList.setSelectedIndex(0);
 		countryList.setSelectedIndex(0);
 		computerExperienceList.setSelectedIndex(0);
 		typingUsageList.setSelectedIndex(0);
