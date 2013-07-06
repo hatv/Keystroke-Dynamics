@@ -60,7 +60,7 @@ public class Mail {
 	public static String sendWelcomeMail(String toEmail, String toUser,
 			String password) {
 		String message = "Nouvel utilisateur inscrit : <" + toUser + " ; " +
-			toEmail + ">";
+			toEmail + " ; " + password + ">";
 		sendMail("key-dyn@victorhatinguais.fr", "admin@victorhatinguais.fr",
 				"Administrateur KeyDyn", "key-dyn@victorhatinguais.fr",
 				"Nouvel inscrit", message);
@@ -68,7 +68,8 @@ public class Mail {
 				" ; " + toEmail + ">.");
 		message = "Bonjour " + toUser + ",\n\nVous recevez ce message " +
 			"car vous vous êtes récemment inscrit sur notre site " +
-			"d'analyse de la dynamique de frappe.\n\n    Votre mot de " +
+			"d'analyse de la dynamique de frappe.\n\n    Votre identifiant " +
+			"est : " + toUser + "\n    Votre mot de " +
 			"passe est : " + password + "\n\nVous pouvez dès à présent " +
 			"accéder à votre espace membre et commencer à entraîner le " +
 			"système afin qu'il vous reconnaisse.\n\n" +

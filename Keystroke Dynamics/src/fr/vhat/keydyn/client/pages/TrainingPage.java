@@ -112,9 +112,21 @@ public class TrainingPage extends PageAuthentication {
 		Paragraph help = new Paragraph();
 		help.setText("Pendant la frappe du mot de passe, votre dynamique de" +
 				" frappe est analysée et toute faute de frappe entraîne donc" +
-				" la réinitialisation de la séquence tapée.");
+				" la réinitialisation de la séquence tapée. La touche " +
+				"<Entrée> de votre clavier vous permet de valider.");
 		help.addStyleName("indent");
 		panel.add(help);
+
+		Paragraph more = new Paragraph();
+		more.setText("Au cours de l'apprentissage, certaines de vos entrées " +
+				"seront refusées par le système. Pas d'inquiète cependant : " +
+				"cela signifie simplement que l'authentification vous aurait " +
+				"été refusée en temps normal. Mais cette page " +
+				"d'entraînement vous permet justement de faire " +
+				"connaître au système votre dynamique de frappe et " +
+				"vous devriez peu à peu voir toutes vos saisies acceptées.");
+		more.addStyleName("indent");
+		panel.add(more);
 
 		trainingModule =
 				new AuthenticationModule(AuthenticationMode.TRAIN_MODE,
@@ -124,6 +136,17 @@ public class TrainingPage extends PageAuthentication {
 		}
 		panel.add(trainingModule);
 
+		Paragraph statistics = new Paragraph();
+		statistics.setText("La distance qui s'affiche est un critère " +
+				"calculé par le système pour déterminer la proximité " +
+				"entre votre dernière saisie et vos habitudes de frappe " +
+				"habituelles. Si cette distance est faible (inférieure " +
+				"au seuil), le système considèrera que vous êtes bien à " +
+				"l'origine de la saisie. Attention : ce critère de distance " +
+				"n'est pas lié à votre vitesse de frappe !");
+		statistics.addStyleName("indent");
+		panel.add(more);
+
 		Paragraph progressBar = new Paragraph();
 		progressBar.setText("La fiabilité du système augmente au fur et à " +
 				"mesure que vous l'entraînez :");
@@ -132,6 +155,14 @@ public class TrainingPage extends PageAuthentication {
 
 		trainingBar = new TrainingProgressBar();
 		panel.add(trainingBar);
+
+		Paragraph progressBarExplain = new Paragraph();
+		progressBarExplain.setText("Une fois cette barre remplie, " +
+				"vous pouvez considérer que le système connait suffisamment " +
+				"votre dynamique de frappe. Vous pouvez cependant " +
+				"l'entrainer davantage afin d'accroitre encore sa sécurité.");
+		progressBarExplain.addStyleName("indent");
+		panel.add(progressBar);
 
 		return panel;
 	}
