@@ -9,7 +9,6 @@ import com.google.gwt.user.client.ui.Widget;
 import fr.vhat.keydyn.client.widgets.GroupTabPanel;
 import fr.vhat.keydyn.client.widgets.PageRecognition;
 import fr.vhat.keydyn.client.widgets.RecognitionModule;
-import fr.vhat.keydyn.shared.RecognitionMode;
 import fr.vhat.keydyn.shared.RecognitionReturn;
 
 /**
@@ -74,8 +73,7 @@ public class RecognitionPage extends PageRecognition {
 		panel.add(help);
 
 		recognitionModule =
-				new RecognitionModule(RecognitionMode.TRAIN_MODE,
-						"Module d'entraînement", this);
+				new RecognitionModule("Module d'entraînement", this);
 		panel.add(recognitionModule);
 
 		return panel;

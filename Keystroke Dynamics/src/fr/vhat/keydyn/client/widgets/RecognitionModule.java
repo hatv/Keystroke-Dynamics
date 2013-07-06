@@ -31,7 +31,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 import fr.vhat.keydyn.client.services.RecognitionService;
 import fr.vhat.keydyn.client.services.RecognitionServiceAsync;
-import fr.vhat.keydyn.shared.RecognitionMode;
 
 /**
  * Recognition module is a form which can recognize an user according to
@@ -45,7 +44,6 @@ public class RecognitionModule extends VerticalPanel {
 	private Label sourceSentence;
 	private TextBox answerTextBox;
 	private Button submitButton;
-	private RecognitionMode recognitionMode;
 
 	// JavaScript parameters
 	private double firstTimestamp = 0;
@@ -65,12 +63,10 @@ public class RecognitionModule extends VerticalPanel {
 	 * @param legend Legend to display above the module.
 	 * @param owner Owner page of the recognition module.
 	 */
-	public RecognitionModule(RecognitionMode recognitionMode,
-			String legend, PageRecognition owner) {
+	public RecognitionModule(String legend, PageRecognition owner) {
 
 		this.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 
-		this.recognitionMode = recognitionMode;
 		this.recognitionForm = this.getRecognitionForm(legend);
 		this.owner = owner;
 

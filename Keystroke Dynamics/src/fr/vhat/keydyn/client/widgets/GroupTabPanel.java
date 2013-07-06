@@ -85,8 +85,8 @@ public class GroupTabPanel extends TabPanel implements HasHandlers {
 	    	this.add(testPageTab);
 
 	    	RecognitionPage.init(this);
-	    	Tab recognitionPageTab = RecognitionPage.getInstance();
-	    	this.add(recognitionPageTab);
+	    	// Tab recognitionPageTab = RecognitionPage.getInstance();
+	    	// this.add(recognitionPageTab);
 
 	    	this.add(FAQPageTab);
 
