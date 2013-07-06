@@ -25,13 +25,4 @@ public class ContactPage extends Page {
 	protected Widget getContent() {
 		return new Paragraph("Pour me contacter, remplissez le formulaire :");
 	}
-
-	public native void JSNI() /*-{
-		$wnd.requestFocus = function() {
-			$wnd.startFocus('KeyboardApplet');
-		}
-		$wnd.appletLoaded = function(x) {
-			alert("contactPage");
-		}
-	}-*/;
 }

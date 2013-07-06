@@ -93,7 +93,7 @@ public class TestPage extends PageAuthentication {
 				"vous pouvez tester les performances du système. Laissez " +
 				"votre identifiant ou sélectionnez en un autre, puis tentez " +
 				"de saisir le mot de passe pour voir si vous pourriez accéder" +
-				"au compte de la personne.");
+				" au compte de la personne.");
 		if (TestPage.applet) {
 			introductionText += " Si le module n'apparaît pas, vérifiez votre" +
 					" installation de Java et assurez-vous d'avoir accepté " +
@@ -109,6 +109,13 @@ public class TestPage extends PageAuthentication {
 				" la réinitialisation de la séquence tapée.");
 		help.addStyleName("indent");
 		panel.add(help);
+
+		Paragraph more = new Paragraph();
+		more.setText("Vous pouvez profiter de cette page de test pour " +
+				"tendre le clavier à une autre personne que vous " +
+				"et vous convaincre de la fiabilité du système. ");
+		more.addStyleName("indent");
+		panel.add(more);
 
 		testModule =
 				new AuthenticationModule(AuthenticationMode.TEST_MODE,

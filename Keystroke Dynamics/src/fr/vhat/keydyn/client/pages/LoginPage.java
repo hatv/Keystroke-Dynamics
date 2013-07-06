@@ -82,7 +82,8 @@ public class LoginPage extends PageAuthentication {
 		panel.setWidth("800px");
 
 		Paragraph introduction = new Paragraph();
-		String introductionText = new String("Vous pouvez vous authentifier " +
+		String introductionText = new String(
+				"Une fois inscrit, vous pouvez vous authentifier " +
 				"de façon sécurisée grâce au module d'authentification " +
 				"ci-dessous.");
 		if (LoginPage.applet) {
@@ -97,7 +98,9 @@ public class LoginPage extends PageAuthentication {
 		Paragraph help = new Paragraph();
 		help.setText("Pendant la frappe du mot de passe, votre dynamique de" +
 				" frappe est analysée et toute faute de frappe entraîne donc" +
-				" la réinitialisation de la séquence tapée.");
+				" la réinitialisation de la séquence tapée. Pour des" +
+				" raisons de sécurité et afin de prévenir toute dérive," +
+				" ce module limite temporellement le nombre de tentatives.");
 		help.addStyleName("indent");
 		panel.add(help);
 

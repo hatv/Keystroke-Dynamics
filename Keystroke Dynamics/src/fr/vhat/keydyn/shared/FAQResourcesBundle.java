@@ -24,6 +24,9 @@ public interface FAQResourcesBundle extends ClientBundle {
 	@Source(path + "user.png")
 	ImageResource user();
 
+	@Source(path + "calculator.png")
+	ImageResource calculator();
+
 	@Source(path + "java.png")
 	ImageResource java();
 
@@ -62,6 +65,9 @@ public interface FAQResourcesBundle extends ClientBundle {
 
 	@Source(path + "statistics.png")
 	ImageResource statistics();
+
+	@Source(path + "smartphone.png")
+	ImageResource smartphone();
 
 	@Source(path + "faq.xml")
 	TextResource FAQ();

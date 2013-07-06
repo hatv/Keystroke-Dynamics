@@ -45,13 +45,13 @@
 		</answer>
 	</faq-item>
 	<faq-item>
-	    <image>java</image>
+	    <image>calculator</image>
 		<question>
-			Pourquoi dois-je obligatoirement posséder Java sur mon ordinateur ?
+			Comment ma dynamique de frappe est-elle analysée ?
 		</question>
 		<answer>
 		    &lt;p&gt;
-			    L'application d'authentification par analyse de la dynamique de frappe se base sur l'exploitation de mesures de temps entre la pression et le relachement des touches de votre clavier lors de la frappe. Pour accéder à de telles informations de façon précise, l'utilisation d'une Applet Java est largement recommandée. Sachez que ces informations temporelles, ainsi que des informations très générales sur votre système d'exploitation ou votre navigateur, sont les seules données recueillies par l'application. Si vous ne possédez pas Java, vous pouvez tester l'application depuis un autre ordinateur équipé de Java ou installer Java sur votre ordinateur en suivant ces explications : &lt;a href="http://www.java.com/fr/download/help/download_options.xml" target="_blank"&gt;cliquez ici&lt;/a&gt;. Notez que suivant les navigateurs, l'installation d'un plug-in peut également vous être proposée. Afin de profiter pleinement de l'expérience d'authentification par analyse de la dynamique de frappe, il vous est recommandé de choisir l'option "Toujours exécuter" ou "Toujours accepter" lors de la demande d'autorisation faite par Java.
+			    L'application d'authentification par analyse de la dynamique de frappe se base sur l'exploitation de mesures de temps entre la pression et le relâchement des touches de votre clavier lors de la frappe. Pour analyser votre façon de taper, votre navigateur recueille des données depuis votre clavier et les transmet à nos serveurs qui se chargent de calculer les statistiques nécessaires au fonctionnement de l'application. Sachez que ces informations temporelles sont les seules données recueillies par l'application.
 		    &lt;/p&gt;
 		</answer>
 	</faq-item>
@@ -73,10 +73,10 @@
 		</question>
 		<answer>
 		    &lt;p&gt;
-			    La page de test, disponible dans votre espace membre, vous permet en premier lieu de tester votre propre compte. En saisissant votre mot de passe, vous pourrez voir si le sytème vous reconnaît bien. De plus, les frappes saisies sur la page de test ne sont pas enregistrées dans votre profil et vous pouvez donc proposer à un ami ou un parent de taper votre mot de passe sur cette page pour vous assurer de la fiabilité du système. La page de test vous permettra également de sélectionner un utilisateur quelconque du site et d'obtenir son mot de passe. Vous n'aurez alors plus qu'à entrer ce mot de passe dans le champ prévu à cet effet pour tenter une authentification. En réitérant les essais et en exploitant les aides fournies par les niveaux de difficulté les plus faibles, vous devriez parvenir à vous approcher de la dynamique de frappe de cette personne et peut-être même à réussir une authentification.
+			    La page de test, disponible dans votre espace membre, vous permet en premier lieu de tester votre propre compte. En saisissant votre mot de passe, vous pourrez voir si le sytème vous reconnaît bien. De plus, les frappes saisies sur la page de test ne sont pas enregistrées dans votre profil et vous pouvez donc proposer à un ami ou un parent de taper votre mot de passe sur cette page pour vous assurer de la fiabilité du système. La page de test vous permettra également de sélectionner un utilisateur quelconque du site et d'obtenir son mot de passe. Vous n'aurez alors plus qu'à entrer ce mot de passe dans le champ prévu à cet effet pour tenter une authentification. En réitérant les essais, vous devriez parvenir à vous approcher de la dynamique de frappe de cette personne et peut-être même à réussir une authentification.
 		    &lt;/p&gt;
 		</answer>
-	</faq-item>
+	</faq-item><!--
 	<faq-item>
 	    <image>statistics</image>
 		<question>
@@ -92,7 +92,7 @@
 			    &lt;/ul&gt;
 		    &lt;/p&gt;
 		</answer>
-	</faq-item>
+	</faq-item>-->
 	<faq-item>
 	    <image>key</image>
 		<question>
@@ -100,7 +100,7 @@
 		</question>
 		<answer>
 		    &lt;p&gt;
-			    Votre mot de passe étant divulgué à l'ensemble de la communauté à des fins de test, il m'a semblé important de fixer un mot de passe afin de m'assurer que certains utilisateurs ne choisissent pas l'un de leurs mots de passe habituels, s'exposant alors à des risques. Le système est d'autant plus performant que vous êtes habitués à taper la séquence de caractères constitutive de votre mot de passe. En choisissant des mots courants de la langue française, j'espère me rapprocher de l'habitude que vous pouvez avoir à taper votre mot de passe.
+			    Votre mot de passe étant divulgué à l'ensemble de la communauté à des fins de test, il nous a semblé important de fixer un mot de passe afin de nous assurer que certains utilisateurs ne choisissent pas l'un de leurs mots de passe habituels, s'exposant alors à des risques. Le système est d'autant plus performant que vous êtes habitués à taper la séquence de caractères constitutive de votre mot de passe. En choisissant des mots courants de la langue française, nous espèrons nous rapprocher de l'habitude que vous pouvez avoir à taper votre mot de passe.
 		    &lt;/p&gt;
 		</answer>
 	</faq-item>
@@ -111,7 +111,7 @@
 		</question>
 		<answer>
 		    &lt;p&gt;
-			    Les mots de passe de toute la communauté étant divulgués volontairement à tous les membres du site, j'ai souhaité m'assurer que les usagers ne puissent pas se connecter de façon "officielle" à l'espace membre d'un autre utilisateur. En fixant un délai proportionnel au nombre d'erreurs d'authentification entre chaque tentative, les dérives devraient être largement limitées. La mise en place d'un système similaire en production serait également une mesure de sécurité supplémentaire. Notez que cette fonctionnalité n'est pas implémentée lorsque vous testez le système depuis votre compte afin de vous laisser le champ libre.
+			    Les mots de passe de toute la communauté étant divulgués volontairement à tous les membres du site, nous souhaitions nous assurer que les usagers ne puissent pas se connecter de façon "officielle" à l'espace membre d'un autre utilisateur. En fixant un délai proportionnel au nombre d'erreurs d'authentification entre chaque tentative, les dérives devraient être largement limitées. La mise en place d'un système similaire en production serait également une mesure de sécurité supplémentaire. Notez que cette fonctionnalité n'est pas implémentée lorsque vous testez le système depuis votre compte afin de vous laisser le champ libre.
 		    &lt;/p&gt;
 		</answer>
 	</faq-item>
@@ -156,6 +156,17 @@
 		<answer>
 		    &lt;p&gt;
 				Bien que peu utilisée aujourd'hui, la technologie apporte des solutions intéressantes au problème de l'authentification sécurisée et a déjà fait l'objet de dépôts de brevets. Son usage à des fins de reconnaissance complète d'un individu présente, quant à lui, un intérêt indéniable qui pourrait être utilisé pour de nombreuses applications.
+		    &lt;/p&gt;
+		</answer>
+	</faq-item>
+	<faq-item>
+	    <image>smartphone</image>
+		<question>
+			Une utilisation depuis mon téléphone pourrait-elle être envisagée ?
+		</question>
+		<answer>
+		    &lt;p&gt;
+				De la même façon que sur un clavier physique, la saisie sur un clavier virtuel est spécifique à chaque individu et bien que sa stabilité varie sans doute davantage, en fonction des conditions environnementales notamment, les algorithmes d'authentification et d'identification utilisés dans ce projet pourraient très probablement être utilisés dans le cadre d'une application mobile.
 		    &lt;/p&gt;
 		</answer>
 	</faq-item>

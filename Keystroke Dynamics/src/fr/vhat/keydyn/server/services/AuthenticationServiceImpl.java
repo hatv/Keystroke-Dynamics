@@ -93,9 +93,9 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 							elapsedTime = date.getTime() 
 									- user.getLastLoginAttempt().getTime();
 						} else {
-							elapsedTime = 15000;
+							elapsedTime = 10000;
 						}
-						if (elapsedTime >= 15000) {
+						if (elapsedTime >= 10000) {
 							createSession(login);
 							log.info("User <" + login + "> succeed to connect "
 									+ "with usage of his keystroke dynamics :"
@@ -110,7 +110,7 @@ public class AuthenticationServiceImpl extends RemoteServiceServlet implements
 									+ "threshold was " + threshold);
 							authenticationReturn.setAuthenticationErrorCode(-5);
 							authenticationReturn.setTimeToWait(
-									15000 - elapsedTime);
+									10000 - elapsedTime);
 						}
 					}
 

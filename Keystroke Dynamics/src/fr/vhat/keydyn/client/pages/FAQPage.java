@@ -127,6 +127,10 @@ public class FAQPage extends Page {
 			return resources.shield();
 		} else if (image.equals("statistics")) {
 			return resources.statistics();
+		} else if (image.equals("calculator")) {
+			return resources.calculator();
+		} else if (image.equals("smartphone")) {
+			return resources.smartphone();
 		} else {
 			return null;
 		}

@@ -10,7 +10,7 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import fr.vhat.keydyn.client.events.ChangeGroupRequestedEvent;
 import fr.vhat.keydyn.client.events.ChangeGroupRequestedEventHandler;
 import fr.vhat.keydyn.client.pages.AboutPage;
-import fr.vhat.keydyn.client.pages.ContactPage;
+// import fr.vhat.keydyn.client.pages.ContactPage;
 import fr.vhat.keydyn.client.pages.FAQPage;
 import fr.vhat.keydyn.client.pages.HomePage;
 import fr.vhat.keydyn.client.pages.LoginPage;
@@ -45,7 +45,7 @@ public class GroupTabPanel extends TabPanel implements HasHandlers {
 
     	Tab FAQPageTab = new FAQPage(this);
     	Tab aboutPageTab = new AboutPage(this);
-    	Tab contactPageTab = new ContactPage(this);
+    	// Tab contactPageTab = new ContactPage(this);
 
     	if (!connected) {
 
@@ -67,7 +67,7 @@ public class GroupTabPanel extends TabPanel implements HasHandlers {
 	    	this.add(aboutPageTab);
 
 	    	// Tab contactPageTab = new ContactPage(this);
-	    	this.add(contactPageTab);
+	    	// this.add(contactPageTab);
 
     	} else {
 
