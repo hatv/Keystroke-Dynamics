@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 public class RegistrationServiceImpl extends RemoteServiceServlet implements
 		RegistrationService {
 
-	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger(
 			RegistrationServiceImpl.class.getName());
 	
@@ -45,6 +44,10 @@ public class RegistrationServiceImpl extends RemoteServiceServlet implements
 	public boolean registerUser(String login, String email, int birthYear,
 			String gender, String country, int computerExperience,
 			int typingUsage) {
+
+		log.info("Registration attempt : <" + login + " ; " + email + " ; "
+				+ birthYear + " ; " + gender + " ; " + country + " ; "
+				+ computerExperience + " ; " + typingUsage + ">");
 
 		if (FieldVerifier.isValidLogin(login)
 				&& FieldVerifier.isValidEmail(email)

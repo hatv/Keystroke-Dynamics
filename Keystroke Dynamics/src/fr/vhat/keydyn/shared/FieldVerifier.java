@@ -40,7 +40,7 @@ public class FieldVerifier {
 	}
 
 	public static boolean isValidGender(String gender) {
-		if (gender.equals("Masculin") || gender.equals("Féminin"))
+		if (gender.equals("Homme") || gender.equals("Femme"))
 			return true;
 		else
 			return false;
