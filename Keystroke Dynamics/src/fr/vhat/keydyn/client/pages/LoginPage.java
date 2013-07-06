@@ -100,7 +100,9 @@ public class LoginPage extends PageAuthentication {
 				" frappe est analysée et toute faute de frappe entraîne donc" +
 				" la réinitialisation de la séquence tapée. Pour des" +
 				" raisons de sécurité et afin de prévenir toute dérive," +
-				" ce module limite temporellement le nombre de tentatives.");
+				" ce module limite temporellement le nombre de tentatives. " +
+				"Bien évidemment tout copier/coller du mot de passe est " +
+				"à proscrire.");
 		help.addStyleName("indent");
 		panel.add(help);
 

@@ -66,9 +66,9 @@ public class Mail {
 				"Nouvel inscrit", message);
 		log.info("An email is being sent to welcome a new user: <" + toUser +
 				" ; " + toEmail + ">.");
-		message = "Bonjour " + toUser + ".\n\nVous recevez ce message " +
+		message = "Bonjour " + toUser + ",\n\nVous recevez ce message " +
 			"car vous vous êtes récemment inscrit sur notre site " +
-			"d'analyse de la dynamique de frappe.\n\n Votre mot de " +
+			"d'analyse de la dynamique de frappe.\n\n    Votre mot de " +
 			"passe est : " + password + "\n\nVous pouvez dès à présent " +
 			"accéder à votre espace membre et commencer à entraîner le " +
 			"système afin qu'il vous reconnaisse.\n\n" +
@@ -86,13 +86,13 @@ public class Mail {
 			"authentification devrait échouer.\n\n" +
 			"Pour que le système fonctionne au mieux, votre frappe doit " +
 			"être naturelle et la plus régulière possible. Ne vous forcez " +
-			"pas à aller vite ou à adapter un rythme particulier : le " +
-			"système s'adaptera automatiquement à d'éventuelles variations." +
+			"pas à aller vite ou à utiliser un rythme particulier : le " +
+			"système s'adaptera automatiquement à d'éventuelles variations. " +
 			"Si vous sentez au cours d'une saisie que celle-ci s'éloigne de " +
 			"façon importante de votre habitude, vous pouvez l'annuler en " +
-			"pressant la touche Retour Arrière de votre clavier.\n\n" +
+			"pressant la touche <Retour Arrière> de votre clavier.\n\n" +
 			"En vous souhaitant une bonne visite,\n" +
-			"Key Dyn";
+			"L'administrateur Key Dyn";
 		return sendMail("key-dyn@victorhatinguais.fr", toEmail, toUser,
 				"key-dyn@victorhatinguais.fr",
 				"Keystroke Dynamics Registration", message);
